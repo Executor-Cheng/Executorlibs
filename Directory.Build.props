@@ -4,5 +4,18 @@
         <LangVersion>9.0</LangVersion>
 		<Nullable>enable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<Authors>Executor</Authors>
+		<Company>Executor</Company>
+		<Copyright>Copyright © Executor 2021</Copyright>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/Executor-Cheng/Executorlibs</PackageProjectUrl>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<RepositoryUrl>https://github.com/Executor-Cheng/Executorlibs</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageReleaseNotes></PackageReleaseNotes>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<PublishDocumentationFile>true</PublishDocumentationFile>
+		<PublishReferencesDocumentationFiles>true</PublishReferencesDocumentationFiles>
+		<NoWarn>1701;1702;1591</NoWarn>
     </PropertyGroup>
 </Project>

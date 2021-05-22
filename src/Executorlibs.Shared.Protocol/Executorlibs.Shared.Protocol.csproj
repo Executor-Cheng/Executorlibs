@@ -1,5 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
+  <PropertyGroup>
+    <Description>Specialized for live platform message framework.</Description>
+  </PropertyGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\Executorlibs.MessageFramework\Executorlibs.MessageFramework.csproj" />
   </ItemGroup>

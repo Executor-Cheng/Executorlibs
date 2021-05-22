@@ -1,5 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup>
+    <Description>Danmaku framework for bilibili live platform.</Description>
+    <PackageTags>bilibili, danmaku, danmu</PackageTags>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Executorlibs.Shared.Protocol\Executorlibs.Shared.Protocol.csproj" />
     <ProjectReference Include="..\Executorlibs.Shared\Executorlibs.Shared.csproj" />
