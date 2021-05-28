@@ -22,7 +22,7 @@ namespace Executorlibs.Shared.Protocol.Models.General
     /// </remarks>
     public interface IProtocolMessage<TRawdata> : IProtocolMessage, IMessage<TRawdata>
     {
-        
+
     }
 
     /// <summary>

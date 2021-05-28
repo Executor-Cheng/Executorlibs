@@ -3,15 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31229.75
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Executorlibs.Examples", "src\Executorlibs.Examples\Executorlibs.Examples.csproj", "{AF66A533-AEC8-4E4D-93C6-EF3E736C723D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Executorlibs.Examples", "src\Executorlibs.Examples\Executorlibs.Examples.csproj", "{AF66A533-AEC8-4E4D-93C6-EF3E736C723D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Executorlibs.MessageFramework", "src\Executorlibs.MessageFramework\Executorlibs.MessageFramework.csproj", "{A7E6B85C-0AA8-41F4-B3D0-E62BC33E3A08}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Executorlibs.MessageFramework", "src\Executorlibs.MessageFramework\Executorlibs.MessageFramework.csproj", "{A7E6B85C-0AA8-41F4-B3D0-E62BC33E3A08}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Executorlibs.Bilibili.Protocol", "src\Executorlibs.Bilibili.Protocol\Executorlibs.Bilibili.Protocol.csproj", "{63F1C21C-303C-4A15-B95E-2B8463A71984}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Executorlibs.Bilibili.Protocol", "src\Executorlibs.Bilibili.Protocol\Executorlibs.Bilibili.Protocol.csproj", "{63F1C21C-303C-4A15-B95E-2B8463A71984}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Executorlibs.Shared.Protocol", "src\Executorlibs.Shared.Protocol\Executorlibs.Shared.Protocol.csproj", "{6F28FE90-5659-4041-980B-38676003D3B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Executorlibs.Shared.Protocol", "src\Executorlibs.Shared.Protocol\Executorlibs.Shared.Protocol.csproj", "{6F28FE90-5659-4041-980B-38676003D3B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Executorlibs.Shared", "src\Executorlibs.Shared\Executorlibs.Shared.csproj", "{085451E3-E7F7-44D5-B04F-8402A357361B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Executorlibs.Shared", "src\Executorlibs.Shared\Executorlibs.Shared.csproj", "{085451E3-E7F7-44D5-B04F-8402A357361B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1AEE6EE5-EE11-4370-B057-69525F675C89}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		Directory.Build.props = Directory.Build.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

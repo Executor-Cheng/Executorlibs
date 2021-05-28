@@ -8,7 +8,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
     /// </summary>
     /// <remarks>
     /// 此类型为 Bilibili 直播平台 专用<para/>
-    /// 继承自<see cref="Common.ITitle"/>
+    /// 继承自<see cref="SharedITitle"/>
     /// </remarks>
     public interface ITitle : SharedITitle
     {

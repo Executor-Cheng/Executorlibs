@@ -8,7 +8,7 @@ namespace Executorlibs.MessageFramework.Invoking
 {
     public class MessageSubscription<TMessage> : IMessageSubscription<TMessage> where TMessage : IMessage
     {
-        protected virtual IEnumerable<IMessageHandler<TMessage>> Handlers { get; } 
+        protected virtual IEnumerable<IMessageHandler<TMessage>> Handlers { get; }
 
         public MessageSubscription(IEnumerable<IMessageHandler> handlers)
         {

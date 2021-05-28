@@ -10,7 +10,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     /// </summary>
     public sealed class SendGiftParser : DefaultSendGiftParser<ISendGiftMessage, SendGiftMessage>
     {
-        
+
     }
 
     /// <summary>

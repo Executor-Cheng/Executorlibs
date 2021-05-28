@@ -1,9 +1,7 @@
 using System;
-using System.Buffers;
 using System.Buffers.Binary;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -82,7 +80,7 @@ namespace Executorlibs.Bilibili.Protocol.Clients
 
         public int RoomId => _Options.RoomId;
 
-        protected CancellationTokenSource? _Cts = new CancellationTokenSource();
+        protected CancellationTokenSource? _Cts = new();
 
         protected CancellationTokenSource? _WorkerCts;
 
@@ -281,7 +279,7 @@ namespace Executorlibs.Bilibili.Protocol.Clients
                             }
                             catch // 失败了关我啥事儿
                             {
-                                
+
                             }
                         }
                         else

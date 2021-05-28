@@ -1,10 +1,43 @@
+
+/* Unmerged change from project 'Executorlibs.Bilibili.Protocol (net5.0)'
+Before:
+using Executorlibs.Bilibili.Protocol.Clients;
+After:
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Executorlibs.Bilibili.Protocol.Clients;
+*/
+
+/* Unmerged change from project 'Executorlibs.Bilibili.Protocol (netstandard2.1)'
+Before:
+using Executorlibs.Bilibili.Protocol.Clients;
+After:
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Executorlibs.Bilibili.Protocol.Clients;
+*/
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text.Json;
+using System.Threading.Tasks;
 using Executorlibs.Bilibili.Protocol.Clients;
 using Executorlibs.Bilibili.Protocol.Handlers;
-using Executorlibs.Bilibili.Protocol.Invokers.Attributes;
-using Executorlibs.Bilibili.Protocol.Models.Danmaku;
-using Executorlibs.Bilibili.Protocol.Models.General;
-using Executorlibs.Bilibili.Protocol.Parsers;
-using Executorlibs.MessageFramework.Invoking;
+using Executorlibs.Bilibili.
+/* Unmerged change from project 'Executorlibs.Bilibili.Protocol (net5.0)'
+Before:
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -13,6 +46,28 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading.Tasks;
+After:
+using Microsoft.Extensions.Logging;
+*/
+
+/* Unmerged change from project 'Executorlibs.Bilibili.Protocol (netstandard2.1)'
+Before:
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text.Json;
+using System.Threading.Tasks;
+After:
+using Microsoft.Extensions.Logging;
+*/
+Protocol.Invokers.Attributes;
+using Executorlibs.Bilibili.Protocol.Models.General;
+using Executorlibs.Bilibili.Protocol.Parsers;
+using Executorlibs.MessageFramework.Invoking;
+using Microsoft.Extensions.Logging;
 
 namespace Executorlibs.Bilibili.Protocol.Invokers
 {
@@ -73,7 +128,7 @@ namespace Executorlibs.Bilibili.Protocol.Invokers
             }
         }
 
-        protected override bool TryResolveParsers(in JsonElement rawdata, [NotNullWhen(true)]out IEnumerable<IBilibiliMessageParser>? parsers)
+        protected override bool TryResolveParsers(in JsonElement rawdata, [NotNullWhen(true)] out IEnumerable<IBilibiliMessageParser>? parsers)
         {
             if (rawdata.TryGetProperty("cmd", out JsonElement cmdToken) &&
                 _MappedParsers.TryGetValue(cmdToken.GetString()!, out var tparsers))
@@ -87,14 +142,14 @@ namespace Executorlibs.Bilibili.Protocol.Invokers
             return true;
         }
 
-        protected virtual bool TryResolveSubscription<TMessage>([NotNullWhen(true)]out IBilibiliMessageSubscription<TMessage>? subscription) where TMessage : IBilibiliMessage
+        protected virtual bool TryResolveSubscription<TMessage>([NotNullWhen(true)] out IBilibiliMessageSubscription<TMessage>? subscription) where TMessage : IBilibiliMessage
         {
             Unsafe.SkipInit(out subscription);
             ref IBilibiliMessageSubscription? s = ref Unsafe.As<IBilibiliMessageSubscription<TMessage>?, IBilibiliMessageSubscription?>(ref subscription);
             return TryResolveSubscription(typeof(TMessage), out s);
         }
 
-        protected virtual bool TryResolveSubscription(Type messageType, [NotNullWhen(true)]out IBilibiliMessageSubscription? subscription)
+        protected virtual bool TryResolveSubscription(Type messageType, [NotNullWhen(true)] out IBilibiliMessageSubscription? subscription)
         {
             if (!_SubscriptionMapping.TryGetValue(messageType, out Type? subscriptionType))
             {
@@ -105,7 +160,7 @@ namespace Executorlibs.Bilibili.Protocol.Invokers
             return (t = _Services.GetService(subscriptionType)) != null;
         }
 
-        protected override bool TryResolveSubscription(Type messageType, [NotNullWhen(true)]out IMessageSubscription? subscription)
+        protected override bool TryResolveSubscription(Type messageType, [NotNullWhen(true)] out IMessageSubscription? subscription)
         {
             Unsafe.SkipInit(out subscription);
             ref IBilibiliMessageSubscription? s = ref Unsafe.As<IMessageSubscription?, IBilibiliMessageSubscription?>(ref subscription);

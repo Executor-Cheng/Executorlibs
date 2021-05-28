@@ -1,7 +1,7 @@
 using System.Text.Json;
+using Executorlibs.Bilibili.Protocol.Models.Enums;
 using Executorlibs.Bilibili.Protocol.Parsers;
 using Executorlibs.Bilibili.Protocol.Parsers.Attributes;
-using Executorlibs.Bilibili.Protocol.Models.Enums;
 using Executorlibs.Shared.Protocol.Models.Danmaku;
 
 namespace Executorlibs.Bilibili.Protocol.Models.Danmaku

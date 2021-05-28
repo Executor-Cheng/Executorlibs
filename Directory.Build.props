@@ -6,6 +6,9 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<Authors>Executor</Authors>
 		<Company>Executor</Company>
+        <Version>1.0.0.1</Version>
+		<AssemblyVersion>1.0.0.1</AssemblyVersion>
+		<FileVersion>1.0.0.1</FileVersion>
 		<Copyright>Copyright © Executor 2021</Copyright>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/Executor-Cheng/Executorlibs</PackageProjectUrl>
@@ -16,6 +19,6 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<PublishDocumentationFile>true</PublishDocumentationFile>
 		<PublishReferencesDocumentationFiles>true</PublishReferencesDocumentationFiles>
-		<NoWarn>1701;1702;1591</NoWarn>
+		<NoWarn>1701;1702;1573;1591;</NoWarn>
     </PropertyGroup>
 </Project>

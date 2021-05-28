@@ -1,10 +1,10 @@
 using System;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using System.IO;
-using System.Text.Json;
 #if NET5_0_OR_GREATER
 using System.Net.Http.Json;
 using System.Text;
@@ -19,7 +19,7 @@ namespace Executorlibs.Shared.Extensions
     {
         private static Version DefaultHttpVersion { get; } = new Version(2, 0);
 
-        private static readonly MediaTypeHeaderValue DefaultJsonMediaType = new MediaTypeHeaderValue("application/json") { CharSet = "utf-8" };
+        private static readonly MediaTypeHeaderValue DefaultJsonMediaType = new("application/json") { CharSet = "utf-8" };
 
         /// <param name="client">The <see cref="HttpClient"/>.</param>
         /// <param name="method">The HTTP method.</param>

@@ -57,13 +57,13 @@ namespace Executorlibs.Bilibili.Protocol.Clients
 #else
             await socket.ConnectAsync(serverHost.Host, serverHost.Port);
 #endif
-            await SendJoinRoomAsync(socket, roomId, 0,server.Token, token);
+            await SendJoinRoomAsync(socket, roomId, 0, server.Token, token);
             _Socket = socket;
         }
 
         protected override void InternalDisconnect()
         {
-            
+
         }
 
         protected override void InternalDispose(bool disposing)

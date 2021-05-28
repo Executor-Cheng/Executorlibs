@@ -24,7 +24,7 @@ namespace Executorlibs.MessageFramework.Invoking
 
     public abstract class MessageHandlerInvoker<TClientService, THandlerService> : IMessageHandlerInvoker<TClientService> where TClientService : IMessageClient
                                                                                                                           where THandlerService : IMessageHandler
-                                                                                                                          
+
     {
         protected readonly ConcurrentDictionary<Type, Type> _SubscriptionMapping = new();
 
@@ -74,7 +74,7 @@ namespace Executorlibs.MessageFramework.Invoking
     {
         protected MessageHandlerInvoker(IServiceProvider services, ILogger<MessageHandlerInvoker<TClientService, THandlerService, TRawdata, TParserService>> logger) : base(services, logger)
         {
-            
+
         }
 
         public virtual async Task HandleRawdataAsync(TClientService client, TRawdata rawdata)
@@ -95,6 +95,6 @@ namespace Executorlibs.MessageFramework.Invoking
             }
         }
 
-        protected abstract bool TryResolveParsers(in TRawdata rawdata, [NotNullWhen(true)]out IEnumerable<TParserService>? parsers);
+        protected abstract bool TryResolveParsers(in TRawdata rawdata, [NotNullWhen(true)] out IEnumerable<TParserService>? parsers);
     }
 }

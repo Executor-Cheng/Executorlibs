@@ -5,7 +5,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 {
     public interface ILiveManagementMessage : IBilibiliMessage, ISharedLiveManagementMessage
     {
-        
+
     }
 
     public abstract class LiveManagementMessage : BilibiliMessage, ILiveManagementMessage

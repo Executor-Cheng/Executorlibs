@@ -8,7 +8,7 @@ namespace Executorlibs.Bilibili.Protocol.Invokers
 {
     public interface IBilibiliMessageSubscription : IMessageSubscription, IBilibiliMessageHandler
     {
-        
+
     }
 
     public interface IBilibiliMessageSubscription<TMessage> : IBilibiliMessageSubscription, IBilibiliMessageHandler<TMessage> where TMessage : IBilibiliMessage

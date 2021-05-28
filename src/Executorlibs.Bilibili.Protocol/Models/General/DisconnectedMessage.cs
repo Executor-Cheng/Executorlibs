@@ -7,7 +7,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.General
 {
     public interface IDisconnectedMessage : IBilibiliMessage, IGeneralDisconnectedMessage
     {
-        
+
     }
 
     public class DisconnectedMessage : GeneralDisconnectedMessage, IDisconnectedMessage

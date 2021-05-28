@@ -24,7 +24,7 @@ namespace Executorlibs.MessageFramework.Invoking.Attributes
 
         public RegisterMessageSubscriptionAttribute(Type? serviceType, Type implementationType, ServiceLifetime? lifetime) : base(serviceType, implementationType, lifetime)
         {
-            
+
         }
 
         protected override Type GetServiceType(Type implementationType)

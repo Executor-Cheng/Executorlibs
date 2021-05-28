@@ -4,6 +4,6 @@ namespace Executorlibs.MessageFramework.Handlers
 {
     public interface IInvarianceMessageHandler<TMessage> : IMessageHandler<TMessage> where TMessage : IMessage
     {
-        
+
     }
 }

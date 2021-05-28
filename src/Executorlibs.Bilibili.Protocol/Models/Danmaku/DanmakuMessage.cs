@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using System.Text.Json.Serialization;
+using Executorlibs.Bilibili.Protocol.Models.Enums;
 using Executorlibs.Bilibili.Protocol.Parsers;
 using Executorlibs.Bilibili.Protocol.Parsers.Attributes;
-using Executorlibs.Bilibili.Protocol.Models.Enums;
 using Executorlibs.Shared.JsonConverters;
 
 namespace Executorlibs.Bilibili.Protocol.Models.Danmaku

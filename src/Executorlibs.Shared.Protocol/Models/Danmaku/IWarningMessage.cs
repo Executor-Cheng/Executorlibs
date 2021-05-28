@@ -5,6 +5,6 @@ namespace Executorlibs.Shared.Protocol.Models.Danmaku
     /// </summary>
     public interface IWarningMessage : ILiveManagementMessage
     {
-        
+
     }
 }

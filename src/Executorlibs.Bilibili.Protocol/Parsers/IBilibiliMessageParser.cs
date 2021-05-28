@@ -9,7 +9,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     /// </summary>
     public interface IBilibiliMessageParser : IMessageParser<JsonElement>
     {
-        
+
     }
 
     /// <summary>
@@ -19,6 +19,6 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     public interface IBilibiliMessageParser<TMessage> : IBilibiliMessageParser,
                                                         IMessageParser<JsonElement, TMessage> where TMessage : IBilibiliMessage
     {
-        
+
     }
 }

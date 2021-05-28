@@ -21,9 +21,6 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
         /// <summary>
         /// 测试给定的 <typeparamref name="TMessage"/> 能否被处理。
         /// </summary>
-        ///// <remarks>
-        ///// 本方法始终返回 <see langword="true"/>
-        ///// </remarks>
         /// <inheritdoc/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public virtual bool CanParse(in JsonElement root)

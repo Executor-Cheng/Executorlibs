@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.IO.Compression;
 using Executorlibs.Bilibili.Protocol.Invokers;
 using Executorlibs.Bilibili.Protocol.Options;

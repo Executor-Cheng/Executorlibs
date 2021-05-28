@@ -14,7 +14,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 
     public interface IPkStartMessage : IPkBaseMessage
     {
-        
+
     }
 
     public interface IPkEndMessage : IPkBaseMessage

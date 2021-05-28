@@ -17,7 +17,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
     /// </remarks>
     public interface IUserMessage : IUserMessage<int, JsonElement>, IBilibiliMessage
     {
-        
+
     }
 
     /// <summary>

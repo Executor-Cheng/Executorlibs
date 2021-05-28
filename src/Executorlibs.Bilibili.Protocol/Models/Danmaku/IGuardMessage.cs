@@ -1,5 +1,5 @@
-using Executorlibs.Bilibili.Protocol.Models.General;
 using Executorlibs.Bilibili.Protocol.Models.Enums;
+using Executorlibs.Bilibili.Protocol.Models.General;
 
 namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 {

@@ -1,14 +1,14 @@
+using System;
+using System.Diagnostics;
+using System.Net.WebSockets;
+using System.Threading;
+using System.Threading.Tasks;
 using Executorlibs.Bilibili.Protocol.Invokers;
 using Executorlibs.Bilibili.Protocol.Models;
 using Executorlibs.Bilibili.Protocol.Options;
 using Executorlibs.Bilibili.Protocol.Services;
 using Executorlibs.Shared.Extensions;
 using Microsoft.Extensions.Options;
-using System;
-using System.Diagnostics;
-using System.Net.WebSockets;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Executorlibs.Bilibili.Protocol.Clients
 {
@@ -70,12 +70,12 @@ namespace Executorlibs.Bilibili.Protocol.Clients
 
         protected override void InternalDisconnect()
         {
-            
+
         }
 
         protected override void InternalDispose(bool disposing)
         {
-            
+
         }
     }
 }

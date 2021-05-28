@@ -1,4 +1,7 @@
-﻿using Executorlibs.Bilibili.Protocol.Builders;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Executorlibs.Bilibili.Protocol.Builders;
 using Executorlibs.Bilibili.Protocol.Clients;
 using Executorlibs.Bilibili.Protocol.Handlers;
 using Executorlibs.Bilibili.Protocol.Invokers;
@@ -12,9 +15,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Executorlibs.Examples
 {
@@ -32,7 +32,7 @@ namespace Executorlibs.Examples
                                       });
                                       factory.SetMinimumLevel(LogLevel.Trace);
                                   })
-                                  .ConfigureServices((context, services) => 
+                                  .ConfigureServices((context, services) =>
                                   {
 #if NET5_0_OR_GREATER
                                       services.AddBilibiliDanmakuFramework()
@@ -74,7 +74,7 @@ namespace Executorlibs.Examples
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            return _client.ConnectAsync();
+            return _client.ConnectAsync(stoppingToken);
         }
     }
 
@@ -136,7 +136,7 @@ namespace Executorlibs.Examples
                     try
                     {
                         await Task.Delay(1000, message.Token); // 等1秒
-                    } 
+                    }
                     catch (OperationCanceledException)
                     {
                         break;

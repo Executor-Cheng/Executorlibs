@@ -1,3 +1,6 @@
+using System;
+using System.Reflection;
+using System.Text.Json;
 using Executorlibs.Bilibili.Protocol.Clients;
 using Executorlibs.Bilibili.Protocol.Handlers;
 using Executorlibs.Bilibili.Protocol.Invokers;
@@ -8,9 +11,6 @@ using Executorlibs.Bilibili.Protocol.Parsers.Attributes;
 using Executorlibs.Bilibili.Protocol.Services;
 using Executorlibs.MessageFramework.Builders;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Reflection;
-using System.Text.Json;
 
 namespace Executorlibs.Bilibili.Protocol.Builders
 {

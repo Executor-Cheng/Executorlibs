@@ -7,7 +7,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.General
 {
     public interface IConnectedMessage : IBilibiliMessage, IGeneralConnectedMessage
     {
-        
+
     }
 
     public class ConnectedMessage : GeneralConnectedMessage, IConnectedMessage

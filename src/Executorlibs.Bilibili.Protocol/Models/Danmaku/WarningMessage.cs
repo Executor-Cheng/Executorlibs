@@ -1,4 +1,3 @@
-using Executorlibs.Bilibili.Protocol.Models.General;
 using Executorlibs.Bilibili.Protocol.Parsers;
 using Executorlibs.Bilibili.Protocol.Parsers.Attributes;
 //using ISharedWarningMessage = LiveRoomMonitorV3.Shared.Protocol.Models.Danmaku.IWarningMessage; // summary broken up
@@ -19,7 +18,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
     [RegisterBilibiliParser(typeof(WarningParser))]
     public interface IWarningMessage : ILiveManagementMessage, Executorlibs.Shared.Protocol.Models.Danmaku.IWarningMessage
     {
-        
+
     }
 
     /// <summary>
@@ -30,6 +29,6 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
     /// </remarks>
     public class WarningMessage : LiveManagementMessage, IWarningMessage
     {
-        
+
     }
 }

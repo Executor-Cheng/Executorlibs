@@ -5,6 +5,6 @@ namespace Executorlibs.Bilibili.Protocol.Handlers
 {
     public interface IInvarianceBilibiliMessageHandler<TMessage> : IBilibiliMessageHandler<TMessage>, IInvarianceMessageHandler<TMessage> where TMessage : IBilibiliMessage
     {
-        
+
     }
 }

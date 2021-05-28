@@ -9,7 +9,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     /// </summary>
     public sealed class EnterParser : DefaultEnterParser<IEnterMessage, EnterMessage>
     {
-        
+
     }
 
     /// <summary>

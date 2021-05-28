@@ -1,4 +1,3 @@
-using System.Text.Json.Serialization;
 using Executorlibs.Shared.Protocol.Models.Danmaku;
 
 namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
