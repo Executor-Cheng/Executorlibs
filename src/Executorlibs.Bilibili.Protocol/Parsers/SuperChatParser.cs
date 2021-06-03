@@ -10,7 +10,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     /// <summary>
     /// 处理醒目留言的 <see cref="IBilibiliMessageParser{TMessage}"/>
     /// </summary>
-    public class SuperChatParser : DefaultSuperChatParser<ISuperChatMessage, SuperChatMessage>
+    public class SuperChatParser : SuperChatParser<ISuperChatMessage, SuperChatMessage>
     {
         /// <summary>
         /// 初始化 <see cref="SuperChatParser"/> 类的新实例
@@ -18,8 +18,8 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
         public SuperChatParser() { }
     }
 
-    public class DefaultSuperChatParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : ISuperChatMessage
-                                                                                            where TImpl : SuperChatMessage, TMessage, new()
+    public class SuperChatParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : ISuperChatMessage
+                                                                                     where TImpl : SuperChatMessage, TMessage, new()
     {
         private const string Command = "SUPER_CHAT_MESSAGE";
 
@@ -27,9 +27,9 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
         public override string Key => Command;
 
         /// <summary>
-        /// 初始化 <see cref="DefaultSuperChatParser{TMessage, TImpl}"/> 类的新实例
+        /// 初始化 <see cref="SuperChatParser{TMessage, TImpl}"/> 类的新实例
         /// </summary>
-        public DefaultSuperChatParser() { }
+        public SuperChatParser() { }
 
         /// <summary>
         /// 将给定的 <paramref name="root"/> 处理为 <typeparamref name="TMessage"/> 实例

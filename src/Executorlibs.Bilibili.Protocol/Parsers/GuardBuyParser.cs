@@ -8,7 +8,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     /// <summary>
     /// 处理购买船员消息的 <see cref="IBilibiliMessageParser{TMessage}"/>
     /// </summary>
-    public class GuardBuyParser : DefaultGuardBuyParser<IGuardBuyMessage, GuardBuyMessage>
+    public class GuardBuyParser : GuardBuyParser<IGuardBuyMessage, GuardBuyMessage>
     {
         /// <summary>
         /// 初始化 <see cref="GuardBuyParser"/> 类的新实例
@@ -16,7 +16,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
         public GuardBuyParser() { }
     }
 
-    public class DefaultGuardBuyParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : IGuardBuyMessage
+    public class GuardBuyParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : IGuardBuyMessage
                                                                                            where TImpl : GuardBuyMessage, TMessage, new()
     {
         private const string Command = "GUARD_BUY";
@@ -25,9 +25,9 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
         public override string Key => Command;
 
         /// <summary>
-        /// 初始化 <see cref="DefaultGuardBuyParser{TMessage, TImpl}"/> 类的新实例
+        /// 初始化 <see cref="GuardBuyParser{TMessage, TImpl}"/> 类的新实例
         /// </summary>
-        public DefaultGuardBuyParser() { }
+        public GuardBuyParser() { }
 
         /// <summary>
         /// 将给定的 <paramref name="root"/> 处理为 <typeparamref name="TMessage"/> 实例

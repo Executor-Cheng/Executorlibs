@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Reflection;
@@ -10,7 +10,7 @@ namespace Executorlibs.Shared.Extensions
 {
     public static partial class HttpClientExtensions
     {
-        private static readonly string DefaultBoundary = $"ACRCloudSdkCore/{Assembly.GetExecutingAssembly().GetName().Version}";
+        private static readonly string DefaultBoundary = $"Executorlibs/{Assembly.GetExecutingAssembly().GetName().Version}";
 
         /// <param name="client">The <see cref="HttpClient"/>.</param>
         /// <param name="uri">The url the request is sent to.</param>

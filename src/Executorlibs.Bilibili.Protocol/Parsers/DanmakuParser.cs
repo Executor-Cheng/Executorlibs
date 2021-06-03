@@ -10,7 +10,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     /// <summary>
     /// 处理普通弹幕的 <see cref="IBilibiliMessageParser{TMessage}"/>
     /// </summary>
-    public sealed class DanmakuParser : DefaultDanmakuParser<IDanmakuMessage, DanmakuMessage>
+    public sealed class DanmakuParser : DanmakuParser<IDanmakuMessage, DanmakuMessage>
     {
 
     }
@@ -18,8 +18,8 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     /// <summary>
     /// 处理普通弹幕的 <see cref="IBilibiliMessageParser{TMessage}"/>
     /// </summary>
-    public class DefaultDanmakuParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : IDanmakuMessage
-                                                                                          where TImpl : DanmakuMessage, TMessage, new()
+    public class DanmakuParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : IDanmakuMessage
+                                                                                   where TImpl : DanmakuMessage, TMessage, new()
     {
         private const string Command = "DANMU_MSG";
 
@@ -27,9 +27,9 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
         public override string Key => Command;
 
         /// <summary>
-        /// 初始化 <see cref="DefaultDanmakuParser{TMessage, TImpl}"/> 类的新实例
+        /// 初始化 <see cref="DanmakuParser{TMessage, TImpl}"/> 类的新实例
         /// </summary>
-        public DefaultDanmakuParser() { }
+        public DanmakuParser() { }
 
         /// <summary>
         /// 将给定的 <paramref name="root"/> 处理为 <typeparamref name="TMessage"/> 实例

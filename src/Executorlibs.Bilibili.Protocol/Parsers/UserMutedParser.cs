@@ -7,7 +7,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     /// <summary>
     /// 处理用户被禁言消息的 <see cref="IBilibiliMessageParser{TMessage}"/>
     /// </summary>
-    public class UserMutedParser : DefaultUserMutedParser<IUserMutedMessage, UserMutedMessage>
+    public class UserMutedParser : UserMutedParser<IUserMutedMessage, UserMutedMessage>
     {
         /// <summary>
         /// 初始化 <see cref="UserMutedParser"/> 类的新实例
@@ -18,8 +18,8 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     /// <summary>
     /// 处理用户被禁言消息的 <see cref="IBilibiliMessageParser{TMessage}"/>
     /// </summary>
-    public class DefaultUserMutedParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : IUserMutedMessage
-                                                                                            where TImpl : UserMutedMessage, TMessage, new()
+    public class UserMutedParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : IUserMutedMessage
+                                                                                     where TImpl : UserMutedMessage, TMessage, new()
     {
         private const string Command = "ROOM_BLOCK_MSG";
 
@@ -27,9 +27,9 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
         public override string Key => Command;
 
         /// <summary>
-        /// 初始化 <see cref="DefaultUserMutedParser{TMessage, TImpl}"/> 类的新实例
+        /// 初始化 <see cref="UserMutedParser{TMessage, TImpl}"/> 类的新实例
         /// </summary>
-        public DefaultUserMutedParser() { }
+        public UserMutedParser() { }
 
         /// <summary>
         /// 将给定的 <paramref name="root"/> 处理为 <typeparamref name="TMessage"/> 实例

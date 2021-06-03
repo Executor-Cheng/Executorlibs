@@ -8,7 +8,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     /// <summary>
     /// 处理赠送礼物弹幕的 <see cref="IBilibiliMessageParser{TMessage}"/>
     /// </summary>
-    public sealed class SendGiftParser : DefaultSendGiftParser<ISendGiftMessage, SendGiftMessage>
+    public sealed class SendGiftParser : SendGiftParser<ISendGiftMessage, SendGiftMessage>
     {
 
     }
@@ -16,8 +16,8 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     /// <summary>
     /// 处理赠送礼物弹幕的 <see cref="IBilibiliMessageParser{TMessage}"/>
     /// </summary>
-    public class DefaultSendGiftParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : ISendGiftMessage
-                                                                                           where TImpl : SendGiftMessage, TMessage, new()
+    public class SendGiftParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : ISendGiftMessage
+                                                                                    where TImpl : SendGiftMessage, TMessage, new()
     {
         private const string Command = "SEND_GIFT";
 
@@ -25,9 +25,9 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
         public override string Key => Command;
 
         /// <summary>
-        /// 初始化 <see cref="DefaultSendGiftParser{TMessage, TImpl}"/> 类的新实例
+        /// 初始化 <see cref="SendGiftParser{TMessage, TImpl}"/> 类的新实例
         /// </summary>
-        public DefaultSendGiftParser() { }
+        public SendGiftParser() { }
 
         /// <summary>
         /// 将给定的 <paramref name="root"/> 处理为 <typeparamref name="TMessage"/> 实例

@@ -7,7 +7,5 @@ namespace Executorlibs.Bilibili.Protocol.Options
         public int RoomId { get; set; }
 
         public TimeSpan HeartbeatInterval { get; set; }
-
-        public bool AutoReconnect { get; set; }
     }
 }

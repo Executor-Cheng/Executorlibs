@@ -5,7 +5,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     /// <summary>
     /// 处理当前直播间被直播管理员切断消息的 <see cref="IBilibiliMessageParser{TMessage}"/>
     /// </summary>
-    public sealed class CutOffParser : DefaultCutOffParser<ICutOffMessage, CutOffMessage>
+    public sealed class CutOffParser : CutOffParser<ICutOffMessage, CutOffMessage>
     {
         /// <summary>
         /// 初始化 <see cref="CutOffParser"/> 类的新实例
@@ -13,8 +13,8 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
         public CutOffParser() { }
     }
 
-    public class DefaultCutOffParser<TMessage, TImpl> : DefaultLiveManagementParser<TMessage, TImpl> where TMessage : ICutOffMessage
-                                                                                                     where TImpl : LiveManagementMessage, TMessage, new()
+    public class CutOffParser<TMessage, TImpl> : LiveManagementParser<TMessage, TImpl> where TMessage : ICutOffMessage
+                                                                                              where TImpl : LiveManagementMessage, TMessage, new()
     {
         private const string Command = "CUT_OFF";
 
@@ -22,8 +22,8 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
         public override string Key => Command;
 
         /// <summary>
-        /// 初始化 <see cref="DefaultCutOffParser{TMessage, TImpl}"/> 类的新实例
+        /// 初始化 <see cref="CutOffParser{TMessage, TImpl}"/> 类的新实例
         /// </summary>
-        public DefaultCutOffParser() { }
+        public CutOffParser() { }
     }
 }

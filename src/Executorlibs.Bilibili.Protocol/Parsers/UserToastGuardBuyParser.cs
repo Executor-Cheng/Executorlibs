@@ -5,7 +5,7 @@ using Executorlibs.Shared;
 
 namespace Executorlibs.Bilibili.Protocol.Parsers
 {
-    public class UserToastGuardBuyParser : DefaultUserToastGuardBuyParser<IGuardBuyMessage, GuardBuyMessage>
+    public class UserToastGuardBuyParser : UserToastGuardBuyParser<IGuardBuyMessage, GuardBuyMessage>
     {
         /// <summary>
         /// 初始化 <see cref="UserToastGuardBuyParser"/> 类的新实例
@@ -13,8 +13,8 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
         public UserToastGuardBuyParser() { }
     }
 
-    public class DefaultUserToastGuardBuyParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : IGuardBuyMessage
-                                                                                                    where TImpl : GuardBuyMessage, TMessage, new()
+    public class UserToastGuardBuyParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : IGuardBuyMessage
+                                                                                             where TImpl : GuardBuyMessage, TMessage, new()
     {
         private const string Command = "USER_TOAST_MSG";
 
@@ -22,9 +22,9 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
         public override string Key => Command;
 
         /// <summary>
-        /// 初始化 <see cref="DefaultUserToastGuardBuyParser{TMessage, TImpl}"/> 类的新实例
+        /// 初始化 <see cref="UserToastGuardBuyParser{TMessage, TImpl}"/> 类的新实例
         /// </summary>
-        public DefaultUserToastGuardBuyParser() { }
+        public UserToastGuardBuyParser() { }
 
         /// <inheritdoc/>
         public override bool CanParse(in JsonElement root)

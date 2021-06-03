@@ -46,6 +46,21 @@ namespace Executorlibs.Bilibili.Protocol.Builders
             return (BilibiliDanmakuFrameworkBuilder)base.AddClient<TClient>(lifetime);
         }
 
+        public override BilibiliDanmakuFrameworkBuilder AddClient(IDanmakuClient clientInstance)
+        {
+            return (BilibiliDanmakuFrameworkBuilder)base.AddClient(clientInstance);
+        }
+
+        public override BilibiliDanmakuFrameworkBuilder AddClient(Func<IServiceProvider, IDanmakuClient> factory)
+        {
+            return (BilibiliDanmakuFrameworkBuilder)base.AddClient(factory);
+        }
+
+        public override BilibiliDanmakuFrameworkBuilder AddClient(Func<IServiceProvider, IDanmakuClient> factory, ServiceLifetime lifetime)
+        {
+            return (BilibiliDanmakuFrameworkBuilder)base.AddClient(factory, lifetime);
+        }
+
         public override BilibiliDanmakuFrameworkBuilder AddHandler<THandler>()
         {
             return (BilibiliDanmakuFrameworkBuilder)base.AddHandler<THandler>();
@@ -54,6 +69,21 @@ namespace Executorlibs.Bilibili.Protocol.Builders
         public override BilibiliDanmakuFrameworkBuilder AddHandler<THandler>(ServiceLifetime lifetime)
         {
             return (BilibiliDanmakuFrameworkBuilder)base.AddHandler<THandler>(lifetime);
+        }
+
+        public override BilibiliDanmakuFrameworkBuilder AddHandler(IBilibiliMessageHandler handlerInstance)
+        {
+            return (BilibiliDanmakuFrameworkBuilder)base.AddHandler(handlerInstance);
+        }
+
+        public override BilibiliDanmakuFrameworkBuilder AddHandler(Func<IServiceProvider, IBilibiliMessageHandler> factory)
+        {
+            return (BilibiliDanmakuFrameworkBuilder)base.AddHandler(factory);
+        }
+
+        public override BilibiliDanmakuFrameworkBuilder AddHandler(Func<IServiceProvider, IBilibiliMessageHandler> factory, ServiceLifetime lifetime)
+        {
+            return (BilibiliDanmakuFrameworkBuilder)base.AddHandler(factory, lifetime);
         }
 
         public override BilibiliDanmakuFrameworkBuilder AddInvoker<TInvoker>()
@@ -66,6 +96,21 @@ namespace Executorlibs.Bilibili.Protocol.Builders
             return (BilibiliDanmakuFrameworkBuilder)base.AddInvoker<TInvoker>(lifetime);
         }
 
+        public override BilibiliDanmakuFrameworkBuilder AddInvoker(IBilibiliMessageHandlerInvoker invokerInstance)
+        {
+            return (BilibiliDanmakuFrameworkBuilder)base.AddInvoker(invokerInstance);
+        }
+
+        public override BilibiliDanmakuFrameworkBuilder AddInvoker(Func<IServiceProvider, IBilibiliMessageHandlerInvoker> factory)
+        {
+            return (BilibiliDanmakuFrameworkBuilder)base.AddInvoker(factory);
+        }
+
+        public override BilibiliDanmakuFrameworkBuilder AddInvoker(Func<IServiceProvider, IBilibiliMessageHandlerInvoker> factory, ServiceLifetime lifetime)
+        {
+            return (BilibiliDanmakuFrameworkBuilder)base.AddInvoker(factory, lifetime);
+        }
+
         public override BilibiliDanmakuFrameworkBuilder AddParser<TParser>()
         {
             return (BilibiliDanmakuFrameworkBuilder)base.AddParser<TParser>();
@@ -74,6 +119,21 @@ namespace Executorlibs.Bilibili.Protocol.Builders
         public override BilibiliDanmakuFrameworkBuilder AddParser<TParser>(ServiceLifetime lifetime)
         {
             return (BilibiliDanmakuFrameworkBuilder)base.AddParser<TParser>(lifetime);
+        }
+
+        public override BilibiliDanmakuFrameworkBuilder AddParser(IBilibiliMessageParser parserInstance)
+        {
+            return (BilibiliDanmakuFrameworkBuilder)base.AddParser(parserInstance);
+        }
+
+        public override BilibiliDanmakuFrameworkBuilder AddParser(Func<IServiceProvider, IBilibiliMessageParser> factory)
+        {
+            return (BilibiliDanmakuFrameworkBuilder)base.AddParser(factory);
+        }
+
+        public override BilibiliDanmakuFrameworkBuilder AddParser(Func<IServiceProvider, IBilibiliMessageParser> factory, ServiceLifetime lifetime)
+        {
+            return (BilibiliDanmakuFrameworkBuilder)base.AddParser(factory, lifetime);
         }
 #endif
         protected override void ResolveMessageParser(Type handlerType)

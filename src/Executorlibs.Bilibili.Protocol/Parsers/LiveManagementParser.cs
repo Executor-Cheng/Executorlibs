@@ -4,8 +4,8 @@ using Executorlibs.Bilibili.Protocol.Models.Danmaku;
 
 namespace Executorlibs.Bilibili.Protocol.Parsers
 {
-    public abstract class DefaultLiveManagementParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : ILiveManagementMessage
-                                                                                                          where TImpl : LiveManagementMessage, TMessage, new()
+    public abstract class LiveManagementParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : ILiveManagementMessage
+                                                                                                   where TImpl : LiveManagementMessage, TMessage, new()
     {
         /// <summary>
         /// 将给定的 <paramref name="root"/> 处理为 <typeparamref name="TMessage"/> 实例

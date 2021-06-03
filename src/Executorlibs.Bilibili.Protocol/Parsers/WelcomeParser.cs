@@ -8,7 +8,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     /// <summary>
     /// 处理欢迎老爷进入房间消息的 <see cref="IBilibiliMessageParser{TMessage}"/>
     /// </summary>
-    public class WelcomeParser : DefaultWelcomeParser<IWelcomeMessage, WelcomeMessage>
+    public class WelcomeParser : WelcomeParser<IWelcomeMessage, WelcomeMessage>
     {
         /// <summary>
         /// 初始化 <see cref="WelcomeParser"/> 类的新实例
@@ -19,8 +19,8 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     /// <summary>
     /// 处理欢迎老爷进入房间消息的 <see cref="IBilibiliMessageParser{TMessage}"/>
     /// </summary>
-    public class DefaultWelcomeParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : IWelcomeMessage
-                                                                                          where TImpl : WelcomeMessage, TMessage, new()
+    public class WelcomeParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : IWelcomeMessage
+                                                                                   where TImpl : WelcomeMessage, TMessage, new()
     {
         private const string Command = "WELCOME";
 
@@ -28,9 +28,9 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
         public override string Key => Command;
 
         /// <summary>
-        /// 初始化 <see cref="DefaultWelcomeParser{TMessage, TImpl}"/> 类的新实例
+        /// 初始化 <see cref="WelcomeParser{TMessage, TImpl}"/> 类的新实例
         /// </summary>
-        public DefaultWelcomeParser() { }
+        public WelcomeParser() { }
 
         /// <summary>
         /// 将给定的 <paramref name="root"/> 处理为 <see cref="IWelcomeMessage"/> 实例

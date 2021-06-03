@@ -1,72 +1,18 @@
-
-/* Unmerged change from project 'Executorlibs.Bilibili.Protocol (net5.0)'
-Before:
-using Executorlibs.Bilibili.Protocol.Clients;
-After:
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Executorlibs.Bilibili.Protocol.Clients;
-*/
-
-/* Unmerged change from project 'Executorlibs.Bilibili.Protocol (netstandard2.1)'
-Before:
-using Executorlibs.Bilibili.Protocol.Clients;
-After:
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Executorlibs.Bilibili.Protocol.Clients;
-*/
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Executorlibs.Bilibili.Protocol.Clients;
 using Executorlibs.Bilibili.Protocol.Handlers;
-using Executorlibs.Bilibili.
-/* Unmerged change from project 'Executorlibs.Bilibili.Protocol (net5.0)'
-Before:
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text.Json;
-using System.Threading.Tasks;
-After:
-using Microsoft.Extensions.Logging;
-*/
-
-/* Unmerged change from project 'Executorlibs.Bilibili.Protocol (netstandard2.1)'
-Before:
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text.Json;
-using System.Threading.Tasks;
-After:
-using Microsoft.Extensions.Logging;
-*/
-Protocol.Invokers.Attributes;
+using Executorlibs.Bilibili.Protocol.Invokers.Attributes;
 using Executorlibs.Bilibili.Protocol.Models.General;
 using Executorlibs.Bilibili.Protocol.Parsers;
 using Executorlibs.MessageFramework.Invoking;
+using Executorlibs.MessageFramework.Parsers.Attributes;
 using Microsoft.Extensions.Logging;
 
 namespace Executorlibs.Bilibili.Protocol.Invokers
@@ -91,7 +37,7 @@ namespace Executorlibs.Bilibili.Protocol.Invokers
             var mappedParsers = new Dictionary<string, IReadOnlyList<IBilibiliMessageParser>>();
             foreach (IBilibiliMessageParser parser in parsers)
             {
-                if (parser is IMappableBilibiliMessageParser mappableParser)
+                if (parser is IMappableBilibiliMessageParser mappableParser && parser.GetType().GetCustomAttribute<SuppressAutoMappingAttribute>() == null)
                 {
                     string key = mappableParser.Key;
                     if (!mappedParsers.TryGetValue(key, out var list))

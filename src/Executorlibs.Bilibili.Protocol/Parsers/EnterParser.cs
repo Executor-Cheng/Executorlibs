@@ -7,7 +7,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     /// <summary>
     /// 处理用户进入直播间消息的 <see cref="IBilibiliMessageParser{TMessage}"/>
     /// </summary>
-    public sealed class EnterParser : DefaultEnterParser<IEnterMessage, EnterMessage>
+    public sealed class EnterParser : EnterParser<IEnterMessage, EnterMessage>
     {
 
     }
@@ -15,7 +15,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     /// <summary>
     /// 处理用户进入直播间消息的 <see cref="IBilibiliMessageParser{TMessage}"/>
     /// </summary>
-    public class DefaultEnterParser<TMessage, TImpl> : InteractBaseParser<TMessage, TImpl> where TMessage : IEnterMessage
+    public class EnterParser<TMessage, TImpl> : InteractBaseParser<TMessage, TImpl> where TMessage : IEnterMessage
                                                                                            where TImpl : EnterMessage, TMessage, new()
     {
         /// <inheritdoc/>

@@ -5,7 +5,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     /// <summary>
     /// 处理当前直播间被直播管理员警告消息的 <see cref="IBilibiliMessageParser{TMessage}"/>
     /// </summary>
-    public sealed class WarningParser : DefaultWarningParser<IWarningMessage, WarningMessage>
+    public sealed class WarningParser : WarningParser<IWarningMessage, WarningMessage>
     {
         /// <summary>
         /// 初始化 <see cref="WarningParser"/> 类的新实例
@@ -13,8 +13,8 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
         public WarningParser() { }
     }
 
-    public class DefaultWarningParser<TMessage, TImpl> : DefaultLiveManagementParser<TMessage, TImpl> where TMessage : IWarningMessage
-                                                                                                      where TImpl : LiveManagementMessage, TMessage, new()
+    public class WarningParser<TMessage, TImpl> : LiveManagementParser<TMessage, TImpl> where TMessage : IWarningMessage
+                                                                                        where TImpl : LiveManagementMessage, TMessage, new()
     {
         private const string Command = "WARNING";
 
@@ -22,8 +22,8 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
         public override string Key => Command;
 
         /// <summary>
-        /// 初始化 <see cref="DefaultWarningParser{TMessage, TImpl}"/> 类的新实例
+        /// 初始化 <see cref="WarningParser{TMessage, TImpl}"/> 类的新实例
         /// </summary>
-        public DefaultWarningParser() { }
+        public WarningParser() { }
     }
 }
