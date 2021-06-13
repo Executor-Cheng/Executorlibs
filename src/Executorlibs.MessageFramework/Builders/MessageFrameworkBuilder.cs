@@ -16,13 +16,13 @@ namespace Executorlibs.MessageFramework.Builders
         where TClientService : class, IMessageClient
         where THandlerService : class, IMessageHandler
     {
-        protected const ServiceLifetime DefaultHandlerLifetime = ServiceLifetime.Scoped;
+        protected virtual ServiceLifetime DefaultHandlerLifetime => ServiceLifetime.Scoped;
 
-        protected const ServiceLifetime DefaultInvokerLifetime = ServiceLifetime.Scoped;
+        protected virtual ServiceLifetime DefaultInvokerLifetime => ServiceLifetime.Scoped;
 
-        protected const ServiceLifetime DefaultClientLifetime = ServiceLifetime.Scoped;
+        protected virtual ServiceLifetime DefaultClientLifetime => ServiceLifetime.Scoped;
 
-        protected const ServiceLifetime DefaultSubscriptionLifetime = ServiceLifetime.Scoped;
+        protected virtual ServiceLifetime DefaultSubscriptionLifetime => ServiceLifetime.Scoped;
 
         public IServiceCollection Services { get; }
 
@@ -80,12 +80,12 @@ namespace Executorlibs.MessageFramework.Builders
             return this;
         }
 
-        public virtual MessageFrameworkBuilder<TInvokerService, TClientService, THandlerService> AddHandler(Func<IServiceProvider, THandlerService> factory)
+        public virtual MessageFrameworkBuilder<TInvokerService, TClientService, THandlerService> AddHandler<THandler>(Func<IServiceProvider, THandler> factory) where THandler : class, THandlerService
         {
             return this.AddHandler(factory, DefaultHandlerLifetime);
         }
 
-        public virtual MessageFrameworkBuilder<TInvokerService, TClientService, THandlerService> AddHandler(Func<IServiceProvider, THandlerService> factory, ServiceLifetime lifetime)
+        public virtual MessageFrameworkBuilder<TInvokerService, TClientService, THandlerService> AddHandler<THandler>(Func<IServiceProvider, THandler> factory, ServiceLifetime lifetime) where THandler : class, THandlerService
         {
             AddService(typeof(THandlerService), factory, lifetime);
             return this;
@@ -100,7 +100,7 @@ namespace Executorlibs.MessageFramework.Builders
         {
             Type invokerType = typeof(TInvoker);
             AddService(typeof(TInvokerService), invokerType, lifetime);
-            ResolveMessageSubscription(invokerType);
+            ResolveMessageSubscription(invokerType, lifetime);
             return this;
         }
 
@@ -110,12 +110,12 @@ namespace Executorlibs.MessageFramework.Builders
             return this;
         }
 
-        public virtual MessageFrameworkBuilder<TInvokerService, TClientService, THandlerService> AddInvoker(Func<IServiceProvider, TInvokerService> factory)
+        public virtual MessageFrameworkBuilder<TInvokerService, TClientService, THandlerService> AddInvoker<TInvoker>(Func<IServiceProvider, TInvoker> factory) where TInvoker : class, TInvokerService
         {
             return this.AddInvoker(factory, DefaultInvokerLifetime);
         }
 
-        public virtual MessageFrameworkBuilder<TInvokerService, TClientService, THandlerService> AddInvoker(Func<IServiceProvider, TInvokerService> factory, ServiceLifetime lifetime)
+        public virtual MessageFrameworkBuilder<TInvokerService, TClientService, THandlerService> AddInvoker<TInvoker>(Func<IServiceProvider, TInvoker> factory, ServiceLifetime lifetime) where TInvoker : class, TInvokerService
         {
             AddService(typeof(TInvokerService), factory, lifetime);
             return this;
@@ -138,23 +138,23 @@ namespace Executorlibs.MessageFramework.Builders
             return this;
         }
 
-        public virtual MessageFrameworkBuilder<TInvokerService, TClientService, THandlerService> AddClient(Func<IServiceProvider, TClientService> factory)
+        public virtual MessageFrameworkBuilder<TInvokerService, TClientService, THandlerService> AddClient<TClient>(Func<IServiceProvider, TClient> factory) where TClient : class, TClientService
         {
             return this.AddClient(factory, DefaultClientLifetime);
         }
 
-        public virtual MessageFrameworkBuilder<TInvokerService, TClientService, THandlerService> AddClient(Func<IServiceProvider, TClientService> factory, ServiceLifetime lifetime)
+        public virtual MessageFrameworkBuilder<TInvokerService, TClientService, THandlerService> AddClient<TClient>(Func<IServiceProvider, TClient> factory, ServiceLifetime lifetime) where TClient : class, TClientService
         {
             AddService(typeof(TClientService), factory, lifetime);
             return this;
         }
 
-        protected virtual void ResolveMessageSubscription(Type invokerType)
+        protected virtual void ResolveMessageSubscription(Type invokerType, ServiceLifetime? lifetime)
         {
             IEnumerable<RegisterMessageSubscriptionAttribute> attributes = invokerType.GetCustomAttributes<RegisterMessageSubscriptionAttribute>();
             foreach (RegisterMessageSubscriptionAttribute attribute in attributes)
             {
-                Services.Add(new ServiceDescriptor(attribute.ServiceType, attribute.ImplementationType, attribute.Lifetime ?? DefaultSubscriptionLifetime));
+                Services.Add(new ServiceDescriptor(attribute.ServiceType, attribute.ImplementationType, lifetime ?? attribute.Lifetime ?? DefaultSubscriptionLifetime));
             }
         }
     }
@@ -165,7 +165,7 @@ namespace Executorlibs.MessageFramework.Builders
         where TInvokerService : class, IMessageHandlerInvoker<TClientService>
         where TClientService : class, IMessageClient
     {
-        protected const ServiceLifetime DefaultParserLifetime = ServiceLifetime.Singleton;
+        protected virtual ServiceLifetime DefaultParserLifetime => ServiceLifetime.Singleton;
 
         public MessageFrameworkBuilder(IServiceCollection services) : base(services)
         {
@@ -189,12 +189,12 @@ namespace Executorlibs.MessageFramework.Builders
             return this;
         }
 
-        public virtual MessageFrameworkBuilder<TInvokerService, TClientService, THandlerService, TRawdata, TParserService> AddParser(Func<IServiceProvider, TParserService> factory)
+        public virtual MessageFrameworkBuilder<TInvokerService, TClientService, THandlerService, TRawdata, TParserService> AddParser<TParser>(Func<IServiceProvider, TParser> factory) where TParser : class, TParserService
         {
             return this.AddParser(factory, DefaultParserLifetime);
         }
 
-        public virtual MessageFrameworkBuilder<TInvokerService, TClientService, THandlerService, TRawdata, TParserService> AddParser(Func<IServiceProvider, TParserService> factory, ServiceLifetime lifetime)
+        public virtual MessageFrameworkBuilder<TInvokerService, TClientService, THandlerService, TRawdata, TParserService> AddParser<TParser>(Func<IServiceProvider, TParser> factory, ServiceLifetime lifetime) where TParser : class, TParserService
         {
             AddService(typeof(TParserService), factory, lifetime);
             return this;
@@ -203,29 +203,29 @@ namespace Executorlibs.MessageFramework.Builders
         public override MessageFrameworkBuilder<TInvokerService, TClientService, THandlerService> AddHandler<THandler>(ServiceLifetime lifetime)
         {
             base.AddHandler<THandler>(lifetime);
-            ResolveMessageParser(typeof(THandler));
+            ResolveMessageParser(typeof(THandler), lifetime);
             return this;
         }
 
         public override MessageFrameworkBuilder<TInvokerService, TClientService, THandlerService> AddHandler(THandlerService handlerInstance)
         {
             base.AddHandler(handlerInstance);
-            ResolveMessageParser(handlerInstance.GetType());
+            ResolveMessageParser(handlerInstance.GetType(), ServiceLifetime.Singleton);
             return this;
         }
 
-        public override MessageFrameworkBuilder<TInvokerService, TClientService, THandlerService> AddHandler(Func<IServiceProvider, THandlerService> factory, ServiceLifetime lifetime)
+        public override MessageFrameworkBuilder<TInvokerService, TClientService, THandlerService> AddHandler<THandler>(Func<IServiceProvider, THandler> factory, ServiceLifetime lifetime)
         {
             base.AddHandler(factory, lifetime);
-            ResolveMessageParser(factory.GetType().GetGenericArguments()[1]);
+            ResolveMessageParser(typeof(THandler), lifetime);
             return this;
         }
 
-        protected virtual void ResolveMessageParser(Type handlerType)
+        protected virtual void ResolveMessageParser(Type handlerType, ServiceLifetime? lifetime)
         {
             foreach (RegisterParserAttribute attribute in handlerType.GetCustomAttributes<RegisterParserAttribute>())
             {
-                AddService(attribute.ServiceType, attribute.ImplementationType, attribute.Lifetime ?? DefaultParserLifetime);
+                AddService(attribute.ServiceType, attribute.ImplementationType, lifetime ?? attribute.Lifetime ?? DefaultParserLifetime);
             }
         }
     }
