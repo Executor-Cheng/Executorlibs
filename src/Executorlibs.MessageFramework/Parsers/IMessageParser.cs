@@ -30,6 +30,9 @@ namespace Executorlibs.MessageFramework.Parsers
         IMessage<TRawdata> Parse(in TRawdata root);
     }
 
+#if !NETSTANDARD2_0
+    [Obsolete("在此目标框架进行抽象时强烈不建议继承此类, 建议实现 IMessageParser<TRawdata> 接口")]
+#endif
     public abstract class MessageParser<TRawdata> : IMessageParser<TRawdata>
     {
         public abstract Type MessageType { get; }
@@ -69,6 +72,9 @@ namespace Executorlibs.MessageFramework.Parsers
 #endif
     }
 
+#if !NETSTANDARD2_0
+    [Obsolete("在此目标框架进行抽象时强烈不建议继承此类, 建议实现 IMessageParser<TRawdata, TMessage> 接口")]
+#endif
     public abstract class MessageParser<TRawdata, TMessage> : MessageParser<TRawdata>, IMessageParser<TRawdata, TMessage> where TMessage : IMessage<TRawdata>
     {
         public override Type MessageType => typeof(TMessage);
