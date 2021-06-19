@@ -30,6 +30,18 @@ namespace Executorlibs.MessageFramework.Parsers
         IMessage<TRawdata> Parse(in TRawdata root);
     }
 
+    public abstract class MessageParser<TRawdata> : IMessageParser<TRawdata>
+    {
+        public abstract Type MessageType { get; }
+
+        public abstract bool CanParse(in TRawdata root);
+
+        IMessage<TRawdata> IMessageParser<TRawdata>.Parse(in TRawdata root)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     /// <summary>
     /// 表示用于处理消息数据到特定类型的接口
     /// </summary>
@@ -37,8 +49,10 @@ namespace Executorlibs.MessageFramework.Parsers
     /// <typeparam name="TMessage">消息类型</typeparam>
     public interface IMessageParser<TRawdata, TMessage> : IMessageParser<TRawdata> where TMessage : IMessage<TRawdata>
     {
+#if !NETSTANDARD2_0
         /// <inheritdoc/>
         Type IMessageParser<TRawdata>.MessageType => typeof(TMessage);
+#endif
 
         /// <summary>
         /// 将给定的 <typeparamref name="TRawdata"/> 处理为 <typeparamref name="TMessage"/> 实例
@@ -46,8 +60,24 @@ namespace Executorlibs.MessageFramework.Parsers
         /// <param name="root">消息数据</param>
         new TMessage Parse(in TRawdata root);
 
+#if !NETSTANDARD2_0
         /// <inheritdoc/>
         IMessage<TRawdata> IMessageParser<TRawdata>.Parse(in TRawdata root)
-            => Parse(in root);
+        {
+            return Parse(in root);
+        }
+#endif
+    }
+
+    public abstract class MessageParser<TRawdata, TMessage> : MessageParser<TRawdata>, IMessageParser<TRawdata, TMessage> where TMessage : IMessage<TRawdata>
+    {
+        public override Type MessageType => typeof(TMessage);
+
+        public abstract TMessage Parse(in TRawdata root);
+
+        IMessage<TRawdata> IMessageParser<TRawdata>.Parse(in TRawdata root)
+        {
+            return Parse(in root);
+        }
     }
 }

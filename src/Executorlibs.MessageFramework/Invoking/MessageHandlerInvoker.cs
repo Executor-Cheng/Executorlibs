@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Executorlibs.MessageFramework.Clients;
@@ -9,6 +8,9 @@ using Executorlibs.MessageFramework.Handlers;
 using Executorlibs.MessageFramework.Models.General;
 using Executorlibs.MessageFramework.Parsers;
 using Microsoft.Extensions.Logging;
+#if !NETSTANDARD2_0
+using System.Diagnostics.CodeAnalysis;
+#endif
 
 namespace Executorlibs.MessageFramework.Invoking
 {
@@ -42,19 +44,27 @@ namespace Executorlibs.MessageFramework.Invoking
         {
             if (TryResolveSubscription(out IMessageSubscription<TMessage>? subscription))
             {
-                return subscription.HandleMessage(client, message);
+                return subscription!.HandleMessage(client, message);
             }
             return Task.CompletedTask;
         }
 
-        protected virtual bool TryResolveSubscription<TMessage>([NotNullWhen(true)] out IMessageSubscription<TMessage>? subscription) where TMessage : IMessage
+        protected virtual bool TryResolveSubscription<TMessage>(
+#if !NETSTANDARD2_0
+                                                                [NotNullWhen(true)]
+#endif
+                                                                out IMessageSubscription<TMessage>? subscription) where TMessage : IMessage
         {
             Unsafe.SkipInit(out subscription);
             ref IMessageSubscription? s = ref Unsafe.As<IMessageSubscription<TMessage>?, IMessageSubscription?>(ref subscription);
             return TryResolveSubscription(typeof(TMessage), out s);
         }
 
-        protected virtual bool TryResolveSubscription(Type messageType, [NotNullWhen(true)] out IMessageSubscription? subscription)
+        protected virtual bool TryResolveSubscription(Type messageType,
+#if !NETSTANDARD2_0
+                                                      [NotNullWhen(true)]
+#endif
+                                                      out IMessageSubscription? subscription)
         {
             if (!_SubscriptionMapping.TryGetValue(messageType, out Type? subscriptionType))
             {
@@ -81,20 +91,24 @@ namespace Executorlibs.MessageFramework.Invoking
         {
             if (TryResolveParsers(in rawdata, out var parsers))
             {
-                foreach (var parser in parsers)
+                foreach (var parser in parsers!)
                 {
                     if (parser.CanParse(in rawdata))
                     {
                         IMessage<TRawdata> message = parser.Parse(in rawdata);
                         if (TryResolveSubscription(parser.MessageType, out IMessageSubscription? subscription))
                         {
-                            await subscription.HandleMessage(client, message);
+                            await subscription!.HandleMessage(client, message);
                         }
                     }
                 }
             }
         }
 
-        protected abstract bool TryResolveParsers(in TRawdata rawdata, [NotNullWhen(true)] out IEnumerable<TParserService>? parsers);
+        protected abstract bool TryResolveParsers(in TRawdata rawdata,
+#if !NETSTANDARD2_0
+                                                  [NotNullWhen(true)]
+#endif
+                                                  out IEnumerable<TParserService>? parsers);
     }
 }
