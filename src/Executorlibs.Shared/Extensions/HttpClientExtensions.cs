@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Mime;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -175,7 +176,11 @@ namespace Executorlibs.Shared.Extensions
         {
             return responseTask.ContinueWith(p =>
             {
+#if !NETSTANDARD2_0
                 if (p.IsCompletedSuccessfully) // treats response as json
+#else
+                if (p.Status == TaskStatus.RanToCompletion)
+#endif
                 {
                     HttpContentHeaders headers = p.Result.Content.Headers;
                     if (headers.ContentType == null)
@@ -195,7 +200,11 @@ namespace Executorlibs.Shared.Extensions
         {
             return responseTask.ContinueWith(p =>
             {
+#if !NETSTANDARD2_0
                 if (p.IsCompletedSuccessfully) // treats response as json
+#else
+                if (p.Status == TaskStatus.RanToCompletion)
+#endif
                 {
                     p.Result.EnsureSuccessStatusCode();
                 }

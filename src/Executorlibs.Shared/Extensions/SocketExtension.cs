@@ -20,6 +20,7 @@ namespace Executorlibs.Shared.Extensions
             return socket.ReceiveFullyAsync(memory, token);
         }
 
+#if !NETSTANDARD2_0
         public static async ValueTask ReceiveFullyAsync(this Socket socket, Memory<byte> memory, CancellationToken token = default)
         {
             while (true)
@@ -39,5 +40,32 @@ namespace Executorlibs.Shared.Extensions
                 }
             }
         }
+#else
+        public static async ValueTask ReceiveFullyAsync(this Socket socket, Memory<byte> memory, CancellationToken token = default)
+        {
+            if (System.Runtime.InteropServices.MemoryMarshal.TryGetArray(memory, out ArraySegment<byte> segment))
+            {
+                int offset = segment.Offset, count = segment.Count;
+                while (true)
+                {
+                    int n = await Task.Factory.FromAsync(socket.BeginReceive(segment.Array, offset, count, SocketFlags.None, null, null), socket.EndReceive);
+                    if (n < 1)
+                    {
+                        throw new SocketException(10054);
+                    }
+                    else if (n < count)
+                    {
+                        offset += n;
+                        count -= n;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            throw new NotSupportedException();
+        }
+#endif
     }
 }
