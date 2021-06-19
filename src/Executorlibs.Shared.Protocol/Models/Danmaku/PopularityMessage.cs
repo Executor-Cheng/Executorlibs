@@ -1,6 +1,8 @@
 using System;
-using Executorlibs.MessageFramework.Models.General;
 using Executorlibs.Shared.Protocol.Models.General;
+#if !NETSTANDARD2_0
+using Executorlibs.MessageFramework.Models.General;
+#endif
 
 namespace Executorlibs.Shared.Protocol.Models.Danmaku
 {
@@ -13,16 +15,15 @@ namespace Executorlibs.Shared.Protocol.Models.Danmaku
         /// 人气值
         /// </summary>
         ulong Popularity { get; }
-
-        int IProtocolMessage.RoomId => throw new NotSupportedException();
-
+#if !NETSTANDARD2_0
         long IMessage.Id => throw new NotSupportedException();
+#endif
     }
 
-    public class PopularityMessage : IPopularityMessage
+    public class PopularityMessage : ProtocolMessage, IPopularityMessage
     {
         public ulong Popularity { get; set; }
 
-        public DateTime Time { get; set; }
+        public override long Id { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
     }
 }

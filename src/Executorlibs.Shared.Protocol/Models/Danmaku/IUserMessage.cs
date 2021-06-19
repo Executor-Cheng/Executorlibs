@@ -17,6 +17,13 @@ namespace Executorlibs.Shared.Protocol.Models.Danmaku
         object UserId { get; }
     }
 
+    public abstract class UserMessage : ProtocolMessage, IUserMessage
+    {
+        public string UserName { get; set; } = null!;
+
+        public object UserId { get; set; } = null!;
+    }
+
     /// <summary>
     /// 全平台通用的用户基本信息接口
     /// </summary>
@@ -24,11 +31,22 @@ namespace Executorlibs.Shared.Protocol.Models.Danmaku
     /// <typeparam name="TUserId">用户Id的类型</typeparam>
     public interface IUserMessage<TUserId, TRawdata> : IUserMessage, IProtocolMessage<TRawdata>
     {
+#if !NETSTANDARD2_0
         object IUserMessage.UserId => UserId!;
+#endif
 
         /// <summary>
         /// 用户Id
         /// </summary>
         new TUserId UserId { get; }
+    }
+
+    public abstract class UserMessage<TUserId, TRawdata> : UserMessage, IUserMessage<TUserId, TRawdata>
+    {
+        public new TUserId UserId { get; set; } = default!;
+
+        public TRawdata Rawdata { get; set; } = default!;
+
+        object IUserMessage.UserId => UserId!;
     }
 }

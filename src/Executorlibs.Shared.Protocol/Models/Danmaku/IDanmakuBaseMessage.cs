@@ -5,14 +5,15 @@ namespace Executorlibs.Shared.Protocol.Models.Danmaku
     /// </summary>
     public interface IDanmakuBaseMessage : IUserMessage
     {
-        ///// <summary>
-        ///// 弹幕Id
-        ///// </summary>
-        //int Id { get; }
         /// <summary>
         /// 弹幕内容
         /// </summary>
         string Comment { get; }
+    }
+
+    public abstract class DanmakuBaseMessage : UserMessage, IDanmakuBaseMessage
+    {
+        public string Comment { get; set; } = null!;
     }
 
     /// <summary>
@@ -23,5 +24,12 @@ namespace Executorlibs.Shared.Protocol.Models.Danmaku
     public interface IDanmakuBaseMessage<TUserId, TRawdata> : IDanmakuBaseMessage, IUserMessage<TUserId, TRawdata>
     {
 
+    }
+
+    public abstract class DanmakuBaseMessage<TUserId, TRawdata> : DanmakuBaseMessage, IDanmakuBaseMessage<TUserId, TRawdata>
+    {
+        public TRawdata Rawdata { get; set; } = default!;
+
+        public new TUserId UserId { get; set; } = default!;
     }
 }
