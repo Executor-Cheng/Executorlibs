@@ -5,10 +5,6 @@ namespace Executorlibs.Shared.Protocol.Models.Danmaku
     /// </summary>
     public interface IDanmakuBaseMessage : IUserMessage
     {
-        ///// <summary>
-        ///// 弹幕Id
-        ///// </summary>
-        //int Id { get; }
         /// <summary>
         /// 弹幕内容
         /// </summary>
@@ -20,8 +16,13 @@ namespace Executorlibs.Shared.Protocol.Models.Danmaku
     /// </summary>
     /// <typeparam name="TRawdata">原始数据类型</typeparam>
     /// <typeparam name="TUserId">用户Id的类型</typeparam>
-    public interface IDanmakuBaseMessage<TUserId, TRawdata> : IDanmakuBaseMessage, IUserMessage<TUserId, TRawdata>
+    public interface IDanmakuBaseMessage<TRawdata, TUserId> : IDanmakuBaseMessage, IUserMessage<TRawdata, TUserId>
     {
 
+    }
+
+    public abstract class DanmakuBaseMessage<TRawdata, TUserId> : UserMessage<TRawdata, TUserId>, IDanmakuBaseMessage<TRawdata, TUserId>
+    {
+        public string Comment { get; set; } = null!;
     }
 }

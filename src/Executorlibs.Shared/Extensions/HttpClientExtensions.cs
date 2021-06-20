@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Mime;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -175,7 +176,11 @@ namespace Executorlibs.Shared.Extensions
         {
             return responseTask.ContinueWith(p =>
             {
+#if !NETSTANDARD2_0
                 if (p.IsCompletedSuccessfully) // treats response as json
+#else
+                if (p.Status == TaskStatus.RanToCompletion)
+#endif
                 {
                     HttpContentHeaders headers = p.Result.Content.Headers;
                     if (headers.ContentType == null)
@@ -195,7 +200,11 @@ namespace Executorlibs.Shared.Extensions
         {
             return responseTask.ContinueWith(p =>
             {
+#if !NETSTANDARD2_0
                 if (p.IsCompletedSuccessfully) // treats response as json
+#else
+                if (p.Status == TaskStatus.RanToCompletion)
+#endif
                 {
                     p.Result.EnsureSuccessStatusCode();
                 }
@@ -222,7 +231,7 @@ namespace Executorlibs.Shared.Extensions
         {
             client.DefaultRequestHeaders.SetSecPolicy(mode, site, dest);
         }
-#if NETSTANDARD2_1
+#if NETSTANDARD2_1 || NETSTANDARD2_0
         /// <inheritdoc cref="GetObjectAsync{T}(Task{HttpResponseMessage}, JsonSerializerOptions?, CancellationToken)"/>
         public static Task<T?> GetObjectAsync<T>(this Task<HttpResponseMessage> responseTask, CancellationToken token = default)
             => responseTask.GetObjectAsync<T?>(null, token);

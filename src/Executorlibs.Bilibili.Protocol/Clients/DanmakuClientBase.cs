@@ -51,7 +51,11 @@ namespace Executorlibs.Bilibili.Protocol.Clients
             protocol.Parameter = 1;
             protocol.Version = 2;
             protocol.ChangeEndian();
+#if NETSTANDARD2_0
+            Encoding.UTF8.GetBytes(body, 0, body.Length, buffer, 16);
+#else
             Encoding.UTF8.GetBytes(body, span[16..]);
+#endif
             return buffer;
         }
 
@@ -205,7 +209,7 @@ namespace Executorlibs.Bilibili.Protocol.Clients
             GC.SuppressFinalize(this);
         }
 
-        protected abstract ValueTask SendAsync(Memory<byte> memory, CancellationToken token);
+        protected abstract ValueTask SendAsync(ReadOnlyMemory<byte> memory, CancellationToken token);
 
         protected abstract ValueTask ReceiveAsync(Memory<byte> memory, CancellationToken token);
 

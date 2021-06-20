@@ -52,5 +52,12 @@ namespace Executorlibs.Bilibili.Protocol.Invokers
                 await handler.HandleMessage(client, message);
             }
         }
+
+#if NETSTANDARD2_0
+        public Task HandleMessage(IDanmakuClient client, IBilibiliMessage message)
+        {
+            return base.HandleMessage(client, (TMessage)message);
+        }
+#endif
     }
 }

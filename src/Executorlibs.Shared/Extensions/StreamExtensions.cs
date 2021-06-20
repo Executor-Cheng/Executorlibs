@@ -18,7 +18,11 @@ namespace Executorlibs.Shared.Extensions
             }
             while (size > 0)
             {
+#if !NETSTANDARD2_0
                 int n = await stream.ReadAsync(new Memory<byte>(buffer, offset, size), token);
+#else
+                int n = await stream.ReadAsync(buffer, offset, size, token);
+#endif
                 if (n < 1)
                 {
                     throw new EndOfStreamException();

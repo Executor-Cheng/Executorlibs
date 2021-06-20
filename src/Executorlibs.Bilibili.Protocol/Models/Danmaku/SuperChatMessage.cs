@@ -74,5 +74,9 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 
         /// <inheritdoc/>
         public bool IsGoldGift => true;
+
+#if NETSTANDARD2_0
+        public double GiftPrice => GiftSeedPrice / 1000d;
+#endif
     }
 }

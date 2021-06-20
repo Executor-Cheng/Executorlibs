@@ -12,12 +12,12 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
     /// 消息来源是 Bilibili 直播平台<para/>
     /// 继承自以下接口:
     /// <list type="number">
-    /// <item><see cref="IUserMutedMessage{TUserId, TRawdata}"/></item>
+    /// <item><see cref="IUserMutedMessage{TRawdata, TUserId}"/></item>
     /// <item><see cref="IUserMessage"/></item>
     /// </list>
     /// </remarks>
     [RegisterBilibiliParser(typeof(UserMutedParser))]
-    public interface IUserMutedMessage : IUserMutedMessage<int, JsonElement>, IUserMessage
+    public interface IUserMutedMessage : IUserMutedMessage<JsonElement, int>, IUserMessage
     {
         /// <summary>
         /// 是否为主播操作的禁言

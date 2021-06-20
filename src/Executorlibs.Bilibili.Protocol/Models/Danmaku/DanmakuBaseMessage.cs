@@ -9,11 +9,11 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
     /// <remarks>
     /// 继承自以下接口:
     /// <list type="number">
-    /// <item><see cref="IDanmakuBaseMessage{TUserId, TRawdata}"/></item>
+    /// <item><see cref="IDanmakuBaseMessage{TRawdata, TUserId}"/></item>
     /// <item><see cref="IUserMessage"/></item>
     /// </list>
     /// </remarks>
-    public interface IDanmakuBaseMessage : IDanmakuBaseMessage<int, JsonElement>, IUserMessage
+    public interface IDanmakuBaseMessage : IDanmakuBaseMessage<JsonElement, int>, IUserMessage
     {
         /// <summary>
         /// 弹幕Token

@@ -1,6 +1,9 @@
 using System.Text.Json;
 using Executorlibs.Bilibili.Protocol.Models.General;
 using Executorlibs.Shared.Protocol.Models.Danmaku;
+#if NETSTANDARD2_0
+using ISharedUserMessage = Executorlibs.Shared.Protocol.Models.Danmaku.IUserMessage;
+#endif
 
 namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 {
@@ -11,11 +14,11 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
     /// 消息来源是 Bilibili 直播平台<para/>
     /// 继承自以下接口:
     /// <list type="number">
-    /// <item><see cref="IUserMessage{TUserId, TRawdata}"/></item>
+    /// <item><see cref="IUserMessage{TRawdata, TUserId}"/></item>
     /// <item><see cref="IBilibiliMessage"/></item>
     /// </list>
     /// </remarks>
-    public interface IUserMessage : IUserMessage<int, JsonElement>, IBilibiliMessage
+    public interface IUserMessage : IUserMessage<JsonElement, int>, IBilibiliMessage
     {
 
     }
@@ -33,5 +36,9 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 
         /// <inheritdoc/>
         public int UserId { get; set; }
+
+#if NETSTANDARD2_0
+        object ISharedUserMessage.UserId => UserId!;
+#endif
     }
 }

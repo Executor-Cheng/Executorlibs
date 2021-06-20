@@ -24,7 +24,7 @@ namespace Executorlibs.Bilibili.Protocol.Clients
 
         }
 
-        protected override ValueTask SendAsync(Memory<byte> memory, CancellationToken token)
+        protected override ValueTask SendAsync(ReadOnlyMemory<byte> memory, CancellationToken token)
         {
             Socket? socket;
             if (token.IsCancellationRequested || (socket = _Socket) == null)
