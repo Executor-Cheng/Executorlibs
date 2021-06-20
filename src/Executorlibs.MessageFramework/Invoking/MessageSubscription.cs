@@ -6,11 +6,7 @@ using Executorlibs.MessageFramework.Models.General;
 
 namespace Executorlibs.MessageFramework.Invoking
 {
-    public class MessageSubscription<TMessage> :
-#if NETSTANDARD2_0
-                                                 MessageHandler<TMessage>,
-#endif
-                                                 IMessageSubscription<TMessage> where TMessage : IMessage
+    public class MessageSubscription<TMessage> : MessageHandler<TMessage>, IMessageSubscription<TMessage> where TMessage : IMessage
     {
         protected virtual IEnumerable<IMessageHandler<TMessage>> Handlers { get; }
 
@@ -35,11 +31,7 @@ namespace Executorlibs.MessageFramework.Invoking
             return filteredHandlers.ToArray();
         }
 
-#if !NETSTANDARD2_0
-        public async Task HandleMessage(IMessageClient client, TMessage message)
-#else
         public override async Task HandleMessage(IMessageClient client, TMessage message)
-#endif
         {
             foreach (IMessageHandler<TMessage> handler in Handlers)
             {

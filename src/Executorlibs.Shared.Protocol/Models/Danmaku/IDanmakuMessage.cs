@@ -15,38 +15,31 @@ namespace Executorlibs.Shared.Protocol.Models.Danmaku
         IMedal? Medal { get; }
     }
 
-    public class DanmakuMessage : DanmakuBaseMessage, IDanmakuMessage
-    {
-        public ITitle? Title { get; set; }
-
-        public IMedal? Medal { get; set; }
-    }
-
     /// <summary>
     /// 全平台通用的弹幕信息接口
     /// </summary>
     /// <typeparam name="TRawdata">原始数据类型</typeparam>
     /// <typeparam name="TUserId">用户Id的类型</typeparam>
-    public interface IDanmakuMessage<TUserId, TRawdata> : IDanmakuMessage, IDanmakuBaseMessage<TUserId, TRawdata>
+    public interface IDanmakuMessage<TRawdata, TUserId> : IDanmakuMessage, IDanmakuBaseMessage<TRawdata, TUserId>
     {
-#if !NETSTANDARD2_0
-        IMedal? IDanmakuMessage.Medal => Medal;
-#endif
-
         /// <summary>
         /// 勋章信息
         /// </summary>
         new IMedal<TUserId>? Medal { get; }
+
+#if !NETSTANDARD2_0
+        IMedal? IDanmakuMessage.Medal => Medal;
+#endif
     }
 
-    public class DanmakuMessage<TUserId, TRawdata> : DanmakuMessage, IDanmakuMessage<TUserId, TRawdata>
+    public class DanmakuMessage<TRawdata, TUserId> : DanmakuBaseMessage<TRawdata, TUserId>, IDanmakuMessage<TRawdata, TUserId>
     {
-        public new IMedal<TUserId>? Medal { get; set; }
+        public IMedal<TUserId>? Medal { get; set; }
 
-        public TRawdata Rawdata { get; set; } = default!;
+        public ITitle? Title { get; set; }
 
-        public new TUserId UserId { get; set; } = default!;
-
+#if NETSTANDARD2_0
         IMedal? IDanmakuMessage.Medal => Medal;
+#endif
     }
 }

@@ -1,6 +1,4 @@
-using System;
-using System.Text.Json;
-using GeneralConnectedMessage = Executorlibs.Shared.Protocol.Models.General.ConnectedMessage;
+using Executorlibs.Shared.Protocol.Models.General;
 using IGeneralConnectedMessage = Executorlibs.Shared.Protocol.Models.General.IConnectedMessage;
 
 namespace Executorlibs.Bilibili.Protocol.Models.General
@@ -10,8 +8,8 @@ namespace Executorlibs.Bilibili.Protocol.Models.General
 
     }
 
-    public class ConnectedMessage : GeneralConnectedMessage, IConnectedMessage
+    public class ConnectedMessage : BilibiliMessage, IConnectedMessage
     {
-        public JsonElement Rawdata => throw new NotImplementedException();
+        public ConnectReason Reason { get; set; }
     }
 }

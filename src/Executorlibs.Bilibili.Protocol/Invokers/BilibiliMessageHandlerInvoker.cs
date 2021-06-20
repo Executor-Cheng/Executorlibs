@@ -56,7 +56,7 @@ namespace Executorlibs.Bilibili.Protocol.Invokers
         {
             if (TryResolveParsers(in rawdata, out var parsers))
             {
-                foreach (var parser in parsers)
+                foreach (var parser in parsers!)
                 {
                     if (parser.CanParse(in rawdata))
                     {
@@ -67,14 +67,18 @@ namespace Executorlibs.Bilibili.Protocol.Invokers
                         }
                         if (TryResolveSubscription(parser.MessageType, out IBilibiliMessageSubscription? subscription))
                         {
-                            await subscription.HandleMessage(client, message);
+                            await subscription!.HandleMessage(client, message);
                         }
                     }
                 }
             }
         }
 
+#if NETSTANDARD2_0
+        protected override bool TryResolveParsers(in JsonElement rawdata, out IEnumerable<IBilibiliMessageParser>? parsers)
+#else
         protected override bool TryResolveParsers(in JsonElement rawdata, [NotNullWhen(true)] out IEnumerable<IBilibiliMessageParser>? parsers)
+#endif
         {
             if (rawdata.TryGetProperty("cmd", out JsonElement cmdToken) &&
                 _MappedParsers.TryGetValue(cmdToken.GetString()!, out var tparsers))
@@ -88,14 +92,22 @@ namespace Executorlibs.Bilibili.Protocol.Invokers
             return true;
         }
 
-        protected virtual bool TryResolveSubscription<TMessage>([NotNullWhen(true)] out IBilibiliMessageSubscription<TMessage>? subscription) where TMessage : IBilibiliMessage
+#if NETSTANDARD2_0
+        protected virtual bool TryResolveSubscription<TMessage>(out IBilibiliMessageSubscription<TMessage>? subscription) where TMessage : IBilibiliMessage
+#else
+        protected virtual bool TryResolveSubscription<TMessage>([NotNullWhen(true)]out IBilibiliMessageSubscription<TMessage>? subscription) where TMessage : IBilibiliMessage
+#endif
         {
             Unsafe.SkipInit(out subscription);
             ref IBilibiliMessageSubscription? s = ref Unsafe.As<IBilibiliMessageSubscription<TMessage>?, IBilibiliMessageSubscription?>(ref subscription);
             return TryResolveSubscription(typeof(TMessage), out s);
         }
 
-        protected virtual bool TryResolveSubscription(Type messageType, [NotNullWhen(true)] out IBilibiliMessageSubscription? subscription)
+#if NETSTANDARD2_0
+        protected virtual bool TryResolveSubscription(Type messageType, out IBilibiliMessageSubscription? subscription)
+#else
+        protected virtual bool TryResolveSubscription(Type messageType, [NotNullWhen(true)]out IBilibiliMessageSubscription? subscription)
+#endif
         {
             if (!_SubscriptionMapping.TryGetValue(messageType, out Type? subscriptionType))
             {
@@ -105,8 +117,11 @@ namespace Executorlibs.Bilibili.Protocol.Invokers
             ref object? t = ref Unsafe.As<IBilibiliMessageSubscription?, object?>(ref subscription);
             return (t = _Services.GetService(subscriptionType)) != null;
         }
-
-        protected override bool TryResolveSubscription(Type messageType, [NotNullWhen(true)] out IMessageSubscription? subscription)
+#if NETSTANDARD2_0
+        protected override bool TryResolveSubscription(Type messageType, out IMessageSubscription? subscription)
+#else
+        protected override bool TryResolveSubscription(Type messageType, [NotNullWhen(true)]out IMessageSubscription? subscription)
+#endif
         {
             Unsafe.SkipInit(out subscription);
             ref IBilibiliMessageSubscription? s = ref Unsafe.As<IMessageSubscription?, IBilibiliMessageSubscription?>(ref subscription);

@@ -24,7 +24,11 @@ namespace Executorlibs.Shared.Protocol.Models.Danmaku
         /// <summary>
         /// 所属主播UID
         /// </summary>
+#if NETSTANDARD2_0
         object MasterId { get; }
+#else
+        object MasterId => throw new System.NotSupportedException();
+#endif
         /// <summary>
         /// 颜色
         /// </summary>
@@ -33,17 +37,19 @@ namespace Executorlibs.Shared.Protocol.Models.Danmaku
 
     public abstract class Medal : IMedal
     {
-        public abstract string Name { get; }
+        public string Name { get; set; } = null!;
 
-        public abstract int Level { get; }
+        public int Level { get; set; }
 
-        public abstract int RoomId { get; }
+        public int RoomId { get; set; }
 
-        public abstract string Master { get; }
+        public string Master { get; set; } = null!;
 
-        public abstract int Color { get; }
+        public int Color { get; set; }
 
+#if NETSTANDARD2_0
         object IMedal.MasterId => throw new System.NotImplementedException();
+#endif
     }
 
     /// <summary>
@@ -64,8 +70,10 @@ namespace Executorlibs.Shared.Protocol.Models.Danmaku
 
     public abstract class Medal<TUserId> : Medal, IMedal<TUserId>
     {
-        public abstract TUserId MasterId { get; }
+        public TUserId MasterId { get; set; } = default!;
 
+#if NETSTANDARD2_0
         object IMedal.MasterId => MasterId!;
+#endif
     }
 }

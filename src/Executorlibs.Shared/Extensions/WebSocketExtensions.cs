@@ -3,6 +3,9 @@ using System.IO;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
+#if NETSTANDARD2_0
+using System.Runtime.InteropServices;
+#endif
 
 namespace Executorlibs.Shared.Extensions
 {
@@ -44,7 +47,7 @@ namespace Executorlibs.Shared.Extensions
 #else
         public static async ValueTask ReceiveFullyAsync(this WebSocket ws, Memory<byte> buffer, CancellationToken token = default)
         {
-            if (System.Runtime.InteropServices.MemoryMarshal.TryGetArray(buffer, out ArraySegment<byte> segment))
+            if (MemoryMarshal.TryGetArray(buffer, out ArraySegment<byte> segment))
             {
                 while (true)
                 {
@@ -77,6 +80,15 @@ namespace Executorlibs.Shared.Extensions
             while (!result.EndOfMessage);
             ms.Write(buffer, 0, result.Count);
             return ms.ToArray();
+        }
+
+        public static ValueTask SendAsync(this WebSocket webSocket, ReadOnlyMemory<byte> memory, WebSocketMessageType messageType, bool endOfMessage, CancellationToken token)
+        {
+            if (MemoryMarshal.TryGetArray(memory, out ArraySegment<byte> segment))
+            {
+                return new ValueTask(webSocket.SendAsync(segment, messageType, endOfMessage, token));
+            }
+            return new ValueTask(Task.FromException(new NotSupportedException()));
         }
 #endif
     }

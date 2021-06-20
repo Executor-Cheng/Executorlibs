@@ -39,6 +39,24 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
         /// <returns>对应 <paramref name="title"/> 的一个 <see cref="Title"/> 实例。如果未能成功处理则返回 <see langword="null"/></returns>
         public static Title? Parse(string? title)
         {
+#if NETSTANDARD2_0
+            if (!string.IsNullOrEmpty(title))
+            {
+                int first = title!.IndexOf('-') + 1,
+                    last = title.IndexOf('-', first) + first;
+                if (first <= last &&
+                    int.TryParse(title.Substring(first, last - first), out int id) &&
+                    int.TryParse(title.Substring(last + 1), out int subId)) // SC 的 Title 字符串是 "0"
+                {
+                    return new Title
+                    {
+                        Name = "", // 以后再写
+                        Id = id,
+                        SubId = subId
+                    };
+                }
+            }
+#else
             ReadOnlySpan<char> titleSpan = title;
             if (!titleSpan.IsEmpty)
             {
@@ -56,6 +74,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
                     };
                 }
             }
+#endif
             return null;
         }
     }

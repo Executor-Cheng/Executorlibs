@@ -13,14 +13,14 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
     /// 消息来源是 Bilibili 直播平台<para/>
     /// 继承自以下接口:
     /// <list type="number">
-    /// <item><see cref="IEnterMessage{TUserId, TRawdata}"/></item>
+    /// <item><see cref="IEnterMessage{TRawdata, TUserId}"/></item>
     /// <item><see cref="IInteractMessage"/></item>
     /// <item><see cref="ILordMessage"/></item>
     /// <item><see cref="IAdminMessage"/></item>
     /// </list>
     /// </remarks>
     [RegisterBilibiliParser(typeof(EnterParser))]
-    public interface IEnterMessage : IEnterMessage<int, JsonElement>, IInteractMessage, ILordMessage, IAdminMessage
+    public interface IEnterMessage : IEnterMessage<JsonElement, int>, IInteractMessage, ILordMessage, IAdminMessage
     {
 
     }

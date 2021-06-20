@@ -1,4 +1,5 @@
-﻿using System;
+#if !NETSTANDARD2_0
+using System;
 using System.Buffers;
 using System.IO.Compression;
 using Executorlibs.Bilibili.Protocol.Invokers;
@@ -65,3 +66,4 @@ namespace Executorlibs.Bilibili.Protocol.Clients
 
     }
 }
+#endif

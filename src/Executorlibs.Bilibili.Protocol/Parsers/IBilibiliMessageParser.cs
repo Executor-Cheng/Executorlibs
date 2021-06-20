@@ -21,4 +21,9 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     {
 
     }
+
+    public abstract class BilibiliMessageParser<TMessage> : MessageParser<JsonElement, TMessage>, IBilibiliMessageParser<TMessage> where TMessage : IBilibiliMessage
+    {
+
+    }
 }

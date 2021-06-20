@@ -18,9 +18,7 @@ namespace Executorlibs.MessageFramework.Handlers
         Task HandleMessage(IMessageClient client, IMessage message);
 #endif
     }
-#if !NETSTANDARD2_0
-    [Obsolete("在此目标框架进行抽象时强烈不建议继承此类, 建议实现 IMessageHandler 接口")]
-#endif
+
     public abstract class MessageHandler : IMessageHandler
     {
 #if !NETSTANDARD2_0
@@ -43,9 +41,6 @@ namespace Executorlibs.MessageFramework.Handlers
         Task HandleMessage(IMessageClient client, TMessage message);
     }
 
-#if !NETSTANDARD2_0
-    [Obsolete("在此目标框架进行抽象时强烈不建议继承此类, 建议实现 IMessageHandler<in TMessage> 接口")]
-#endif
     public abstract class MessageHandler<TMessage> : MessageHandler, IMessageHandler<TMessage> where TMessage : IMessage
     {
         public abstract Task HandleMessage(IMessageClient client, TMessage message);

@@ -1,7 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <!--<TargetFramework>netcoreapp3.1</TargetFramework>-->
     <!--<TargetFrameworks>netcoreapp3.1</TargetFrameworks>--> <!-- 要想改变目标框架, 必须同时指定 TargetFramework 和 TargetFrameworks -->
+    <!--<TargetFramework>netframework461</TargetFramework-->  <!-- 你想target到.NET Framework就这样, 4.6.0就是460 -->
+    <!--TargetFrameworks>netframework461</TargetFrameworks>-->
     <OutputType>Exe</OutputType>
   </PropertyGroup>
   <ItemGroup>

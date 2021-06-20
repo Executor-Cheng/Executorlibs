@@ -79,7 +79,8 @@ namespace Executorlibs.Examples
     }
 
     [RegisterBilibiliParser(typeof(DanmakuParser))] // 你现在需要框架给你推送 IDanmakuMessage 类型的消息, 那你就注册相应的 Parser
-    public class DanmakuMessageHandler : IInvarianceBilibiliMessageHandler<IDanmakuMessage> // 这个接口表示仅处理 IDanmakuMessage 类型的消息
+    public class DanmakuMessageHandler : BilibiliMessageHandler<IDanmakuMessage>,          // 请使用.NET Standard2.0 的用户继承此类, 更高版本的可以只实现接口
+                                         IInvarianceBilibiliMessageHandler<IDanmakuMessage> // 这个接口表示仅处理 IDanmakuMessage 类型的消息
                                                                                             // 不处理比其派生程度更高的消息
     {
         private readonly ILogger<DanmakuMessageHandler> _logger;
@@ -89,7 +90,7 @@ namespace Executorlibs.Examples
             _logger = logger;
         }
 
-        public Task HandleMessage(IDanmakuClient client, IDanmakuMessage message)
+        public override Task HandleMessage(IDanmakuClient client, IDanmakuMessage message)
         {
             _logger.LogInformation(client.RoomId, $"{message.Time:yyyy-MM-dd HH:mm:ss} {message.UserName}[{message.UserId}]:{message.Comment}");
             return Task.CompletedTask;
@@ -99,7 +100,8 @@ namespace Executorlibs.Examples
     [RegisterBilibiliParser(typeof(SendGiftParser))] // 你现在需要框架给你推送 ISendGiftMessage 类型的消息, 那你就注册相应的 Parser
                                                      // 但是实现的接口是 IContravarianceBilibiliMessageHandler<ISendGiftMessage>
                                                      // 所以你可以注册处理比 ISendGiftMessage 派生程度更高消息的 Parser
-    public class SendGiftMessageHandler : IContravarianceBilibiliMessageHandler<ISendGiftMessage> // 这个接口表示处理 ISendGiftMessage 类型的消息
+    public class SendGiftMessageHandler : BilibiliMessageHandler<ISendGiftMessage>, // 请使用.NET Standard2.0 的用户继承此类, 更高版本的可以只实现接口
+                                          IContravarianceBilibiliMessageHandler<ISendGiftMessage> // 这个接口表示处理 ISendGiftMessage 类型的消息
                                                                                                   // 也处理比其派生程度更高的消息
     {
         private readonly ILogger<SendGiftMessageHandler> _logger;
@@ -109,16 +111,17 @@ namespace Executorlibs.Examples
             _logger = logger;
         }
 
-        public Task HandleMessage(IDanmakuClient client, ISendGiftMessage message)
+        public override Task HandleMessage(IDanmakuClient client, ISendGiftMessage message)
         {
             _logger.LogInformation(client.RoomId, $"{message.Time:yyyy-MM-dd HH:mm:ss} {message.UserName}[{message.UserId}]:{message.GiftName}x{message.GiftCount}");
             return Task.CompletedTask;
         }
     }
 
-    public class DisconnectMessageHandler : IInvarianceBilibiliMessageHandler<IDisconnectedMessage> // 位于 Executorlibs.Bilibili.Protocol.Models.General 下的消息不需要注册 Parser
+    public class DisconnectMessageHandler : BilibiliMessageHandler<IDisconnectedMessage>, // 请使用.NET Standard2.0 的用户继承此类, 更高版本的可以只实现接口
+                                            IInvarianceBilibiliMessageHandler<IDisconnectedMessage> // 位于 Executorlibs.Bilibili.Protocol.Models.General 下的消息不需要注册 Parser
     {
-        public async Task HandleMessage(IDanmakuClient client, IDisconnectedMessage message)
+        public override async Task HandleMessage(IDanmakuClient client, IDisconnectedMessage message)
         {
             while (true) // 无限重连
             {

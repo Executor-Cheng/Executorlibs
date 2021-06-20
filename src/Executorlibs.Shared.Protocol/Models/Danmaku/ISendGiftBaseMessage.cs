@@ -30,7 +30,7 @@ namespace Executorlibs.Shared.Protocol.Models.Danmaku
     /// <summary>
     /// 全平台通用的礼物基本信息接口
     /// </summary>
-    public interface ISendGiftBaseMessage<TUserId, TRawdata> : ISendGiftBaseMessage, IUserMessage<TUserId, TRawdata>
+    public interface ISendGiftBaseMessage<TRawdata, TUserId> : ISendGiftBaseMessage, IUserMessage<TRawdata, TUserId>
     {
 
     }

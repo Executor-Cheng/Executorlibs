@@ -27,22 +27,25 @@ namespace Executorlibs.MessageFramework.Parsers
         /// 将给定的 <typeparamref name="TRawdata"/> 处理为 <see cref="IMessage{TRawdata}"/> 实例
         /// </summary>
         /// <param name="root">消息数据</param>
-        IMessage<TRawdata> Parse(in TRawdata root);
+        IMessage<TRawdata> Parse(in TRawdata root)
+#if !NETSTANDARD2_0
+            => throw new NotImplementedException()
+#endif
+            ;
     }
 
-#if !NETSTANDARD2_0
-    [Obsolete("在此目标框架进行抽象时强烈不建议继承此类, 建议实现 IMessageParser<TRawdata> 接口")]
-#endif
     public abstract class MessageParser<TRawdata> : IMessageParser<TRawdata>
     {
         public abstract Type MessageType { get; }
 
         public abstract bool CanParse(in TRawdata root);
 
+#if NETSTANDARD2_0
         IMessage<TRawdata> IMessageParser<TRawdata>.Parse(in TRawdata root)
         {
             throw new NotImplementedException();
         }
+#endif
     }
 
     /// <summary>
@@ -72,9 +75,6 @@ namespace Executorlibs.MessageFramework.Parsers
 #endif
     }
 
-#if !NETSTANDARD2_0
-    [Obsolete("在此目标框架进行抽象时强烈不建议继承此类, 建议实现 IMessageParser<TRawdata, TMessage> 接口")]
-#endif
     public abstract class MessageParser<TRawdata, TMessage> : MessageParser<TRawdata>, IMessageParser<TRawdata, TMessage> where TMessage : IMessage<TRawdata>
     {
         public override Type MessageType => typeof(TMessage);

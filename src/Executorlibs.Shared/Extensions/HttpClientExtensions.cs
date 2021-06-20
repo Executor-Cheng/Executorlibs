@@ -231,7 +231,7 @@ namespace Executorlibs.Shared.Extensions
         {
             client.DefaultRequestHeaders.SetSecPolicy(mode, site, dest);
         }
-#if NETSTANDARD2_1
+#if NETSTANDARD2_1 || NETSTANDARD2_0
         /// <inheritdoc cref="GetObjectAsync{T}(Task{HttpResponseMessage}, JsonSerializerOptions?, CancellationToken)"/>
         public static Task<T?> GetObjectAsync<T>(this Task<HttpResponseMessage> responseTask, CancellationToken token = default)
             => responseTask.GetObjectAsync<T?>(null, token);

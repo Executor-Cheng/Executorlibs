@@ -1,6 +1,5 @@
 using System;
-using System.Text.Json;
-using GeneralDisconnectedMessage = Executorlibs.Shared.Protocol.Models.General.DisconnectedMessage;
+using System.Threading;
 using IGeneralDisconnectedMessage = Executorlibs.Shared.Protocol.Models.General.IDisconnectedMessage;
 
 namespace Executorlibs.Bilibili.Protocol.Models.General
@@ -10,8 +9,10 @@ namespace Executorlibs.Bilibili.Protocol.Models.General
 
     }
 
-    public class DisconnectedMessage : GeneralDisconnectedMessage, IDisconnectedMessage
+    public class DisconnectedMessage : BilibiliMessage, IDisconnectedMessage
     {
-        public JsonElement Rawdata => throw new NotImplementedException();
+        public Exception? Exception { get; set; }
+
+        public CancellationToken Token { get; set; }
     }
 }

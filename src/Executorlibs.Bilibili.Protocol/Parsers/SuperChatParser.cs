@@ -58,7 +58,11 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
                     Master = medal.GetProperty("anchor_uname").GetString()!,
                     MasterId = medal.GetProperty("target_id").GetInt32(),
                     RoomId = medal.GetProperty("anchor_roomid").GetInt32(),
+#if NETSTANDARD2_0
+                    Color = medalColor.ValueKind == JsonValueKind.Number ? medalColor.GetInt32() : int.Parse(medalColor.GetString()!.Substring(1), NumberStyles.HexNumber),
+#else
                     Color = medalColor.ValueKind == JsonValueKind.Number ? medalColor.GetInt32() : int.Parse(medalColor.GetString()![1..], NumberStyles.HexNumber),
+#endif
                     // Badge = 
                 } : null,
                 Level = user.GetProperty("user_level").GetInt32(),

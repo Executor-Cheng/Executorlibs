@@ -32,18 +32,9 @@ namespace Executorlibs.Bilibili.Protocol.Clients
             await client.ConnectAsync(new Uri($"wss://{serverHost.Host}:{serverHost.WssPort}/sub"), token);
             await SendJoinRoomAsync(client, roomId, 0, server.Token, token);
             _Client = client;
-
-            //DanmakuServerInfo server = await GetDanmakuServerAsync(roomId, token).ConfigureAwait(false);
-            //ClientWebSocket client = new ClientWebSocket();
-            //clientInfo.Client = client;
-            //client.Options.KeepAliveInterval = Timeout.InfiniteTimeSpan;
-            //await client.ConnectAsync(new Uri($"wss://{server.Host}:{server.WssPort}/sub"), token);
-            //await SendJoinRoomAsync(client, roomId, 0, server.Token, token);
-            //SendHeartBeatAsyncLoop(clientInfo, token);
-            //ReceiveMessageAsyncLoop(clientInfo, token);
         }
 
-        protected override ValueTask SendAsync(Memory<byte> memory, CancellationToken token)
+        protected override ValueTask SendAsync(ReadOnlyMemory<byte> memory, CancellationToken token)
         {
             WebSocket? client;
             if (token.IsCancellationRequested || (client = _Client) == null)

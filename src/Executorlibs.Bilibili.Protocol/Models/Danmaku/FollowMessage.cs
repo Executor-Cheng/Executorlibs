@@ -12,12 +12,12 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
     /// 消息来源是 Bilibili 直播平台<para/>
     /// 继承自以下接口:
     /// <list type="number">
-    /// <item><see cref="IFollowMessage{TUserId, TRawdata}"/></item>
+    /// <item><see cref="IFollowMessage{TRawdata, TUserId}"/></item>
     /// <item><see cref="IInteractMessage"/></item>
     /// </list>
     /// </remarks>
     [RegisterBilibiliParser(typeof(FollowParser))]
-    public interface IFollowMessage : IFollowMessage<int, JsonElement>, IInteractMessage
+    public interface IFollowMessage : IFollowMessage<JsonElement, int>, IInteractMessage
     {
 
     }

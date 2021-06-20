@@ -14,14 +14,16 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
     /// 消息来源是 Bilibili 直播平台<para/>
     /// 继承自以下接口:
     /// <list type="number">
-    /// <item><see cref="ISendGiftBaseMessage{TUserId, TRawdata}"/></item>
+    /// <item><see cref="ISendGiftBaseMessage{TRawdata, TUserId}"/></item>
     /// <item><see cref="IUserMessage"/></item>
     /// <item><see cref="IGuardMessage"/></item>
     /// </list>
     /// </remarks>
-    public interface ISendGiftBaseMessage : ISendGiftBaseMessage<int, JsonElement>, IUserMessage, IGuardMessage
+    public interface ISendGiftBaseMessage : ISendGiftBaseMessage<JsonElement, int>, IUserMessage, IGuardMessage
     {
+#if !NETSTANDARD2_0
         double SharedISendGiftBaseMessage.GiftPrice => GiftSeedPrice / 1000d;
+#endif
 
         /// <summary>
         /// 礼物价格 (单位:瓜子)
@@ -67,5 +69,9 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
         /// <inheritdoc/>
         [JsonConverter(typeof(ChangeTypeJsonConverter<Medal, IMedal>))]
         public IMedal? Medal { get; set; }
+
+#if NETSTANDARD2_0
+        double SharedISendGiftBaseMessage.GiftPrice => GiftSeedPrice / 1000d;
+#endif
     }
 }
