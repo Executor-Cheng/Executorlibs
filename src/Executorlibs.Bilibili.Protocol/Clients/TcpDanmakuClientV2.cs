@@ -1,25 +1,3 @@
-
-/* Unmerged change from project 'Executorlibs.Bilibili.Protocol (net5.0)'
-Before:
-using Executorlibs.Bilibili.Protocol.Invokers;
-After:
-using System;
-using System.Buffers;
-using System.IO;
-using System.IO.Compression;
-using Executorlibs.Bilibili.Protocol.Invokers;
-*/
-
-/* Unmerged change from project 'Executorlibs.Bilibili.Protocol (netstandard2.1)'
-Before:
-using Executorlibs.Bilibili.Protocol.Invokers;
-After:
-using System;
-using System.Buffers;
-using System.IO;
-using System.IO.Compression;
-using Executorlibs.Bilibili.Protocol.Invokers;
-*/
 using System.IO;
 using System.IO.Compression;
 using Executorlibs.Bilibili.Protocol.Invokers;

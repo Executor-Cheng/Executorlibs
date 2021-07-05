@@ -26,11 +26,7 @@ namespace Executorlibs.Bilibili.Protocol.Clients
         protected static byte[] CreatePayload(int action)
         {
             byte[] buffer = new byte[16];
-#if NET5_0_OR_GREATER
-            ref BilibiliDanmakuProtocol protocol = ref Unsafe.As<byte, BilibiliDanmakuProtocol>(ref MemoryMarshal.GetArrayDataReference(buffer));
-#else
-            ref BilibiliDanmakuProtocol protocol = ref Unsafe.As<byte, BilibiliDanmakuProtocol>(ref MemoryMarshal.GetReference(buffer.AsSpan()));
-#endif
+            ref BilibiliDanmakuProtocol protocol = ref Interpret(buffer);
             protocol.PacketLength = buffer.Length;
             protocol.Action = action;
             protocol.Magic = 16;
@@ -43,8 +39,12 @@ namespace Executorlibs.Bilibili.Protocol.Clients
         protected static byte[] CreatePayload(int action, string body)
         {
             byte[] buffer = new byte[16 + Encoding.UTF8.GetByteCount(body)];
+#if !NETSTANDARD2_0
             Span<byte> span = buffer;
             ref BilibiliDanmakuProtocol protocol = ref Unsafe.As<byte, BilibiliDanmakuProtocol>(ref MemoryMarshal.GetReference(span));
+#else
+            ref BilibiliDanmakuProtocol protocol = ref Interpret(buffer);
+#endif
             protocol.PacketLength = buffer.Length;
             protocol.Action = action;
             protocol.Magic = 16;
@@ -62,8 +62,12 @@ namespace Executorlibs.Bilibili.Protocol.Clients
         protected static byte[] CreatePayload(int action, byte[] body)
         {
             byte[] buffer = new byte[16 + body.Length];
+#if !NETSTANDARD2_0
             Span<byte> span = buffer;
             ref BilibiliDanmakuProtocol protocol = ref Unsafe.As<byte, BilibiliDanmakuProtocol>(ref MemoryMarshal.GetReference(span));
+#else
+            ref BilibiliDanmakuProtocol protocol = ref Interpret(buffer);
+#endif
             protocol.PacketLength = buffer.Length;
             protocol.Action = action;
             protocol.Magic = 16;
