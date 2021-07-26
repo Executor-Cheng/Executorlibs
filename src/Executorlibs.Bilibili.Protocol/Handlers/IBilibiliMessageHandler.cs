@@ -4,7 +4,6 @@ using Executorlibs.Bilibili.Protocol.Models.General;
 using Executorlibs.MessageFramework.Clients;
 using Executorlibs.MessageFramework.Handlers;
 #if !NETSTANDARD2_0
-using Executorlibs.MessageFramework.Clients;
 using Executorlibs.MessageFramework.Models.General;
 #endif
 
