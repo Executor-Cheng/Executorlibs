@@ -13,7 +13,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
         public AnchorLotteryParser() { }
     }
 
-    public class AnchorLotteryParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : IAnchorLotteryMessage
+    public class AnchorLotteryParser<TMessage, TImpl> : BilibiliMappableMessageParser<TMessage> where TMessage : IAnchorLotteryMessage
                                                                                          where TImpl : AnchorLotteryMessage, TMessage, new()
     {
         private const string Command = "ANCHOR_LOT_START";

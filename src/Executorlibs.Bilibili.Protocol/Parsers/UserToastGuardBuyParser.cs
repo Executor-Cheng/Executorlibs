@@ -13,7 +13,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
         public UserToastGuardBuyParser() { }
     }
 
-    public class UserToastGuardBuyParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : IGuardBuyMessage
+    public class UserToastGuardBuyParser<TMessage, TImpl> : BilibiliMappableMessageParser<TMessage> where TMessage : IGuardBuyMessage
                                                                                              where TImpl : GuardBuyMessage, TMessage, new()
     {
         private const string Command = "USER_TOAST_MSG";

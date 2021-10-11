@@ -19,7 +19,7 @@ namespace Executorlibs.Bilibili.Protocol.Invokers
 
     [RegisterBilibiliMessageSubscription(typeof(BilibiliMessageSubscription<>))]
     [RegisterBilibiliMessageSubscriptionResolver(typeof(BilibiliMessageSubscriptionResolver))]
-    [RegisterBilibiliParserResolver(typeof(BilibiliMessageParserResolver))]
+    [RegisterBilibiliMessageParserResolver(typeof(BilibiliMessageParserResolver))]
     public class BilibiliMessageHandlerInvoker : MessageHandlerInvoker<IDanmakuClient, JsonElement>, IBilibiliMessageHandlerInvoker
     {
         public BilibiliMessageHandlerInvoker(IServiceProvider services,

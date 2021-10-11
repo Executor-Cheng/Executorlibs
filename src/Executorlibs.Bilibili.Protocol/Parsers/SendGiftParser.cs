@@ -16,7 +16,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     /// <summary>
     /// 处理赠送礼物弹幕的 <see cref="IBilibiliMessageParser{TMessage}"/>
     /// </summary>
-    public class SendGiftParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : ISendGiftMessage
+    public class SendGiftParser<TMessage, TImpl> : BilibiliMappableMessageParser<TMessage> where TMessage : ISendGiftMessage
                                                                                     where TImpl : SendGiftMessage, TMessage, new()
     {
         private const string Command = "SEND_GIFT";

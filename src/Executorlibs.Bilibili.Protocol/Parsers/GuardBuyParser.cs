@@ -16,7 +16,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
         public GuardBuyParser() { }
     }
 
-    public class GuardBuyParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : IGuardBuyMessage
+    public class GuardBuyParser<TMessage, TImpl> : BilibiliMappableMessageParser<TMessage> where TMessage : IGuardBuyMessage
                                                                                            where TImpl : GuardBuyMessage, TMessage, new()
     {
         private const string Command = "GUARD_BUY";

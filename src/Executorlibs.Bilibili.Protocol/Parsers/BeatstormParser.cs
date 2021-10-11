@@ -12,7 +12,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
         public BeatstormParser() { }
     }
 
-    public class BeatstormParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : IBeatstormMessage
+    public class BeatstormParser<TMessage, TImpl> : BilibiliMappableMessageParser<TMessage> where TMessage : IBeatstormMessage
                                                                                      where TImpl : BeatstormMessage, TMessage, new()
     {
         private const string Command = "SPECIAL_GIFT";

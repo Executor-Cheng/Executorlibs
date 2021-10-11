@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Executorlibs.MessageFramework.Parsers.Attributes;
 using Microsoft.Extensions.DependencyInjection;
 using Executorlibs.Bilibili.Protocol.Invokers;
@@ -8,20 +8,20 @@ namespace Executorlibs.Bilibili.Protocol.Parsers.Attributes
     /// <summary>
     /// 标记一个 <see cref="BilibiliMessageHandlerInvoker"/> 所需要使用的 <see cref="IBilibiliMessageParserResolver"/>
     /// </summary>
-    public class RegisterBilibiliParserResolverAttribute : RegisterParserResolverAttribute
+    public class RegisterBilibiliMessageParserResolverAttribute : RegisterParserResolverAttribute
     {
-        /// <inheritdoc cref="RegisterBilibiliParserResolverAttribute(Type, ServiceLifetime?)"/>
-        public RegisterBilibiliParserResolverAttribute(Type implementationType) : this(implementationType, null)
+        /// <inheritdoc cref="RegisterBilibiliMessageParserResolverAttribute(Type, ServiceLifetime?)"/>
+        public RegisterBilibiliMessageParserResolverAttribute(Type implementationType) : this(implementationType, null)
         {
 
         }
 
         /// <summary>
-        /// 使用给定的 <paramref name="implementationType"/> 初始化 <see cref="RegisterBilibiliParserResolverAttribute"/> 的新实例
+        /// 使用给定的 <paramref name="implementationType"/> 初始化 <see cref="RegisterBilibiliMessageParserResolverAttribute"/> 的新实例
         /// </summary>
         /// <param name="implementationType"><see cref="IBilibiliMessageParserResolver"/> 的实现类类型</param>
         /// <param name="lifetime"><paramref name="implementationType"/> 的生命周期</param>
-        public RegisterBilibiliParserResolverAttribute(Type implementationType, ServiceLifetime? lifetime) : base(implementationType, lifetime)
+        public RegisterBilibiliMessageParserResolverAttribute(Type implementationType, ServiceLifetime? lifetime) : base(implementationType, lifetime)
         {
 
         }

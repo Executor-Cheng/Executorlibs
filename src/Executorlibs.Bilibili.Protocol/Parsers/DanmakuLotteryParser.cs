@@ -13,7 +13,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
         public DanmakuLotteryParser() { }
     }
 
-    public class DanmakuLotteryParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : IDanmakuLotteryMessage
+    public class DanmakuLotteryParser<TMessage, TImpl> : BilibiliMappableMessageParser<TMessage> where TMessage : IDanmakuLotteryMessage
                                                                                           where TImpl : DanmakuLotteryMessage, TMessage, new()
     {
         private const string Command = "DANMU_GIFT_LOTTERY_START";

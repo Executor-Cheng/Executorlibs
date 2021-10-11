@@ -12,7 +12,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
         public RoomChangeParser() { }
     }
 
-    public class RoomChangeParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : IRoomChangeMessage
+    public class RoomChangeParser<TMessage, TImpl> : BilibiliMappableMessageParser<TMessage> where TMessage : IRoomChangeMessage
                                                                                       where TImpl : RoomChangeMessage, TMessage, new()
     {
         private const string Command = "ROOM_CHANGE";

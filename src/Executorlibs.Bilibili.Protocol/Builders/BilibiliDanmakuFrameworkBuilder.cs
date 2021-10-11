@@ -69,7 +69,7 @@ namespace Executorlibs.Bilibili.Protocol.Builders
 
         protected override void ResolveMessageParserResolver(Type invokerType, ServiceLifetime? lifetime)
         {
-            foreach (RegisterBilibiliMessageSubscriptionResolverAttribute attribute in invokerType.GetCustomAttributes<RegisterBilibiliMessageSubscriptionResolverAttribute>(false))
+            foreach (RegisterBilibiliMessageParserResolverAttribute attribute in invokerType.GetCustomAttributes<RegisterBilibiliMessageParserResolverAttribute>(false))
             {
                 ServiceLifetime parserResolverLifetime = lifetime ?? attribute.Lifetime ?? DefaultParserResolverLifetime;
                 AddMessageParserResolver(attribute.ServiceType, attribute.ImplementationType, parserResolverLifetime);

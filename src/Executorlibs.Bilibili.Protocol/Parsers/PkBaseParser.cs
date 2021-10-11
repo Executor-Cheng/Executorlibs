@@ -4,7 +4,7 @@ using Executorlibs.Shared;
 
 namespace Executorlibs.Bilibili.Protocol.Parsers
 {
-    public abstract class PkBaseParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : IPkBaseMessage
+    public abstract class PkBaseParser<TMessage, TImpl> : BilibiliMappableMessageParser<TMessage> where TMessage : IPkBaseMessage
                                                                                            where TImpl : PkBaseMessage, TMessage, new()
     {
         /// <summary>
