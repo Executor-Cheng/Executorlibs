@@ -1,6 +1,3 @@
-using System;
-using System.Text.Json.Serialization;
-
 namespace Executorlibs.MessageFramework.Models.General
 {
     /// <summary>
@@ -9,13 +6,9 @@ namespace Executorlibs.MessageFramework.Models.General
     public interface IMessage
     {
         /// <summary>
-        /// 唯一Id
+        /// 是否拦截消息传递
         /// </summary>
-        long Id { get; }
-        /// <summary>
-        /// 消息时间
-        /// </summary>
-        DateTime Time { get; }
+        bool BlockRemainingHandlers { get; set; }
     }
 
     /// <summary>
@@ -30,7 +23,6 @@ namespace Executorlibs.MessageFramework.Models.General
         /// <summary>
         /// 原始消息信息
         /// </summary>
-        [JsonIgnore]
         TRawdata Rawdata { get; }
     }
 
@@ -40,10 +32,7 @@ namespace Executorlibs.MessageFramework.Models.General
     public abstract class Message : IMessage
     {
         /// <inheritdoc/>
-        public virtual long Id { get; set; }
-
-        /// <inheritdoc/>
-        public virtual DateTime Time { get; set; }
+        public virtual bool BlockRemainingHandlers { get; set; }
     }
 
     /// <inheritdoc/>
@@ -51,7 +40,6 @@ namespace Executorlibs.MessageFramework.Models.General
     public abstract class Message<TRawdata> : Message, IMessage<TRawdata> // 建议传消息只使用接口（方便继承）
     {
         /// <inheritdoc/>
-        [JsonIgnore]
-        public TRawdata Rawdata { get; set; } = default!; // Parser 应当设定它为 non-default
+        public virtual TRawdata Rawdata { get; set; } = default!; // Parser 应当设定它为 non-default
     }
 }

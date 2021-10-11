@@ -43,6 +43,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
             int targetId = medal.GetProperty("target_id").GetInt32();
             return new TImpl
             {
+                Id = long.Parse(data.GetProperty("tid").GetString()!),
                 UserName = data.GetProperty("uname").GetString()!,
                 UserId = data.GetProperty("uid").GetInt32(),
                 GiftId = data.GetProperty("giftId").GetInt32(),

@@ -1,62 +1,44 @@
+using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Executorlibs.Bilibili.Protocol.Clients;
 using Executorlibs.Bilibili.Protocol.Handlers;
 using Executorlibs.Bilibili.Protocol.Models.General;
-using Executorlibs.MessageFramework.Clients;
 using Executorlibs.MessageFramework.Handlers;
 using Executorlibs.MessageFramework.Invoking;
 
 namespace Executorlibs.Bilibili.Protocol.Invokers
 {
-    public class BilibiliMessageSubscription<TMessage> : MessageSubscription<TMessage>, IBilibiliMessageSubscription<TMessage> where TMessage : IBilibiliMessage
+    public class BilibiliMessageSubscription<TMessage> : MessageSubscription<IDanmakuClient, TMessage>, IBilibiliMessageSubscription<TMessage> where TMessage : IBilibiliMessage
     {
-#if NET5_0_OR_GREATER
-        protected override IEnumerable<IBilibiliMessageHandler<TMessage>> Handlers => (IEnumerable<IBilibiliMessageHandler<TMessage>>)base.Handlers;
-#endif
-
         public BilibiliMessageSubscription(IEnumerable<IBilibiliMessageHandler> handlers) : base(handlers)
         {
 
         }
 
-#if NET5_0_OR_GREATER
-        protected override IEnumerable<IBilibiliMessageHandler<TMessage>> ResolveHandlers(IEnumerable<IMessageHandler> handlers)
-#else
-        protected override IEnumerable<IMessageHandler<TMessage>> ResolveHandlers(IEnumerable<IMessageHandler> handlers)
-#endif
+        protected override IMessageHandler<IDanmakuClient, TMessage>[] ResolveStaticHandlers(LinkedList<IMessageHandler> handlers, List<IMessageHandler<IDanmakuClient, TMessage>> filtered)
         {
-            List<IBilibiliMessageHandler<TMessage>> filteredHandlers = new List<IBilibiliMessageHandler<TMessage>>();
-            var expectedHandler = typeof(IContravarianceBilibiliMessageHandler<TMessage>);
-            var expectedInvarianceHandler = typeof(IInvarianceBilibiliMessageHandler<TMessage>);
-            foreach (IMessageHandler handler in handlers)
+            if (handlers.Count != 0)
             {
-                if (expectedHandler.IsAssignableFrom(handler.GetType()) ||
-                    expectedInvarianceHandler.IsAssignableFrom(handler.GetType()))
+                var expectedHandler = typeof(IContravarianceBilibiliMessageHandler<TMessage>);
+                var expectedInvarianceHandler = typeof(IInvarianceBilibiliMessageHandler<TMessage>);
+                for (LinkedListNode<IMessageHandler>? handlerNode = handlers.First; handlerNode != null; handlerNode = handlerNode.Next)
                 {
-                    filteredHandlers.Add((IBilibiliMessageHandler<TMessage>)handler);
+                    IMessageHandler handler = handlerNode.Value;
+                    if (expectedHandler.IsAssignableFrom(handler.GetType()) ||
+                        expectedInvarianceHandler.IsAssignableFrom(handler.GetType()))
+                    {
+                        filtered.Add((IBilibiliMessageHandler<TMessage>)handler);
+                        handlers.Remove(handlerNode);
+                    }
                 }
             }
-            return filteredHandlers.ToArray();
-        }
-
-        public override Task HandleMessage(IMessageClient client, TMessage message)
-        {
-            return this.HandleMessage((IDanmakuClient)client, message);
-        }
-
-        public async Task HandleMessage(IDanmakuClient client, TMessage message)
-        {
-            foreach (IBilibiliMessageHandler<TMessage> handler in Handlers)
-            {
-                await handler.HandleMessage(client, message);
-            }
+            return base.ResolveStaticHandlers(handlers, filtered);
         }
 
 #if NETSTANDARD2_0
-        public Task HandleMessage(IDanmakuClient client, IBilibiliMessage message)
+        public virtual System.Threading.Tasks.Task HandleMessageAsync(IDanmakuClient session, IBilibiliMessage message)
         {
-            return base.HandleMessage(client, (TMessage)message);
+            return base.HandleMessageAsync(client: session, (TMessage)message);
         }
 #endif
     }

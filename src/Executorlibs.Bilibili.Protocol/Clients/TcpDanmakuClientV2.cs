@@ -1,25 +1,3 @@
-
-/* Unmerged change from project 'Executorlibs.Bilibili.Protocol (net5.0)'
-Before:
-using Executorlibs.Bilibili.Protocol.Invokers;
-After:
-using System;
-using System.Buffers;
-using System.IO;
-using System.IO.Compression;
-using Executorlibs.Bilibili.Protocol.Invokers;
-*/
-
-/* Unmerged change from project 'Executorlibs.Bilibili.Protocol (netstandard2.1)'
-Before:
-using Executorlibs.Bilibili.Protocol.Invokers;
-After:
-using System;
-using System.Buffers;
-using System.IO;
-using System.IO.Compression;
-using Executorlibs.Bilibili.Protocol.Invokers;
-*/
 using System.IO;
 using System.IO.Compression;
 using Executorlibs.Bilibili.Protocol.Invokers;
@@ -33,7 +11,7 @@ namespace Executorlibs.Bilibili.Protocol.Clients
     {
         protected override byte Version => 2;
 
-        public TcpDanmakuClientV2(IBilibiliMessageHandlerInvoker invoker, IOptionsSnapshot<DanmakuClientOptions> options, IDanmakuServerProvider credentialProvider) : base(invoker, options, credentialProvider)
+        public TcpDanmakuClientV2(IBilibiliMessageHandlerInvoker invoker, IBilibiliMessageSubscriptionResolver resolver, IOptionsSnapshot<DanmakuClientOptions> options, IDanmakuServerProvider credentialProvider) : base(invoker, resolver, options, credentialProvider)
         {
 
         }

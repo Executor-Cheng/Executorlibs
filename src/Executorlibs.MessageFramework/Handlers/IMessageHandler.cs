@@ -10,44 +10,29 @@ namespace Executorlibs.MessageFramework.Handlers
 #if !NETSTANDARD2_0
         protected static readonly Task _DefaultImplTask = Task.FromException(new NotSupportedException("请使用泛型接口中的HandleMessageAsync方法。"));
 
-        Task HandleMessage(IMessageClient client, IMessage message)
+        Task HandleMessageAsync(IMessageClient client, IMessage message)
         {
             return _DefaultImplTask;
         }
 #else
-        Task HandleMessage(IMessageClient client, IMessage message);
+        Task HandleMessageAsync(IMessageClient client, IMessage message);
 #endif
     }
 
-    public abstract class MessageHandler : IMessageHandler
+    public interface IMessageHandler<in TClient, in TMessage> : IMessageHandler where TClient : IMessageClient
+                                                                                where TMessage : IMessage
     {
-#if !NETSTANDARD2_0
-        public virtual Task HandleMessage(IMessageClient client, IMessage message)
-        {
-            return IMessageHandler._DefaultImplTask;
-        }
-#else
-        protected static readonly Task _DefaultImplTask = Task.FromException(new NotSupportedException("请使用泛型接口中的HandleMessageAsync方法。"));
-
-        public virtual Task HandleMessage(IMessageClient client, IMessage message)
-        {
-            return _DefaultImplTask;
-        }
-#endif
+        Task HandleMessageAsync(TClient client, TMessage message);
     }
 
-    public interface IMessageHandler<in TMessage> : IMessageHandler where TMessage : IMessage
+    public abstract class MessageHandler<TClient, TMessage> : IMessageHandler<TClient, TMessage> where TClient : IMessageClient
+                                                                                                 where TMessage : IMessage
     {
-        Task HandleMessage(IMessageClient client, TMessage message);
-    }
+        public abstract Task HandleMessageAsync(TClient client, TMessage message);
 
-    public abstract class MessageHandler<TMessage> : MessageHandler, IMessageHandler<TMessage> where TMessage : IMessage
-    {
-        public abstract Task HandleMessage(IMessageClient client, TMessage message);
-
-        public override Task HandleMessage(IMessageClient client, IMessage message)
+        public virtual Task HandleMessageAsync(IMessageClient client, IMessage message)
         {
-            return HandleMessage(client, (TMessage)message);
+            return Task.FromException(new NotSupportedException("请使用泛型接口中的HandleMessageAsync方法。"));
         }
     }
 }

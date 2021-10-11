@@ -36,19 +36,19 @@ namespace Executorlibs.Examples
                                   {
 #if NET5_0_OR_GREATER
                                       services.AddBilibiliDanmakuFramework()
+                                              .AddCredentialProvider<DanmakuServerProvider>()
                                               .AddInvoker<BilibiliMessageHandlerInvoker>()
                                               .AddHandler<DanmakuMessageHandler>()
                                               .AddHandler<SendGiftMessageHandler>()
                                               .AddHandler<DisconnectMessageHandler>()
-                                              .AddCredentialProvider<DanmakuServerProvider>()
                                               .AddClient<TcpDanmakuClientV2>();
 #else
                                       var builder = services.AddBilibiliDanmakuFramework(); // 由于 <.NET 5.0 的运行时不支持协变返回, 所以不能像上边那样链式调用
+                                      builder.AddCredentialProvider<DanmakuServerProvider>(); // 需要一个连接时获取所需信息的提供类, 只注册一次
                                       builder.AddInvoker<BilibiliMessageHandlerInvoker>();  // 必须注册一个消息推送器, 只注册一次
                                       builder.AddHandler<DanmakuMessageHandler>(ServiceLifetime.Singleton);    // 注册你自己定义的消息处理类
                                       builder.AddHandler<SendGiftMessageHandler>(ServiceLifetime.Singleton);   // 同上, 可注册多次
                                       builder.AddHandler<DisconnectMessageHandler>(ServiceLifetime.Singleton); // 同上
-                                      builder.AddCredentialProvider<DanmakuServerProvider>(); // 需要一个连接时获取所需信息的提供类, 只注册一次
                                       builder.AddClient<TcpDanmakuClientV2>();                // 注册一个弹幕客户端, 只注册一次
 #endif
                                       services.Configure<DanmakuClientOptions>(options => { options.HeartbeatInterval = TimeSpan.FromSeconds(30); }); // 可选, 修改弹幕客户端的默认选项
@@ -68,7 +68,7 @@ namespace Executorlibs.Examples
         {
             _scope = services.CreateScope();
             services = _scope.ServiceProvider;
-            services.GetRequiredService<IOptionsSnapshot<DanmakuClientOptions>>().Value.RoomId = 7734200; // 使用 DanmakuClientOptions 为 IDanmakuClient 提供房间号
+            services.GetRequiredService<IOptionsSnapshot<DanmakuClientOptions>>().Value.RoomId = 34348; // 使用 DanmakuClientOptions 为 IDanmakuClient 提供房间号
             _client = services.GetRequiredService<IDanmakuClient>();
         }
 
@@ -90,7 +90,7 @@ namespace Executorlibs.Examples
             _logger = logger;
         }
 
-        public override Task HandleMessage(IDanmakuClient client, IDanmakuMessage message)
+        public override Task HandleMessageAsync(IDanmakuClient client, IDanmakuMessage message)
         {
             _logger.LogInformation(client.RoomId, $"{message.Time:yyyy-MM-dd HH:mm:ss} {message.UserName}[{message.UserId}]:{message.Comment}");
             return Task.CompletedTask;
@@ -111,7 +111,7 @@ namespace Executorlibs.Examples
             _logger = logger;
         }
 
-        public override Task HandleMessage(IDanmakuClient client, ISendGiftMessage message)
+        public override Task HandleMessageAsync(IDanmakuClient client, ISendGiftMessage message)
         {
             _logger.LogInformation(client.RoomId, $"{message.Time:yyyy-MM-dd HH:mm:ss} {message.UserName}[{message.UserId}]:{message.GiftName}x{message.GiftCount}");
             return Task.CompletedTask;
@@ -121,7 +121,7 @@ namespace Executorlibs.Examples
     public class DisconnectMessageHandler : BilibiliMessageHandler<IDisconnectedMessage>, // 请使用.NET Standard2.0 的用户继承此类, 更高版本的可以只实现接口
                                             IInvarianceBilibiliMessageHandler<IDisconnectedMessage> // 位于 Executorlibs.Bilibili.Protocol.Models.General 下的消息不需要注册 Parser
     {
-        public override async Task HandleMessage(IDanmakuClient client, IDisconnectedMessage message)
+        public override async Task HandleMessageAsync(IDanmakuClient client, IDisconnectedMessage message)
         {
             while (true) // 无限重连
             {

@@ -1,3 +1,4 @@
+using System;
 using System.Text.Json.Serialization;
 using Executorlibs.MessageFramework.Models.General;
 
@@ -9,9 +10,19 @@ namespace Executorlibs.Shared.Protocol.Models.General
     public interface IProtocolMessage : IMessage
     {
         /// <summary>
+        /// 消息Id
+        /// </summary>
+        long Id { get; }
+
+        /// <summary>
         /// 房间号
         /// </summary>
         int RoomId { get; }
+
+        /// <summary>
+        /// 消息时间
+        /// </summary>
+        DateTime Time { get; }
     }
 
     /// <summary>
@@ -37,7 +48,14 @@ namespace Executorlibs.Shared.Protocol.Models.General
                                                                                                     // 反之亦然, 这会在类上的隐式转换上边出现问题
                                                                                                     // 所以请用接口进行转换
     {
+
+        /// <inheritdoc/>
+        public long Id { get; set; }
+
         /// <inheritdoc/>
         public int RoomId { get; set; }
+
+        /// <inheritdoc/>
+        public DateTime Time { get; set; }
     }
 }

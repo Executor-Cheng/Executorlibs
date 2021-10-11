@@ -13,7 +13,7 @@ namespace Executorlibs.Bilibili.Protocol.Clients
     {
         protected override byte Version => 3;
 
-        public WsDanmakuClientV3(IBilibiliMessageHandlerInvoker invoker, IOptionsSnapshot<DanmakuClientOptions> options, DanmakuServerProvider credentialProvider) : base(invoker, options, credentialProvider)
+        public WsDanmakuClientV3(IBilibiliMessageHandlerInvoker invoker, IBilibiliMessageSubscriptionResolver resolver, IOptionsSnapshot<DanmakuClientOptions> options, DanmakuServerProvider credentialProvider) : base(invoker, resolver, options, credentialProvider)
         {
 
         }
@@ -21,9 +21,9 @@ namespace Executorlibs.Bilibili.Protocol.Clients
         protected override void HandlePayload(ref ReceiveMethodLocals locals)
         {
 #if BIGENDIAN
-            const long gzipCompressed = 0x0500000002001000L; // Magic = 0x10; Version = 0x2; Action = 0x5, cmp once
+            const long gzipCompressed = 0x0500000003001000L; // Magic = 0x10; Version = 0x2; Action = 0x5, cmp once
 #else
-            const long gzipCompressed = 0x0000000500020010L;
+            const long gzipCompressed = 0x0000000500030010L;
 #endif
             // Skip PacketLength (4 bytes)
             if (locals.Protocol.CompressedFlag == gzipCompressed)
