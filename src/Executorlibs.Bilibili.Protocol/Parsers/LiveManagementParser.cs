@@ -4,7 +4,7 @@ using Executorlibs.Bilibili.Protocol.Models.Danmaku;
 
 namespace Executorlibs.Bilibili.Protocol.Parsers
 {
-    public abstract class LiveManagementParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : ILiveManagementMessage
+    public abstract class LiveManagementParser<TMessage, TImpl> : BilibiliMappableMessageParser<TMessage> where TMessage : ILiveManagementMessage
                                                                                                    where TImpl : LiveManagementMessage, TMessage, new()
     {
         /// <summary>

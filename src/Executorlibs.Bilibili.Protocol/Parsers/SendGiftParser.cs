@@ -16,7 +16,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     /// <summary>
     /// 处理赠送礼物弹幕的 <see cref="IBilibiliMessageParser{TMessage}"/>
     /// </summary>
-    public class SendGiftParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : ISendGiftMessage
+    public class SendGiftParser<TMessage, TImpl> : BilibiliMappableMessageParser<TMessage> where TMessage : ISendGiftMessage
                                                                                     where TImpl : SendGiftMessage, TMessage, new()
     {
         private const string Command = "SEND_GIFT";
@@ -43,6 +43,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
             int targetId = medal.GetProperty("target_id").GetInt32();
             return new TImpl
             {
+                Id = long.Parse(data.GetProperty("tid").GetString()!),
                 UserName = data.GetProperty("uname").GetString()!,
                 UserId = data.GetProperty("uid").GetInt32(),
                 GiftId = data.GetProperty("giftId").GetInt32(),

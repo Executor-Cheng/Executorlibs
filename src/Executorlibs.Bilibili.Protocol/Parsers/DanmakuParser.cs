@@ -18,7 +18,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     /// <summary>
     /// 处理普通弹幕的 <see cref="IBilibiliMessageParser{TMessage}"/>
     /// </summary>
-    public class DanmakuParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : IDanmakuMessage
+    public class DanmakuParser<TMessage, TImpl> : BilibiliMappableMessageParser<TMessage> where TMessage : IDanmakuMessage
                                                                                    where TImpl : DanmakuMessage, TMessage, new()
     {
         private const string Command = "DANMU_MSG";

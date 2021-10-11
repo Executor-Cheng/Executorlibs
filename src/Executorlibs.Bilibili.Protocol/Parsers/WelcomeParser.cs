@@ -19,7 +19,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     /// <summary>
     /// 处理欢迎老爷进入房间消息的 <see cref="IBilibiliMessageParser{TMessage}"/>
     /// </summary>
-    public class WelcomeParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : IWelcomeMessage
+    public class WelcomeParser<TMessage, TImpl> : BilibiliMappableMessageParser<TMessage> where TMessage : IWelcomeMessage
                                                                                    where TImpl : WelcomeMessage, TMessage, new()
     {
         private const string Command = "WELCOME";

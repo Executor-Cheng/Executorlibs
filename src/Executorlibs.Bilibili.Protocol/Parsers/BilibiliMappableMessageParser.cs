@@ -11,8 +11,8 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     /// 仅供 Bilibili 直播平台的消息使用
     /// </remarks>
     /// <typeparam name="TMessage"></typeparam>
-    public abstract class BilibiliMappableParser<TMessage> : BilibiliMessageParser<TMessage>,
-                                                             IMappableBilibiliMessageParser<TMessage> where TMessage : IBilibiliMessage
+    public abstract class BilibiliMappableMessageParser<TMessage> : BilibiliMessageParser<TMessage>,
+                                                                    IMappableBilibiliMessageParser<TMessage> where TMessage : IBilibiliMessage
     {
         /// <summary>
         /// 表示弹幕数据中的 cmd 值

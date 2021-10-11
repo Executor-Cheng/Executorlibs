@@ -12,7 +12,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
         public RedPocketParser() { }
     }
 
-    public class RedPocketParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : IRedPocketMessage
+    public class RedPocketParser<TMessage, TImpl> : BilibiliMappableMessageParser<TMessage> where TMessage : IRedPocketMessage
                                                                                      where TImpl : RedPocketMessage, TMessage, new()
     {
         private const string Command = "RED_POCKET_START";

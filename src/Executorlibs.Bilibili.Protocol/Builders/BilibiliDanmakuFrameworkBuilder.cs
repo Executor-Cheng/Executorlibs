@@ -1,6 +1,5 @@
 using System;
 using System.Reflection;
-using System.Text.Json;
 using Executorlibs.Bilibili.Protocol.Clients;
 using Executorlibs.Bilibili.Protocol.Handlers;
 using Executorlibs.Bilibili.Protocol.Invokers;
@@ -16,7 +15,7 @@ namespace Executorlibs.Bilibili.Protocol.Builders
 {
     // see runtime #47007, resolved in 5.0.4
     public class BilibiliDanmakuFrameworkBuilder
-        : MessageFrameworkBuilder<IBilibiliMessageHandlerInvoker, IDanmakuClient, IBilibiliMessageHandler, JsonElement, IBilibiliMessageParser>
+        : MessageFrameworkBuilder<IBilibiliMessageHandlerInvoker, IDanmakuClient, IBilibiliMessageHandler, IBilibiliMessageParser>
     {
         protected virtual ServiceLifetime DefaultCredentialProviderLifetime => ServiceLifetime.Scoped;
 
@@ -32,13 +31,13 @@ namespace Executorlibs.Bilibili.Protocol.Builders
 
         public virtual BilibiliDanmakuFrameworkBuilder AddCredentialProvider<TProvider>(ServiceLifetime lifetime) where TProvider : class, IDanmakuServerProvider
         {
-            AddService(typeof(IDanmakuServerProvider), typeof(TProvider), lifetime);
+            TryAddService(typeof(IDanmakuServerProvider), typeof(TProvider), lifetime, out _);
             return this;
         }
 
         public virtual BilibiliDanmakuFrameworkBuilder AddCredentialProvider(IDanmakuServerProvider providerInstance)
         {
-            AddService(typeof(IDanmakuServerProvider), providerInstance);
+            TryAddService(typeof(IDanmakuServerProvider), providerInstance, out _);
             return this;
         }
 
@@ -49,7 +48,7 @@ namespace Executorlibs.Bilibili.Protocol.Builders
 
         public virtual BilibiliDanmakuFrameworkBuilder AddCredentialProvider<TProvider>(Func<IServiceProvider, TProvider> factory, ServiceLifetime lifetime) where TProvider : class, IDanmakuServerProvider
         {
-            AddService(typeof(IDanmakuServerProvider), factory, lifetime);
+            TryAddService(typeof(IDanmakuServerProvider), factory, lifetime, out _);
             return this;
         }
 
@@ -59,120 +58,37 @@ namespace Executorlibs.Bilibili.Protocol.Builders
             return this;
         }
 
-#if NET5_0_OR_GREATER
-        public override BilibiliDanmakuFrameworkBuilder AddClient<TClient>()
-        {
-            return (BilibiliDanmakuFrameworkBuilder)base.AddClient<TClient>();
-        }
-
-        public override BilibiliDanmakuFrameworkBuilder AddClient<TClient>(ServiceLifetime lifetime)
-        {
-            return (BilibiliDanmakuFrameworkBuilder)base.AddClient<TClient>(lifetime);
-        }
-
-        public override BilibiliDanmakuFrameworkBuilder AddClient(IDanmakuClient clientInstance)
-        {
-            return (BilibiliDanmakuFrameworkBuilder)base.AddClient(clientInstance);
-        }
-
-        public override BilibiliDanmakuFrameworkBuilder AddClient<TClient>(Func<IServiceProvider, TClient> factory)
-        {
-            return (BilibiliDanmakuFrameworkBuilder)base.AddClient(factory);
-        }
-
-        public override BilibiliDanmakuFrameworkBuilder AddClient<TClient>(Func<IServiceProvider, TClient> factory, ServiceLifetime lifetime)
-        {
-            return (BilibiliDanmakuFrameworkBuilder)base.AddClient(factory, lifetime);
-        }
-
-        public override BilibiliDanmakuFrameworkBuilder AddHandler<THandler>()
-        {
-            return (BilibiliDanmakuFrameworkBuilder)base.AddHandler<THandler>();
-        }
-
-        public override BilibiliDanmakuFrameworkBuilder AddHandler<THandler>(ServiceLifetime lifetime)
-        {
-            return (BilibiliDanmakuFrameworkBuilder)base.AddHandler<THandler>(lifetime);
-        }
-
-        public override BilibiliDanmakuFrameworkBuilder AddHandler(IBilibiliMessageHandler handlerInstance)
-        {
-            return (BilibiliDanmakuFrameworkBuilder)base.AddHandler(handlerInstance);
-        }
-
-        public override BilibiliDanmakuFrameworkBuilder AddHandler<THandler>(Func<IServiceProvider, THandler> factory)
-        {
-            return (BilibiliDanmakuFrameworkBuilder)base.AddHandler(factory);
-        }
-
-        public override BilibiliDanmakuFrameworkBuilder AddHandler<THandler>(Func<IServiceProvider, THandler> factory, ServiceLifetime lifetime)
-        {
-            return (BilibiliDanmakuFrameworkBuilder)base.AddHandler(factory, lifetime);
-        }
-
-        public override BilibiliDanmakuFrameworkBuilder AddInvoker<TInvoker>()
-        {
-            return (BilibiliDanmakuFrameworkBuilder)base.AddInvoker<TInvoker>();
-        }
-
-        public override BilibiliDanmakuFrameworkBuilder AddInvoker<TInvoker>(ServiceLifetime lifetime)
-        {
-            return (BilibiliDanmakuFrameworkBuilder)base.AddInvoker<TInvoker>(lifetime);
-        }
-
-        public override BilibiliDanmakuFrameworkBuilder AddInvoker(IBilibiliMessageHandlerInvoker invokerInstance)
-        {
-            return (BilibiliDanmakuFrameworkBuilder)base.AddInvoker(invokerInstance);
-        }
-
-        public override BilibiliDanmakuFrameworkBuilder AddInvoker<TInvoker>(Func<IServiceProvider, TInvoker> factory)
-        {
-            return (BilibiliDanmakuFrameworkBuilder)base.AddInvoker(factory);
-        }
-
-        public override BilibiliDanmakuFrameworkBuilder AddInvoker<TInvoker>(Func<IServiceProvider, TInvoker> factory, ServiceLifetime lifetime)
-        {
-            return (BilibiliDanmakuFrameworkBuilder)base.AddInvoker(factory, lifetime);
-        }
-
-        public override BilibiliDanmakuFrameworkBuilder AddParser<TParser>()
-        {
-            return (BilibiliDanmakuFrameworkBuilder)base.AddParser<TParser>();
-        }
-
-        public override BilibiliDanmakuFrameworkBuilder AddParser<TParser>(ServiceLifetime lifetime)
-        {
-            return (BilibiliDanmakuFrameworkBuilder)base.AddParser<TParser>(lifetime);
-        }
-
-        public override BilibiliDanmakuFrameworkBuilder AddParser(IBilibiliMessageParser parserInstance)
-        {
-            return (BilibiliDanmakuFrameworkBuilder)base.AddParser(parserInstance);
-        }
-
-        public override BilibiliDanmakuFrameworkBuilder AddParser<TParser>(Func<IServiceProvider, TParser> factory)
-        {
-            return (BilibiliDanmakuFrameworkBuilder)base.AddParser(factory);
-        }
-
-        public override BilibiliDanmakuFrameworkBuilder AddParser<TParser>(Func<IServiceProvider, TParser> factory, ServiceLifetime lifetime)
-        {
-            return (BilibiliDanmakuFrameworkBuilder)base.AddParser(factory, lifetime);
-        }
-#endif
         protected override void ResolveMessageParser(Type handlerType, ServiceLifetime? lifetime)
         {
-            foreach (RegisterBilibiliParserAttribute attribute in handlerType.GetCustomAttributes<RegisterBilibiliParserAttribute>())
+            foreach (RegisterBilibiliParserAttribute attribute in handlerType.GetCustomAttributes<RegisterBilibiliParserAttribute>(false))
             {
-                AddService(attribute.ServiceType, attribute.ImplementationType, lifetime ?? attribute.Lifetime ?? DefaultParserLifetime);
+                ServiceLifetime parserLifetime = lifetime ?? attribute.Lifetime ?? DefaultParserLifetime;
+                AddMessageParser(attribute.ServiceType, attribute.ImplementationType, parserLifetime);
+            }
+        }
+
+        protected override void ResolveMessageParserResolver(Type invokerType, ServiceLifetime? lifetime)
+        {
+            foreach (RegisterBilibiliMessageParserResolverAttribute attribute in invokerType.GetCustomAttributes<RegisterBilibiliMessageParserResolverAttribute>(false))
+            {
+                ServiceLifetime parserResolverLifetime = lifetime ?? attribute.Lifetime ?? DefaultParserResolverLifetime;
+                AddMessageParserResolver(attribute.ServiceType, attribute.ImplementationType, parserResolverLifetime);
             }
         }
 
         protected override void ResolveMessageSubscription(Type invokerType, ServiceLifetime? lifetime)
         {
-            foreach (RegisterBilibiliMessageSubscriptionAttribute attribute in invokerType.GetCustomAttributes<RegisterBilibiliMessageSubscriptionAttribute>())
+            foreach (RegisterBilibiliMessageSubscriptionAttribute attribute in invokerType.GetCustomAttributes<RegisterBilibiliMessageSubscriptionAttribute>(false))
             {
-                AddService(attribute.ServiceType, attribute.ImplementationType, lifetime ?? attribute.Lifetime ?? DefaultSubscriptionLifetime);
+                TryAddService(attribute.ServiceType, attribute.ImplementationType, lifetime ?? attribute.Lifetime ?? DefaultSubscriptionLifetime, out _);
+            }
+        }
+
+        protected override void ResolveMessageSubscriptionResolver(Type invokerType, ServiceLifetime? lifetime)
+        {
+            foreach (RegisterBilibiliMessageSubscriptionResolverAttribute attribute in invokerType.GetCustomAttributes<RegisterBilibiliMessageSubscriptionResolverAttribute>(false))
+            {
+                TryAddService(attribute.ServiceType, attribute.ImplementationType, lifetime ?? attribute.Lifetime ?? DefaultParserResolverLifetime, out _);
             }
         }
     }

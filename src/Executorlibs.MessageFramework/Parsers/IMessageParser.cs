@@ -3,17 +3,20 @@ using Executorlibs.MessageFramework.Models.General;
 
 namespace Executorlibs.MessageFramework.Parsers
 {
-    /// <summary>
-    /// 表示用于处理消息数据的接口
-    /// </summary>
-    /// <typeparam name="TRawdata">原始消息数据类型</typeparam>
-    public interface IMessageParser<TRawdata>
+    public interface IMessageParser
     {
         /// <summary>
         /// 本接口将要处理的消息类型
         /// </summary>
         Type MessageType { get; }
+    }
 
+    /// <summary>
+    /// 表示用于处理消息数据的接口
+    /// </summary>
+    /// <typeparam name="TRawdata">原始消息数据类型</typeparam>
+    public interface IMessageParser<TRawdata> : IMessageParser
+    {
         /// <summary>
         /// 测试给定的 <typeparamref name="TRawdata"/> 能否被处理
         /// </summary>
@@ -57,7 +60,7 @@ namespace Executorlibs.MessageFramework.Parsers
     {
 #if !NETSTANDARD2_0
         /// <inheritdoc/>
-        Type IMessageParser<TRawdata>.MessageType => typeof(TMessage);
+        Type IMessageParser.MessageType => typeof(TMessage);
 #endif
 
         /// <summary>

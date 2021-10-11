@@ -9,7 +9,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     /// </summary>
     /// <typeparam name="TInterface"></typeparam>
     /// <typeparam name="TImplementation"></typeparam>
-    public abstract class SimpleBilibiliMessageParser<TInterface, TImplementation> : BilibiliMappableParser<TInterface> where TInterface : IBilibiliMessage
+    public abstract class SimpleBilibiliMessageParser<TInterface, TImplementation> : BilibiliMappableMessageParser<TInterface> where TInterface : IBilibiliMessage
                                                                                                                         where TImplementation : BilibiliMessage, TInterface, new()
     {
         /// <summary>

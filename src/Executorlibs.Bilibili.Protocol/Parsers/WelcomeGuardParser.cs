@@ -8,7 +8,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     /// <summary>
     /// 处理欢迎船员进入房间消息的 <see cref="IBilibiliMessageParser{TMessage}"/>
     /// </summary>
-    public class WelcomeGuardParser : BilibiliMappableParser<IWelcomeGuardMessage>
+    public class WelcomeGuardParser : BilibiliMappableMessageParser<IWelcomeGuardMessage>
     {
         private const string Command = "WELCOME_GUARD";
 

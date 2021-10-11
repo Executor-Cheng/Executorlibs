@@ -43,7 +43,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
             if (!string.IsNullOrEmpty(title))
             {
                 int first = title!.IndexOf('-') + 1,
-                    last = title.IndexOf('-', first) + first;
+                    last = title.IndexOf('-', first);
                 if (first <= last &&
                     int.TryParse(title.Substring(first, last - first), out int id) &&
                     int.TryParse(title.Substring(last + 1), out int subId)) // SC 的 Title 字符串是 "0"

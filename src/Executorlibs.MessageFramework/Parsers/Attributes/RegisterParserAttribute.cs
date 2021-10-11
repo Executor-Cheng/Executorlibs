@@ -1,12 +1,13 @@
 using System;
-using Executorlibs.MessageFramework.Attributes;
 using Microsoft.Extensions.DependencyInjection;
+using Executorlibs.MessageFramework.Attributes;
 
 namespace Executorlibs.MessageFramework.Parsers.Attributes
 {
     /// <summary>
     /// 标记一个消息类、消息接口或者消息处理类所需要使用的 <see cref="IMessageParser{TRawdata, TMessage}"/>
     /// </summary>
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = true)]
     public class RegisterParserAttribute : RegisterBaseAttribute
     {
         /// <summary>
@@ -33,7 +34,7 @@ namespace Executorlibs.MessageFramework.Parsers.Attributes
                     return interfaceType;
                 }
             }
-            throw new ArgumentException($"给定的parser不实现{typeof(IMessageParser<,>).Name}");
+            throw new ArgumentException($"给定的 {implementationType.FullName} 不实现 {openGeneric.FullName}", nameof(implementationType));
         }
     }
 }

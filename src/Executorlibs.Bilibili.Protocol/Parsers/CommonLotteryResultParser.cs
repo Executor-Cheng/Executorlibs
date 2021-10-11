@@ -5,7 +5,7 @@ using Executorlibs.Bilibili.Protocol.Models.Danmaku;
 
 namespace Executorlibs.Bilibili.Protocol.Parsers
 {
-    public abstract class CommonLotteryResultParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : ICommonLotteryResultMessage
+    public abstract class CommonLotteryResultParser<TMessage, TImpl> : BilibiliMappableMessageParser<TMessage> where TMessage : ICommonLotteryResultMessage
                                                                                                         where TImpl : CommonLotteryResultMessage, TMessage, new()
     {
         /// <summary>

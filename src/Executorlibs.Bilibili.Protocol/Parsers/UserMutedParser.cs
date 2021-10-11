@@ -18,7 +18,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     /// <summary>
     /// 处理用户被禁言消息的 <see cref="IBilibiliMessageParser{TMessage}"/>
     /// </summary>
-    public class UserMutedParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : IUserMutedMessage
+    public class UserMutedParser<TMessage, TImpl> : BilibiliMappableMessageParser<TMessage> where TMessage : IUserMutedMessage
                                                                                      where TImpl : UserMutedMessage, TMessage, new()
     {
         private const string Command = "ROOM_BLOCK_MSG";

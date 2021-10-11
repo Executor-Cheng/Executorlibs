@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Executorlibs.Bilibili.Protocol.Parsers.Attributes
 {
+
     /// <summary>
     /// 标记一个消息类、消息接口或者消息处理类所需要使用的 <see cref="IBilibiliMessageParser{TMessage}"/>
     /// </summary>
@@ -33,7 +34,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers.Attributes
                     return typeof(IBilibiliMessageParser);
                 }
             }
-            throw new ArgumentException($"给定的parser不实现{typeof(IBilibiliMessageParser<>).Name}");
+            throw new ArgumentException($"给定的 {implementationType.Name} 不实现 {openGeneric.Name}", nameof(implementationType));
         }
     }
 }

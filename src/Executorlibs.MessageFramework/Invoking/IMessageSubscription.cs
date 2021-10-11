@@ -1,23 +1,32 @@
-using Executorlibs.MessageFramework.Handlers;
-using Executorlibs.MessageFramework.Models.General;
 #if !NETSTANDARD2_0
 using System.Threading.Tasks;
-using Executorlibs.MessageFramework.Clients;
 #endif
+using Executorlibs.MessageFramework.Clients;
+using Executorlibs.MessageFramework.Handlers;
+using Executorlibs.MessageFramework.Models.General;
+using System.Collections.Generic;
 
 namespace Executorlibs.MessageFramework.Invoking
 {
     public interface IMessageSubscription : IMessageHandler
     {
+        void AddHandler(IMessageHandler handler);
 
+        void RemoveHandler(IMessageHandler handler);
     }
 
-    public interface IMessageSubscription<TMessage> : IMessageSubscription, IMessageHandler<TMessage> where TMessage : IMessage // 只允许实现一种泛型接口
-                                                                                                                                // 想实现多种的请自己解决CS8705
+    public interface IMessageSubscription<TClient, TMessage> : IMessageSubscription,
+                                                               IMessageHandler<TClient, TMessage>,
+                                                               IEnumerable<IMessageHandler<TClient, TMessage>> where TClient : IMessageClient // 只允许实现一种泛型接口
+                                                                                                               where TMessage : IMessage // 想实现多种的请自己解决CS8705
     {
+        void AddHandler(IMessageHandler<TClient, TMessage> handler);
+
+        void RemoveHandler(IMessageHandler<TClient, TMessage> handler);
+
 #if !NETSTANDARD2_0
-        Task IMessageHandler.HandleMessage(IMessageClient client, IMessage message)
-            => HandleMessage(client, (TMessage)message);
+        Task IMessageHandler.HandleMessageAsync(IMessageClient client, IMessage message)
+            => HandleMessageAsync((TClient)client, (TMessage)message);
 #endif
     }
 }

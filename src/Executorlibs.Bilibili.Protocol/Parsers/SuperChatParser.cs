@@ -18,7 +18,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
         public SuperChatParser() { }
     }
 
-    public class SuperChatParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : ISuperChatMessage
+    public class SuperChatParser<TMessage, TImpl> : BilibiliMappableMessageParser<TMessage> where TMessage : ISuperChatMessage
                                                                                      where TImpl : SuperChatMessage, TMessage, new()
     {
         private const string Command = "SUPER_CHAT_MESSAGE";

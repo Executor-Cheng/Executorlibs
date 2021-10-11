@@ -9,7 +9,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     /// <summary>
     /// 处理用户互动消息的 <see cref="IBilibiliMessageParser{TMessage}"/>
     /// </summary>
-    public abstract class InteractBaseParser<TMessage, TImpl> : BilibiliMappableParser<TMessage> where TMessage : IInteractMessage
+    public abstract class InteractBaseParser<TMessage, TImpl> : BilibiliMappableMessageParser<TMessage> where TMessage : IInteractMessage
                                                                                                  where TImpl : InteractMessage, TMessage, new()
     {
         /// <summary>
