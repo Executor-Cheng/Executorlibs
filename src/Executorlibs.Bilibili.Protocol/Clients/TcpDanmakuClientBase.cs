@@ -19,7 +19,7 @@ namespace Executorlibs.Bilibili.Protocol.Clients
 
         public override bool Connected => base.Connected && (_Socket?.Connected == true);
 
-        protected TcpDanmakuClientBase(IBilibiliMessageHandlerInvoker invoker, IOptionsSnapshot<DanmakuClientOptions> options, IDanmakuServerProvider credentialProvider) : base(invoker, options, credentialProvider)
+        protected TcpDanmakuClientBase(IBilibiliMessageHandlerInvoker invoker, IBilibiliMessageSubscriptionResolver resolver, IOptionsSnapshot<DanmakuClientOptions> options, IDanmakuServerProvider credentialProvider) : base(invoker, resolver, options, credentialProvider)
         {
 
         }
@@ -46,10 +46,10 @@ namespace Executorlibs.Bilibili.Protocol.Clients
 
         protected override async Task InternalConnectAsync(CancellationToken token)
         {
-            int roomId = _Options.RoomId;
-            DanmakuServerInfo server = await _CredentialProvider.GetDanmakuServerInfoAsync(token);
+            int roomId = _options.RoomId;
+            DanmakuServerInfo server = await _credentialProvider.GetDanmakuServerInfoAsync(token);
             Socket socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
-            socket.SendTimeout = socket.ReceiveTimeout = (int)_Options.HeartbeatInterval.TotalMilliseconds + 10000;
+            socket.SendTimeout = socket.ReceiveTimeout = (int)_options.HeartbeatInterval.TotalMilliseconds + 10000;
             token.Register(socket.Dispose);
             DanmakuServerHostInfo serverHost = server.Hosts[(int)(Stopwatch.GetTimestamp() % server.Hosts.Length)];
 #if NET5_0_OR_GREATER

@@ -14,8 +14,8 @@ namespace Executorlibs.Bilibili.Protocol.Invokers
     public interface IBilibiliMessageSubscription<TMessage> : IBilibiliMessageSubscription, IBilibiliMessageHandler<TMessage> where TMessage : IBilibiliMessage
     {
 #if !NETSTANDARD2_0
-        Task IBilibiliMessageHandler.HandleMessage(IDanmakuClient client, IBilibiliMessage message)
-            => HandleMessage(client, (TMessage)message);
+        Task IBilibiliMessageHandler.HandleMessageAsync(IDanmakuClient client, IBilibiliMessage message)
+            => HandleMessageAsync(client, (TMessage)message);
 #endif
     }
 }

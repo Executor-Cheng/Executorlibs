@@ -16,15 +16,15 @@ namespace Executorlibs.Bilibili.Protocol.Clients
     {
         protected volatile WebSocket? _Client;
 
-        protected WsDanmakuClientBase(IBilibiliMessageHandlerInvoker invoker, IOptionsSnapshot<DanmakuClientOptions> options, DanmakuServerProvider credentialProvider) : base(invoker, options, credentialProvider)
+        protected WsDanmakuClientBase(IBilibiliMessageHandlerInvoker invoker, IBilibiliMessageSubscriptionResolver resolver, IOptionsSnapshot<DanmakuClientOptions> options, DanmakuServerProvider credentialProvider) : base(invoker, resolver, options, credentialProvider)
         {
 
         }
 
         protected override async Task InternalConnectAsync(CancellationToken token)
         {
-            int roomId = _Options.RoomId;
-            DanmakuServerInfo server = await _CredentialProvider.GetDanmakuServerInfoAsync(token);
+            int roomId = _options.RoomId;
+            DanmakuServerInfo server = await _credentialProvider.GetDanmakuServerInfoAsync(token);
             ClientWebSocket client = new ClientWebSocket();
             client.Options.KeepAliveInterval = Timeout.InfiniteTimeSpan;
             token.Register(client.Dispose);

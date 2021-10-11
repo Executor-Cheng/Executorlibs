@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Executorlibs.Bilibili.Protocol.Handlers;
 using Executorlibs.Bilibili.Protocol.Invokers;
 using Executorlibs.Bilibili.Protocol.Models.Danmaku;
 using Executorlibs.Bilibili.Protocol.Models.General;
@@ -62,8 +63,8 @@ namespace Executorlibs.Bilibili.Protocol.Clients
         protected static byte[] CreatePayload(int action, byte[] body)
         {
             byte[] buffer = new byte[16 + body.Length];
-#if !NETSTANDARD2_0
             Span<byte> span = buffer;
+#if !NETSTANDARD2_0
             ref BilibiliDanmakuProtocol protocol = ref Unsafe.As<byte, BilibiliDanmakuProtocol>(ref MemoryMarshal.GetReference(span));
 #else
             ref BilibiliDanmakuProtocol protocol = ref Interpret(buffer);
@@ -82,32 +83,54 @@ namespace Executorlibs.Bilibili.Protocol.Clients
             return buffer;
         }
 
-        protected volatile bool _Connected;
+        protected volatile bool _connected;
 
-        public virtual bool Connected => _Connected;
+        public virtual bool Connected => _connected;
 
-        public int RoomId => _Options.RoomId;
+        public int RoomId => _options.RoomId;
 
-        protected CancellationTokenSource? _Cts = new();
+        protected CancellationTokenSource? _cts = new();
 
-        protected CancellationTokenSource? _WorkerCts;
+        protected CancellationTokenSource? _workerCts;
 
-        protected IBilibiliMessageHandlerInvoker _Invoker;
+        protected IBilibiliMessageHandlerInvoker _invoker;
 
-        protected IDanmakuServerProvider _CredentialProvider;
+        protected IBilibiliMessageSubscriptionResolver _resolver;
 
-        protected DanmakuClientOptions _Options;
+        protected IDanmakuServerProvider _credentialProvider;
 
-        protected DanmakuClientBase(IBilibiliMessageHandlerInvoker invoker, IOptionsSnapshot<DanmakuClientOptions> options, IDanmakuServerProvider credentialProvider)
+        protected DanmakuClientOptions _options;
+
+        protected DanmakuClientBase(IBilibiliMessageHandlerInvoker invoker, IBilibiliMessageSubscriptionResolver resolver, IOptionsSnapshot<DanmakuClientOptions> options, IDanmakuServerProvider credentialProvider)
         {
-            _Invoker = invoker;
-            _Options = options.Value;
-            _CredentialProvider = credentialProvider;
+            _invoker = invoker;
+            _resolver = resolver;
+            _options = options.Value;
+            _credentialProvider = credentialProvider;
+        }
+
+        public void AddPlugin(IBilibiliMessageHandler handler)
+        {
+            CheckDisposed();
+            foreach (IBilibiliMessageSubscription subscription in _resolver.ResolveByHandler(handler.GetType()))
+            {
+                subscription.AddHandler(handler);
+            }
+            
+        }
+
+        public void RemovePlugin(IBilibiliMessageHandler handler)
+        {
+            CheckDisposed();
+            foreach (IBilibiliMessageSubscription subscription in _resolver.ResolveByHandler(handler.GetType()))
+            {
+                subscription.RemoveHandler(handler);
+            }
         }
 
         private void CheckDisposed()
         {
-            if (Volatile.Read(ref _Cts) == null)
+            if (Volatile.Read(ref _cts) == null)
             {
                 throw new ObjectDisposedException(this.GetType().Name);
             }
@@ -116,14 +139,14 @@ namespace Executorlibs.Bilibili.Protocol.Clients
         public async Task ConnectAsync(CancellationToken token = default)
         {
             CheckDisposed();
-            CancellationTokenSource? cts = Volatile.Read(ref _Cts);
+            CancellationTokenSource? cts = Volatile.Read(ref _cts);
             if (cts == null)
             {
                 throw new ObjectDisposedException(this.GetType().Name);
             }
             CancellationToken ctsToken = cts.Token;
             CancellationToken createdToken;
-            CancellationTokenSource? previousWCts = Volatile.Read(ref _WorkerCts);
+            CancellationTokenSource? previousWCts = Volatile.Read(ref _workerCts);
             CancellationTokenSource? createdWCts = null;
             CancellationTokenSource createWCts()
             {
@@ -131,7 +154,7 @@ namespace Executorlibs.Bilibili.Protocol.Clients
                 createdToken = createdWCts.Token;
                 return createdWCts;
             }
-            if (previousWCts != null || Interlocked.CompareExchange(ref _WorkerCts, createWCts(), null) != null)
+            if (previousWCts != null || Interlocked.CompareExchange(ref _workerCts, createWCts(), null) != null)
             {
                 createdWCts?.Dispose();
                 throw new InvalidOperationException();
@@ -146,14 +169,14 @@ namespace Executorlibs.Bilibili.Protocol.Clients
 #endif
                 ReceiveMessageAsyncLoop(tcs, createdWCts!, createdToken);
                 await tcs.Task;
-                _Connected = true;
+                _connected = true;
                 SendHeartBeatAsyncLoop(createdWCts!, createdToken);
             }
             catch
             {
                 createdWCts!.Cancel();
                 createdWCts.Dispose();
-                Interlocked.CompareExchange(ref _WorkerCts, null!, createdWCts);
+                Interlocked.CompareExchange(ref _workerCts, null!, createdWCts);
                 throw;
             }
         }
@@ -162,7 +185,7 @@ namespace Executorlibs.Bilibili.Protocol.Clients
 
         public void Disconnect()
         {
-            CancellationTokenSource? workerCts = Volatile.Read(ref _WorkerCts);
+            CancellationTokenSource? workerCts = Volatile.Read(ref _workerCts);
             if (workerCts != null)
             {
                 Disconnect(workerCts);
@@ -171,13 +194,13 @@ namespace Executorlibs.Bilibili.Protocol.Clients
 
         public void Disconnect(CancellationTokenSource workerCts, Exception? e = null)
         {
-            if (Interlocked.CompareExchange(ref _WorkerCts, null, workerCts) == workerCts)
+            if (Interlocked.CompareExchange(ref _workerCts, null, workerCts) == workerCts)
             {
-                _Connected = false;
+                _connected = false;
                 workerCts.Cancel();
                 workerCts.Dispose();
                 InternalDisconnect();
-                CancellationTokenSource? cts = Volatile.Read(ref _Cts);
+                CancellationTokenSource? cts = Volatile.Read(ref _cts);
                 CancellationToken token;
                 try
                 {
@@ -187,7 +210,7 @@ namespace Executorlibs.Bilibili.Protocol.Clients
                 {
                     token = new CancellationToken(true);
                 }
-                _Invoker.HandleMessageAsync<IDisconnectedMessage>(this, new DisconnectedMessage { Exception = e, Time = DateTime.Now, Token = token });
+                _invoker.HandleMessageAsync<IDisconnectedMessage>(this, new DisconnectedMessage { Exception = e, Time = DateTime.Now, Token = token });
             }
         }
 
@@ -197,8 +220,8 @@ namespace Executorlibs.Bilibili.Protocol.Clients
 
         protected virtual void Dispose(bool disposing)
         {
-            CancellationTokenSource? previousCts = Volatile.Read(ref _Cts);
-            if (previousCts != null && Interlocked.CompareExchange(ref _Cts, null, previousCts) == previousCts)
+            CancellationTokenSource? previousCts = Volatile.Read(ref _cts);
+            if (previousCts != null && Interlocked.CompareExchange(ref _cts, null, previousCts) == previousCts)
             {
                 try { Disconnect(); } catch { }
                 previousCts.Cancel();
@@ -228,7 +251,7 @@ namespace Executorlibs.Bilibili.Protocol.Clients
                     token.ThrowIfCancellationRequested();
                     ticks = Stopwatch.GetTimestamp();
                     await SendAsync(heartBeatPacket, token).ConfigureAwait(false);
-                    TimeSpan toSleep = _Options.HeartbeatInterval - TimeSpan.FromTicks((long)((Stopwatch.GetTimestamp() - ticks) * tickFrequency));
+                    TimeSpan toSleep = _options.HeartbeatInterval - TimeSpan.FromTicks((long)((Stopwatch.GetTimestamp() - ticks) * tickFrequency));
                     if (toSleep > default(TimeSpan))
                     {
                         await Task.Delay(toSleep, token);
@@ -283,7 +306,7 @@ namespace Executorlibs.Bilibili.Protocol.Clients
 #endif
                             try
                             {
-                                _ = _Invoker.HandleMessageAsync<IConnectedMessage>(this, new ConnectedMessage { Time = DateTime.Now });
+                                _ = _invoker.HandleMessageAsync<IConnectedMessage>(this, new ConnectedMessage { Time = DateTime.Now });
                             }
                             catch // 失败了关我啥事儿
                             {
@@ -332,7 +355,7 @@ namespace Executorlibs.Bilibili.Protocol.Clients
 #if !BIGENDIAN
                             popularity = BinaryPrimitives.ReverseEndianness(popularity);
 #endif
-                            _Invoker.HandleMessageAsync<IPopularityMessage>(this, new PopularityMessage { Popularity = popularity, Time = DateTime.Now });
+                            _invoker.HandleMessageAsync<IPopularityMessage>(this, new PopularityMessage { Popularity = popularity, Time = DateTime.Now });
                         }
                         catch
                         {
@@ -345,7 +368,7 @@ namespace Executorlibs.Bilibili.Protocol.Clients
                         try
                         {
                             JsonElement root = JsonSerializer.Deserialize<JsonElement>(new ReadOnlySpan<byte>(buffer, 0, protocol.PacketLength - 16));
-                            _Invoker.HandleRawdataAsync(this, root);
+                            _invoker.HandleRawdataAsync(this, root);
                         }
                         catch
                         {
