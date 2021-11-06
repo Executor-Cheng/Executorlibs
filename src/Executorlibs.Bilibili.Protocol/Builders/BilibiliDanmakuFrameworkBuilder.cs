@@ -88,7 +88,7 @@ namespace Executorlibs.Bilibili.Protocol.Builders
         {
             foreach (RegisterBilibiliMessageSubscriptionResolverAttribute attribute in invokerType.GetCustomAttributes<RegisterBilibiliMessageSubscriptionResolverAttribute>(false))
             {
-                TryAddService(attribute.ServiceType, attribute.ImplementationType, lifetime ?? attribute.Lifetime ?? DefaultParserResolverLifetime, out _);
+                TryAddService(attribute.ServiceType, attribute.ImplementationType, lifetime ?? attribute.Lifetime ?? DefaultSubscriptionResolverLifetime, out _);
             }
         }
     }

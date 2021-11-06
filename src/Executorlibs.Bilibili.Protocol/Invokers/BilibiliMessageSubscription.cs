@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Executorlibs.Bilibili.Protocol.Clients;
 using Executorlibs.Bilibili.Protocol.Handlers;

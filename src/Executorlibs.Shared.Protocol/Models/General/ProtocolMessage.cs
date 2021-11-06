@@ -15,14 +15,22 @@ namespace Executorlibs.Shared.Protocol.Models.General
         long Id { get; }
 
         /// <summary>
-        /// 房间号
-        /// </summary>
-        int RoomId { get; }
-
-        /// <summary>
         /// 消息时间
         /// </summary>
         DateTime Time { get; }
+    }
+
+    /// <summary>
+    /// 实现消息的基本信息的抽象类
+    /// </summary>
+    public abstract class ProtocolMessage : Message, IProtocolMessage
+    {
+
+        /// <inheritdoc/>
+        public virtual long Id { get; set; }
+
+        /// <inheritdoc/>
+        public virtual DateTime Time { get; set; }
     }
 
     /// <summary>
@@ -50,12 +58,9 @@ namespace Executorlibs.Shared.Protocol.Models.General
     {
 
         /// <inheritdoc/>
-        public long Id { get; set; }
+        public virtual long Id { get; set; }
 
         /// <inheritdoc/>
-        public int RoomId { get; set; }
-
-        /// <inheritdoc/>
-        public DateTime Time { get; set; }
+        public virtual DateTime Time { get; set; }
     }
 }

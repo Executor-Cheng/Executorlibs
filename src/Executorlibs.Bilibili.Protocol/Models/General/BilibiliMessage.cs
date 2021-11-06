@@ -12,7 +12,10 @@ namespace Executorlibs.Bilibili.Protocol.Models.General
     /// </remarks>
     public interface IBilibiliMessage : IProtocolMessage<JsonElement>
     {
-
+        /// <summary>
+        /// 房间号
+        /// </summary>
+        int RoomId { get; }
     }
 
     /// <summary>
@@ -20,6 +23,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.General
     /// </summary>
     public abstract class BilibiliMessage : ProtocolMessage<JsonElement>, IBilibiliMessage
     {
-
+        /// <inheritdoc/>
+        public int RoomId { get; set; }
     }
 }

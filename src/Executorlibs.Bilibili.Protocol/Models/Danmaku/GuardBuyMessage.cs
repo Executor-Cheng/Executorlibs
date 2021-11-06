@@ -14,7 +14,10 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
     [RegisterBilibiliParser(typeof(GuardBuyParser))]
     public interface IGuardBuyMessage : ISendGiftBaseMessage
     {
-
+        /// <summary>
+        /// 内部订单号
+        /// </summary>
+        string? OrderId { get; }
     }
 
     /// <summary>
@@ -26,6 +29,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
     [DebuggerDisplay("{Time.ToString(\"u\")[..^1],nq} [GuardBuy] {UserName,nq}[{UserId}]:{GiftName,nq}x{GiftCount}")]
     public class GuardBuyMessage : SendGiftBaseMessage, IGuardBuyMessage
     {
-
+        /// <inheritdoc/>
+        public string? OrderId { get; set; }
     }
 }

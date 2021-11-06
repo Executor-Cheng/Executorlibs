@@ -49,6 +49,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
                 GiftCount = data.GetProperty("num").GetInt32(),
                 GiftSeedPrice = data.GetProperty("price").GetInt32(),
                 GuardType = (GuardType)data.GetProperty("guard_level").GetInt32(),
+                OrderId = data.GetProperty("payflow_id").ToString(),
                 IsGoldGift = true,
                 Rawdata = root
             };
