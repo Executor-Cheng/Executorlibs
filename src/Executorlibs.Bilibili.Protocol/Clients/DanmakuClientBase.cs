@@ -1,5 +1,6 @@
 using System;
 using System.Buffers.Binary;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -14,6 +15,7 @@ using Executorlibs.Bilibili.Protocol.Models.Danmaku;
 using Executorlibs.Bilibili.Protocol.Models.General;
 using Executorlibs.Bilibili.Protocol.Options;
 using Executorlibs.Bilibili.Protocol.Services;
+using Executorlibs.MessageFramework.Invoking;
 using Microsoft.Extensions.Options;
 
 namespace Executorlibs.Bilibili.Protocol.Clients
@@ -109,23 +111,23 @@ namespace Executorlibs.Bilibili.Protocol.Clients
             _credentialProvider = credentialProvider;
         }
 
-        public void AddPlugin(IBilibiliMessageHandler handler)
+        public PluginResistration AddPlugin(IBilibiliMessageHandler handler)
         {
             CheckDisposed();
+            PluginResistration resistration = default;
+            LinkedList<DynamicHandlerRegistration> registrations = new LinkedList<DynamicHandlerRegistration>();
             foreach (IBilibiliMessageSubscription subscription in _resolver.ResolveByHandler(handler.GetType()))
             {
-                subscription.AddHandler(handler);
+                registrations.AddLast(subscription.AddHandler(handler));
             }
-            
+            resistration._registrations = registrations;
+            return resistration;
         }
 
+        [Obsolete("请调用 AddPlugin 时返回的 DynamicHandlerRegistration 中的 Dispose 方法")]
         public void RemovePlugin(IBilibiliMessageHandler handler)
         {
-            CheckDisposed();
-            foreach (IBilibiliMessageSubscription subscription in _resolver.ResolveByHandler(handler.GetType()))
-            {
-                subscription.RemoveHandler(handler);
-            }
+            
         }
 
         private void CheckDisposed()
@@ -210,7 +212,10 @@ namespace Executorlibs.Bilibili.Protocol.Clients
                 {
                     token = new CancellationToken(true);
                 }
-                _invoker.HandleMessageAsync<IDisconnectedMessage>(this, new DisconnectedMessage { Exception = e, Time = DateTime.Now, Token = token });
+                if (!token.IsCancellationRequested)
+                {
+                    _invoker.HandleMessageAsync<IDisconnectedMessage>(this, new DisconnectedMessage { Exception = e, Time = DateTime.Now, Token = token });
+                }
             }
         }
 
@@ -223,9 +228,9 @@ namespace Executorlibs.Bilibili.Protocol.Clients
             CancellationTokenSource? previousCts = Volatile.Read(ref _cts);
             if (previousCts != null && Interlocked.CompareExchange(ref _cts, null, previousCts) == previousCts)
             {
-                try { Disconnect(); } catch { }
                 previousCts.Cancel();
                 previousCts.Dispose();
+                Disconnect();
                 InternalDispose(disposing);
             }
         }
