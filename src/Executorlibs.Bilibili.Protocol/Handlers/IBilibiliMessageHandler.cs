@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Executorlibs.Bilibili.Protocol.Clients;
 using Executorlibs.Bilibili.Protocol.Models.General;
@@ -12,7 +13,7 @@ namespace Executorlibs.Bilibili.Protocol.Handlers
 #if !NETSTANDARD2_0
         Task HandleMessageAsync(IDanmakuClient client, IBilibiliMessage message)
         {
-            return _DefaultImplTask;
+            throw new NotSupportedException("请使用泛型接口中的 HandleMessageAsync 方法。");
         }
 
         Task IMessageHandler.HandleMessageAsync(IMessageClient session, IMessage message)

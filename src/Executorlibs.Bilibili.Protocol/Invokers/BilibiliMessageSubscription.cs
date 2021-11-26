@@ -14,7 +14,7 @@ namespace Executorlibs.Bilibili.Protocol.Invokers
 
         }
 
-        protected override IMessageHandler<IDanmakuClient, TMessage>[] ResolveStaticHandlers(LinkedList<IMessageHandler> handlers, List<IMessageHandler<IDanmakuClient, TMessage>> filtered)
+        protected override IMessageHandler[] ResolveStaticHandlers(LinkedList<IMessageHandler> handlers, List<IMessageHandler> filtered)
         {
             if (handlers.Count != 0)
             {
@@ -26,7 +26,7 @@ namespace Executorlibs.Bilibili.Protocol.Invokers
                     if (expectedHandler.IsAssignableFrom(handler.GetType()) ||
                         expectedInvarianceHandler.IsAssignableFrom(handler.GetType()))
                     {
-                        filtered.Add((IBilibiliMessageHandler<TMessage>)handler);
+                        filtered.Add(handler);
                         handlers.Remove(handlerNode);
                     }
                 }
