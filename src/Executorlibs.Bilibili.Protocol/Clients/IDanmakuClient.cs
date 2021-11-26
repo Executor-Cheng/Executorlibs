@@ -7,8 +7,6 @@ namespace Executorlibs.Bilibili.Protocol.Clients
     {
         int RoomId { get; }
 
-        void AddPlugin(IBilibiliMessageHandler handler);
-
-        void RemovePlugin(IBilibiliMessageHandler handler);
+        PluginResistration AddPlugin(IBilibiliMessageHandler handler);
     }
 }
