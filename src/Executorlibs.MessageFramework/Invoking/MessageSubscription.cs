@@ -99,7 +99,7 @@ namespace Executorlibs.MessageFramework.Invoking
             Registrations? registrations = Volatile.Read(ref _registrations);
             if (registrations is null)
             {
-                registrations = new Registrations(this);
+                registrations = new Registrations();
                 registrations = Interlocked.CompareExchange(ref _registrations, registrations, null) ?? registrations;
             }
 

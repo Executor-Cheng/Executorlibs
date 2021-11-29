@@ -114,14 +114,14 @@ namespace Executorlibs.Bilibili.Protocol.Clients
         public PluginResistration AddPlugin(IBilibiliMessageHandler handler)
         {
             CheckDisposed();
-            PluginResistration resistration = default;
+            PluginResistration registration = default;
             LinkedList<DynamicHandlerRegistration> registrations = new LinkedList<DynamicHandlerRegistration>();
             foreach (IBilibiliMessageSubscription subscription in _resolver.ResolveByHandler(handler.GetType()))
             {
                 registrations.AddLast(subscription.AddHandler(handler));
             }
-            resistration._registrations = registrations;
-            return resistration;
+            registration._registrations = registrations;
+            return registration;
         }
 
         [Obsolete("请调用 AddPlugin 时返回的 DynamicHandlerRegistration 中的 Dispose 方法")]

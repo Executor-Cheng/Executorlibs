@@ -8,8 +8,6 @@ namespace Executorlibs.MessageFramework.Invoking
     {
         protected internal sealed class Registrations
         {
-            public readonly MessageSubscription Source;
-
             public RegistrationNode? EffictiveNodeList;
 
             public RegistrationNode? FreeNodeList;
@@ -18,7 +16,7 @@ namespace Executorlibs.MessageFramework.Invoking
 
             private readonly UInt32Lock _lock;
 
-            public Registrations(MessageSubscription source) => Source = source;
+            public Registrations() { }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             private void Recycle(RegistrationNode node)
