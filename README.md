@@ -8,3 +8,4 @@
 - `Executorlibs.Shared` 共享的一些类
 - `Executorlibs.Shared.Protocol` 消息客户端专用的一些定义
 - `Executorlibs.Bilibili.Protocol` 自制的Bilibili直播平台的消息客户端
+- `Executorlibs.TarProtocol` 自制的Tars(Taf)消息框架实现 ~~用了一些(不少)黑科技~~
