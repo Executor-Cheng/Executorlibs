@@ -2,12 +2,12 @@ using System;
 using System.Diagnostics;
 using Executorlibs.TarProtocol.IO;
 
-namespace Executorlibs.TarProtocol.Protocol.Primitives
+namespace Executorlibs.TarProtocol.Models.Primitives
 {
     [DebuggerDisplay("[{Header.Tag}] {Value}")]
     public struct TarStruct<T> : ITarType where T : ITarType, new()
     {
-        private TarHeader Header => new TarHeader(TarHeader.TarType.StructBegin, Tag);
+        private TarHeader Header => new TarHeader(TarType.StructBegin, Tag);
 
         public byte Tag;
 
@@ -19,24 +19,36 @@ namespace Executorlibs.TarProtocol.Protocol.Primitives
             Value = value;
         }
 
-        public void ReadFrom(TarStream stream)
+        public void ReadFrom(ref TarReader reader)
         {
-            stream.Read<TarStructBegin>();
+            TarStructBegin begin = default;
+            begin.ReadFrom(ref reader);
+            Tag = begin.Header.Tag;
+
             Value = new T();
-            stream.Read(ref Value);
-            stream.Read<TarStructEnd>();
+            Value.ReadFrom(ref reader);
+
+            reader.SkipGroup();
+
+            //TarStructEnd end = default;
+            //end.ReadFrom(ref reader);
         }
 
-        public void WriteTo(TarStream stream)
+        public void WriteTo(ref TarWriter writer)
         {
-            new TarStructBegin(Tag).WriteTo(stream);
-            Value.WriteTo(stream);
-            TarStructEnd.Singleton.WriteTo(stream);
+            new TarStructBegin(Tag).WriteTo(ref writer);
+            Value.WriteTo(ref writer);
+            TarStructEnd.Instance.WriteTo(ref writer);
         }
 
         public override bool Equals(object? obj)
         {
-            return obj is TarStruct<T> t && this.Tag == t.Tag && this.Value.Equals(t.Value);
+            return obj is TarStruct<T> value && Equals(value);
+        }
+
+        public bool Equals(TarStruct<T> value)
+        {
+            return value.Tag == Tag && value.Value.Equals(Value);
         }
 
         public override int GetHashCode()
