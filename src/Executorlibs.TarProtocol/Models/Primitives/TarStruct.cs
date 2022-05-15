@@ -29,9 +29,6 @@ namespace Executorlibs.TarProtocol.Models.Primitives
             Value.ReadFrom(ref reader);
 
             reader.SkipGroup(); // discard remaining members
-
-            //TarStructEnd end = default;
-            //end.ReadFrom(ref reader);
         }
 
         public void WriteTo(ref TarWriter writer)
