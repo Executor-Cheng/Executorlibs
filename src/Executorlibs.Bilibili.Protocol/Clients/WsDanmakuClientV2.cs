@@ -11,7 +11,7 @@ namespace Executorlibs.Bilibili.Protocol.Clients
     {
         protected override byte Version => 2;
 
-        public WsDanmakuClientV2(IBilibiliMessageHandlerInvoker invoker, IBilibiliMessageSubscriptionResolver resolver, IOptionsSnapshot<DanmakuClientOptions> options, DanmakuServerProvider credentialProvider) : base(invoker, resolver, options, credentialProvider)
+        public WsDanmakuClientV2(IBilibiliMessageHandlerInvoker invoker, IBilibiliMessageSubscriptionResolver resolver, IOptionsSnapshot<DanmakuClientOptions> options, IDanmakuServerProvider credentialProvider) : base(invoker, resolver, options, credentialProvider)
         {
 
         }

@@ -15,6 +15,7 @@ using Executorlibs.Bilibili.Protocol.Models.Danmaku;
 using Executorlibs.Bilibili.Protocol.Models.General;
 using Executorlibs.Bilibili.Protocol.Options;
 using Executorlibs.Bilibili.Protocol.Services;
+using Executorlibs.MessageFramework.Handlers;
 using Executorlibs.MessageFramework.Invoking;
 using Microsoft.Extensions.Options;
 
@@ -111,23 +112,21 @@ namespace Executorlibs.Bilibili.Protocol.Clients
             _credentialProvider = credentialProvider;
         }
 
-        public PluginResistration AddPlugin(IBilibiliMessageHandler handler)
+        public PluginResistration AddPlugin(IMessageHandler handler)
         {
             CheckDisposed();
-            PluginResistration resistration = default;
             LinkedList<DynamicHandlerRegistration> registrations = new LinkedList<DynamicHandlerRegistration>();
             foreach (IBilibiliMessageSubscription subscription in _resolver.ResolveByHandler(handler.GetType()))
             {
                 registrations.AddLast(subscription.AddHandler(handler));
             }
-            resistration._registrations = registrations;
-            return resistration;
+            return new PluginResistration(registrations);
         }
 
         [Obsolete("请调用 AddPlugin 时返回的 DynamicHandlerRegistration 中的 Dispose 方法")]
         public void RemovePlugin(IBilibiliMessageHandler handler)
         {
-            
+
         }
 
         private void CheckDisposed()

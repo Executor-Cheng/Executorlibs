@@ -66,7 +66,7 @@ namespace Executorlibs.MessageFramework.Invoking
     {
         public MessageSubscription(IEnumerable<IMessageHandler> handlers) : base(handlers)
         {
-            
+
         }
 
         protected override IMessageHandler[] ResolveStaticHandlers(LinkedList<IMessageHandler> handlers, List<IMessageHandler> filtered)
@@ -115,7 +115,7 @@ namespace Executorlibs.MessageFramework.Invoking
 
         public virtual void RemoveHandler(IMessageHandler<TClient, TMessage> handler)
         {
-            
+
         }
 
         public virtual async Task HandleMessageAsync(TClient client, TMessage message)

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net6.0;net5.0</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Executorlibs.MessageFramework\Executorlibs.MessageFramework.csproj" />
+    <ProjectReference Include="..\Executorlibs.Shared.Protocol\Executorlibs.Shared.Protocol.csproj" />
+    <ProjectReference Include="..\Executorlibs.TarProtocol\Executorlibs.TarProtocol.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Builders\" />
+  </ItemGroup>
+
+</Project>

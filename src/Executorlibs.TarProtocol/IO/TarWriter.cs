@@ -251,7 +251,7 @@ namespace Executorlibs.TarProtocol.IO
 
         public TarWriter(Stream? stream, int bufferSize) : this(GC.AllocateUninitializedArray<byte>(bufferSize), 0, bufferSize, stream)
         {
-            
+
         }
 
         public TarWriter(byte[] buffer) : this(buffer, 0, buffer.Length)

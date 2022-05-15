@@ -1,11 +1,16 @@
-﻿using System.Collections.Generic;
-using Executorlibs.MessageFramework.Invoking;
+﻿using System;
+using System.Collections.Generic;
 
-namespace Executorlibs.Bilibili.Protocol.Clients
+namespace Executorlibs.MessageFramework.Invoking
 {
-    public struct PluginResistration
+    public struct PluginResistration : IDisposable
     {
         internal LinkedList<DynamicHandlerRegistration>? _registrations;
+
+        public PluginResistration(LinkedList<DynamicHandlerRegistration> registrations)
+        {
+            _registrations = registrations;
+        }
 
         public void Dispose()
         {

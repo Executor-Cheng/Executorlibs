@@ -27,7 +27,7 @@ namespace Executorlibs.Bilibili.Protocol.Handlers
 
     public interface IBilibiliMessageHandler<in TMessage> : IMessageHandler<IDanmakuClient, TMessage>, IBilibiliMessageHandler where TMessage : IBilibiliMessage
     {
-        
+
     }
 
     public abstract class BilibiliMessageHandler<TMessage> : MessageHandler<IDanmakuClient, TMessage>, IBilibiliMessageHandler<TMessage> where TMessage : IBilibiliMessage

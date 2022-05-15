@@ -1,6 +1,6 @@
 using System;
-using Microsoft.Extensions.DependencyInjection;
 using Executorlibs.MessageFramework.Attributes;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Executorlibs.MessageFramework.Parsers.Attributes
 {

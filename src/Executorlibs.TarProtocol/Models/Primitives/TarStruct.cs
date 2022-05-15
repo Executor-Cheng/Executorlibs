@@ -28,7 +28,7 @@ namespace Executorlibs.TarProtocol.Models.Primitives
             Value = new T();
             Value.ReadFrom(ref reader);
 
-            reader.SkipGroup();
+            reader.SkipGroup(); // discard remaining members
 
             //TarStructEnd end = default;
             //end.ReadFrom(ref reader);

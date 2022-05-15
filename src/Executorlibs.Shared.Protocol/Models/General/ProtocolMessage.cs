@@ -1,5 +1,4 @@
 using System;
-using System.Text.Json.Serialization;
 using Executorlibs.MessageFramework.Models.General;
 
 namespace Executorlibs.Shared.Protocol.Models.General
