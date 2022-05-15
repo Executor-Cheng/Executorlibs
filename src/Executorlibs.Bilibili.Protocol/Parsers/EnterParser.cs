@@ -16,7 +16,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     /// 处理用户进入直播间消息的 <see cref="IBilibiliMessageParser{TMessage}"/>
     /// </summary>
     public class EnterParser<TMessage, TImpl> : InteractBaseParser<TMessage, TImpl> where TMessage : IEnterMessage
-                                                                                           where TImpl : EnterMessage, TMessage, new()
+                                                                                    where TImpl : EnterMessage, TMessage, new()
     {
         /// <inheritdoc/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

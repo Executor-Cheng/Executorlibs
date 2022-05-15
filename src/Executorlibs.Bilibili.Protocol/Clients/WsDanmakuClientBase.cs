@@ -16,7 +16,7 @@ namespace Executorlibs.Bilibili.Protocol.Clients
     {
         protected volatile WebSocket? _Client;
 
-        protected WsDanmakuClientBase(IBilibiliMessageHandlerInvoker invoker, IBilibiliMessageSubscriptionResolver resolver, IOptionsSnapshot<DanmakuClientOptions> options, DanmakuServerProvider credentialProvider) : base(invoker, resolver, options, credentialProvider)
+        protected WsDanmakuClientBase(IBilibiliMessageHandlerInvoker invoker, IBilibiliMessageSubscriptionResolver resolver, IOptionsSnapshot<DanmakuClientOptions> options, IDanmakuServerProvider credentialProvider) : base(invoker, resolver, options, credentialProvider)
         {
 
         }

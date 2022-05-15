@@ -55,7 +55,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
             {
                 return mappedParsers;
             }
-            return _nonmappedParsers;
+            return _nonmappedParsers.Concat(UnknownMessageParsers);
         }
     }
 }

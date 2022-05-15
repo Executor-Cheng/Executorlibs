@@ -31,8 +31,6 @@ namespace Executorlibs.MessageFramework.Invoking
 
         protected readonly IMessageSubscriptionResolver<TClientService, IMessageSubscription> _subscriptionResolver;
 
-        protected virtual IMessageSubscriptionResolver<TClientService, IMessageSubscription> SubscriptionResolver => _subscriptionResolver;
-
         protected MessageHandlerInvoker(IServiceProvider services,
                                         ILogger<MessageHandlerInvoker<TClientService>> logger,
                                         IMessageSubscriptionResolver<TClientService, IMessageSubscription> subscriptionResolver)
@@ -67,10 +65,13 @@ namespace Executorlibs.MessageFramework.Invoking
         }
 
 #if NETSTANDARD2_0
-        protected abstract bool TryResolveSubscription(Type messageType, out IMessageSubscription? subscription);
+        protected virtual bool TryResolveSubscription(Type messageType, out IMessageSubscription? subscription)
 #else
-        protected abstract bool TryResolveSubscription(Type messageType, [NotNullWhen(true)] out IMessageSubscription? subscription);
+        protected virtual bool TryResolveSubscription(Type messageType, [NotNullWhen(true)] out IMessageSubscription? subscription)
 #endif
+        {
+            return (subscription = _subscriptionResolver.ResolveByMessage(messageType)) != null;
+        }
     }
 
     public abstract class MessageHandlerInvoker<TClientService, TRawdata> : MessageHandlerInvoker<TClientService>, IMessageHandlerInvoker<TClientService, TRawdata> where TClientService : IMessageClient
@@ -108,9 +109,13 @@ namespace Executorlibs.MessageFramework.Invoking
         }
 
 #if NETSTANDARD2_0
-        protected abstract bool TryResolveParsers(in TRawdata rawdata, out IEnumerable<IMessageParser<TRawdata>>? parsers);
+        protected virtual bool TryResolveParsers(in TRawdata rawdata, out IEnumerable<IMessageParser<TRawdata>>? parsers)
 #else
-        protected abstract bool TryResolveParsers(in TRawdata rawdata, [NotNullWhen(true)] out IEnumerable<IMessageParser<TRawdata>>? parsers);
+        protected virtual bool TryResolveParsers(in TRawdata rawdata, [NotNullWhen(true)] out IEnumerable<IMessageParser<TRawdata>>? parsers)
 #endif
+        {
+            parsers = ParserResolver.ResolveParsers(in rawdata);
+            return parsers != null;
+        }
     }
 }

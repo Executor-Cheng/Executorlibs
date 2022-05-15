@@ -97,8 +97,10 @@ namespace Executorlibs.Bilibili.Protocol.Builders
     {
         public static BilibiliDanmakuFrameworkBuilder AddBilibiliDanmakuFramework(this IServiceCollection services)
         {
-            return new BilibiliDanmakuFrameworkBuilder(services)
-                .AddDanmakuOptions();
+            BilibiliDanmakuFrameworkBuilder builder = new BilibiliDanmakuFrameworkBuilder(services);
+            builder.AddDanmakuOptions()
+                   .AddParser<UnknownMessageParser>();
+            return builder;
         }
     }
 }

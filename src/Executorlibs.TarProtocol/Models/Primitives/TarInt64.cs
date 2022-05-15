@@ -1,6 +1,5 @@
 using System;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using Executorlibs.TarProtocol.IO;
 
 namespace Executorlibs.TarProtocol.Models.Primitives

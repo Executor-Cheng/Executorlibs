@@ -5,8 +5,8 @@ namespace Executorlibs.Bilibili.Protocol.Models.General
 
     }
 
-    public class UnknownMessage : BilibiliMessage
+    public class UnknownMessage : BilibiliMessage, IUnknownMessage
     {
-        
+
     }
 }

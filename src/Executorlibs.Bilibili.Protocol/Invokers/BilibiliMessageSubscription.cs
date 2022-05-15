@@ -18,13 +18,11 @@ namespace Executorlibs.Bilibili.Protocol.Invokers
         {
             if (handlers.Count != 0)
             {
-                var expectedHandler = typeof(IContravarianceBilibiliMessageHandler<TMessage>);
-                var expectedInvarianceHandler = typeof(IInvarianceBilibiliMessageHandler<TMessage>);
                 for (LinkedListNode<IMessageHandler>? handlerNode = handlers.First; handlerNode != null; handlerNode = handlerNode.Next)
                 {
                     IMessageHandler handler = handlerNode.Value;
-                    if (expectedHandler.IsAssignableFrom(handler.GetType()) ||
-                        expectedInvarianceHandler.IsAssignableFrom(handler.GetType()))
+                    if (handler is IContravarianceBilibiliMessageHandler<TMessage> ||
+                        handler is IInvarianceBilibiliMessageHandler<TMessage>)
                     {
                         filtered.Add(handler);
                         handlers.Remove(handlerNode);

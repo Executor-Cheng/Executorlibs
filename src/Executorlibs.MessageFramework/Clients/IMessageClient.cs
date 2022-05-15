@@ -1,11 +1,10 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+using Executorlibs.MessageFramework.Handlers;
+using Executorlibs.MessageFramework.Invoking;
 
 namespace Executorlibs.MessageFramework.Clients
 {
-    public interface IMessageClient : IDisposable
+    public interface IMessageClient
     {
-
+        PluginResistration AddPlugin(IMessageHandler handler);
     }
 }
