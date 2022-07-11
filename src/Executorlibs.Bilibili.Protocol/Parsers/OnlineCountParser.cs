@@ -4,6 +4,14 @@ using Executorlibs.Bilibili.Protocol.Models.Danmaku;
 
 namespace Executorlibs.Bilibili.Protocol.Parsers
 {
+    public class OnlineCountParser : OnlineCountParser<IOnlineCountMessage, OnlineCountMessage>
+    {
+        /// <summary>
+        /// 初始化 <see cref="OnlineCountParser"/> 类的新实例
+        /// </summary>
+        public OnlineCountParser() { }
+    }
+
     public class OnlineCountParser<TMessage, TImpl> : BilibiliMappableMessageParser<TMessage> where TMessage : IOnlineCountMessage
                                                                                               where TImpl : OnlineCountMessage, TMessage, new()
     {
