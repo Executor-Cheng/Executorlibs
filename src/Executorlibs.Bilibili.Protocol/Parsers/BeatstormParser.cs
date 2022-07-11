@@ -13,7 +13,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     }
 
     public class BeatstormParser<TMessage, TImpl> : BilibiliMappableMessageParser<TMessage> where TMessage : IBeatstormMessage
-                                                                                     where TImpl : BeatstormMessage, TMessage, new()
+                                                                                            where TImpl : BeatstormMessage, TMessage, new()
     {
         private const string Command = "SPECIAL_GIFT";
 
@@ -48,6 +48,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
                 message.Content = data_39.GetProperty("content").GetString();
                 message.Count = data_39.GetProperty("num").GetInt32();
             }
+            message.Rawdata = root;
             message.Time = DateTime.Now;
             return message;
         }
