@@ -14,7 +14,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     }
 
     public class CutOffParser<TMessage, TImpl> : LiveManagementParser<TMessage, TImpl> where TMessage : ICutOffMessage
-                                                                                              where TImpl : LiveManagementMessage, TMessage, new()
+                                                                                       where TImpl : LiveManagementMessage, TMessage, new()
     {
         private const string Command = "CUT_OFF";
 
