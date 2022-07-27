@@ -33,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Executorlibs.AspNetCore.Ide
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Executorlibs.AspNetCore.Mvc", "src\Executorlibs.AspNetCore.Mvc\Executorlibs.AspNetCore.Mvc.csproj", "{D65C685A-7C8F-4087-8120-562F37686447}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Executorlibs.AspNetCore.Routing", "src\Executorlibs.AspNetCore.Routing\Executorlibs.AspNetCore.Routing.csproj", "{EADBCF69-B0C8-4CF9-ABE0-9D9FA8842B98}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{D65C685A-7C8F-4087-8120-562F37686447}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D65C685A-7C8F-4087-8120-562F37686447}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D65C685A-7C8F-4087-8120-562F37686447}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EADBCF69-B0C8-4CF9-ABE0-9D9FA8842B98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EADBCF69-B0C8-4CF9-ABE0-9D9FA8842B98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EADBCF69-B0C8-4CF9-ABE0-9D9FA8842B98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EADBCF69-B0C8-4CF9-ABE0-9D9FA8842B98}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
