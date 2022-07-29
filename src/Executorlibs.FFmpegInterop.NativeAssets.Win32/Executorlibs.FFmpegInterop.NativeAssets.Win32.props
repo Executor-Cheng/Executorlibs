@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+    <PropertyGroup>
+        <ShouldIncludeFFmpeg Condition=" '$(ShouldIncludeFFmpeg)' == '' ">True</ShouldIncludeFFmpeg>
+    </PropertyGroup>
+
+    <ItemGroup Condition="'$(ShouldIncludeFFmpeg)' != 'False'">
+        <_NativeFFmpegFile Include="$(MSBuildThisFileDirectory)..\..\runtimes\win-x64\native\*.dll" Dir="x64\"/>
+        <Content Include="@(_NativeFFmpegFile)" Link="%(Dir)%(Filename)%(Extension)" Visible="False" CopyToOutputDirectory="PreserveNewest"/>
+    </ItemGroup>
+</Project>
