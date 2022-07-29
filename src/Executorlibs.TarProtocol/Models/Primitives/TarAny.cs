@@ -40,7 +40,10 @@ namespace Executorlibs.TarProtocol.Models.Primitives
 
         public void WriteTo(ref TarWriter writer)
         {
-        
+            foreach (ITarType @object in Objects)
+            {
+                @object.WriteTo(ref writer);
+            }
         }
     }
 }

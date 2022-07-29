@@ -24,22 +24,36 @@ namespace Executorlibs.Shared.Extensions
         }
 
 #if !NETSTANDARD2_0
-        public static async ValueTask ReceiveFullyAsync(this Socket socket, Memory<byte> memory, CancellationToken token = default)
+#pragma warning disable CA2012 // Use ValueTasks correctly
+        public static ValueTask ReceiveFullyAsync(this Socket socket, Memory<byte> memory, CancellationToken token = default)
         {
-            while (true)
+            ValueTask<int> vt = socket.ReceiveAsync(memory, SocketFlags.None, token);
+            if (vt.IsCompletedSuccessfully)
             {
-                int n = await socket.ReceiveAsync(memory, SocketFlags.None, token);
-                if (n < 1)
+                int recved = vt.Result;
+                if (recved == memory.Length)
                 {
-                    throw new SocketException(10054);
+                    return default;
                 }
-                else if (n < memory.Length)
+                vt = new ValueTask<int>(recved);
+            }
+            return Await(socket, memory, vt, token);
+
+            static async ValueTask Await(Socket socket, Memory<byte> memory, ValueTask<int> recvTask, CancellationToken token)
+            {
+                while (true)
                 {
+                    int n = await recvTask;
+                    if (n < 1)
+                    {
+                        throw new SocketException((int)SocketError.ConnectionReset);
+                    }
+                    else if (n == memory.Length)
+                    {
+                        return;
+                    }
                     memory = memory[n..];
-                }
-                else
-                {
-                    return;
+                    recvTask = socket.ReceiveAsync(memory, SocketFlags.None, token);
                 }
             }
         }
@@ -56,15 +70,12 @@ namespace Executorlibs.Shared.Extensions
                     {
                         throw new SocketException(10054);
                     }
-                    else if (n < count)
-                    {
-                        offset += n;
-                        count -= n;
-                    }
-                    else
+                    else if (n == count)
                     {
                         return;
                     }
+                    offset += n;
+                    count -= n;
                 }
             }
             throw new NotSupportedException();
@@ -74,9 +85,9 @@ namespace Executorlibs.Shared.Extensions
         {
             if (MemoryMarshal.TryGetArray(memory, out ArraySegment<byte> segment))
             {
-                return new ValueTask<int>(Task.Factory.FromAsync(socket.BeginSend(segment.Array, segment.Offset, segment.Count, SocketFlags.None, null, null), socket.EndSend));
+                return new ValueTask<int>(Task.Factory.FromAsync(socket.BeginSend(segment.Array, segment.Offset, segment.Count, socketFlags, null, null), socket.EndSend));
             }
-            return new ValueTask<int>(Task.FromException<int>(new NotSupportedException()));
+            throw new NotSupportedException();
         }
 #endif
     }
