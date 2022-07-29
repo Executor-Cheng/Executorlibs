@@ -21,6 +21,8 @@ namespace Executorlibs.Shared.Extensions
 
         private static readonly MediaTypeHeaderValue DefaultJsonMediaType = new("application/json") { CharSet = "utf-8" };
 
+        private static readonly MediaTypeHeaderValue DefaultPlainType = new MediaTypeHeaderValue("text/plain") { CharSet = "utf-8" };
+
         /// <param name="client">The <see cref="HttpClient"/>.</param>
         /// <param name="method">The HTTP method.</param>
         /// <param name="uri">The Uri to request.</param>
@@ -178,7 +180,7 @@ namespace Executorlibs.Shared.Extensions
 #if !NETSTANDARD2_0
                 if (p.IsCompletedSuccessfully) // treats response as json
 #else
-                if (p.Status == TaskStatus.RanToCompletion)
+                if ((p.Status & (TaskStatus.RanToCompletion | TaskStatus.Canceled | TaskStatus.Faulted)) == TaskStatus.RanToCompletion)
 #endif
                 {
                     HttpContentHeaders headers = p.Result.Content.Headers;
@@ -195,6 +197,27 @@ namespace Executorlibs.Shared.Extensions
             }, TaskContinuationOptions.ExecuteSynchronously).Unwrap();
         }
 
+        /// <summary>
+        /// Sets Content-Type in response to text/plain; charset=utf-8.
+        /// </summary>
+        /// <param name="responseTask">An asynchronous operation that represents the HTTP response.</param>
+        public static Task<HttpResponseMessage> ForcePlain(this Task<HttpResponseMessage> responseTask)
+        {
+            return responseTask.ContinueWith(p =>
+            {
+#if !NETSTANDARD2_0
+                if (p.IsCompletedSuccessfully) // treats response as text/plain; charset=utf-8
+#else
+                if ((p.Status & (TaskStatus.RanToCompletion | TaskStatus.Canceled | TaskStatus.Faulted)) == TaskStatus.RanToCompletion)
+#endif
+                {
+                    HttpContentHeaders headers = p.Result.Content.Headers;
+                    headers.ContentType = DefaultPlainType;
+                }
+                return p;
+            }, TaskContinuationOptions.ExecuteSynchronously).Unwrap();
+        }
+
         public static Task<HttpResponseMessage> EnsureSuccessStatusCode(this Task<HttpResponseMessage> responseTask)
         {
             return responseTask.ContinueWith(p =>
@@ -202,7 +225,7 @@ namespace Executorlibs.Shared.Extensions
 #if !NETSTANDARD2_0
                 if (p.IsCompletedSuccessfully) // treats response as json
 #else
-                if (p.Status == TaskStatus.RanToCompletion)
+                if ((p.Status & (TaskStatus.RanToCompletion | TaskStatus.Canceled | TaskStatus.Faulted)) == TaskStatus.RanToCompletion)
 #endif
                 {
                     p.Result.EnsureSuccessStatusCode();

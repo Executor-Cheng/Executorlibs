@@ -1,28 +1,22 @@
-﻿using Newtonsoft.Json.Linq;
+using System.Text.Json;
 
 namespace Executorlibs.NeteaseMusic.Models
 {
     public class PlaylistInfo
     {
-        public long Id { get; set; }
+        public long Id { get; }
 
-        public string Name { get; set; }
+        public string? Name { get; }
 
-        public PlaylistInfo()
-        {
-
-        }
-
-        public PlaylistInfo(long id, string name)
+        public PlaylistInfo(long id, string? name)
         {
             Id = id;
             Name = name;
         }
 
-        public PlaylistInfo(JToken node)
+        public static PlaylistInfo Parse(JsonElement node)
         {
-            Id = node["id"].ToObject<long>();
-            Name = null;
+            return new PlaylistInfo(node.GetProperty("id").GetInt64(), null);
         }
     }
 }

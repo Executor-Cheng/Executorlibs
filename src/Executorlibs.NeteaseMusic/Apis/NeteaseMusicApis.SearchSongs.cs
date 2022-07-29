@@ -1,11 +1,11 @@
-﻿using ExtendNetease_DGJModule.Exceptions;
-using Executorlibs.NeteaseMusic.Models;
-using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Executorlibs.NeteaseMusic.Models;
+using Executorlibs.Shared.Exceptions;
 
 namespace Executorlibs.NeteaseMusic.Apis
 {
@@ -19,11 +19,12 @@ namespace Executorlibs.NeteaseMusic.Apis
         /// <param name="offset">偏移量</param>
         public static async Task<SongInfo[]> SearchSongsAsync(HttpClient client, string keywords, int pageSize = 30, int offset = 0, CancellationToken token = default)
         {
-            JObject root = (JObject)await SearchAsync(client, keywords, SearchType.Song, pageSize, offset, token).ConfigureAwait(false);
-            if (root["code"].ToObject<int>() == 200)
+            using JsonDocument j = await SearchAsync(client, keywords, SearchType.Song, pageSize, offset, token).ConfigureAwait(false);
+            JsonElement root = j.RootElement;
+            if (root.GetProperty("code").GetInt32() == 200)
             {
-                SongInfo[] result = root["result"]["songs"].Select(p => new SongInfo(p)).ToArray();
-                IDictionary<long, bool> canPlayDic = await CheckMusicStatusAsync(client, result.Select(p => p.Id).ToArray(), token);
+                SongInfo[] result = root.GetProperty("result").GetProperty("songs").EnumerateArray().Select(SongInfo.Parse).ToArray();
+                IDictionary<long, bool> canPlayDic = await CheckMusicStatusAsync(client, result.Select(p => p.Id).ToArray(), Quality.SuperQuality, token);
                 foreach (SongInfo song in result)
                 {
                     if (canPlayDic.TryGetValue(song.Id, out bool canPlay))

@@ -1,12 +1,13 @@
-﻿using ExtendNetease_DGJModule.Exceptions;
-using ExtendNetease_DGJModule.Extensions;
-using Executorlibs.NeteaseMusic.Models;
-using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Executorlibs.NeteaseMusic.Exceptions;
+using Executorlibs.NeteaseMusic.Models;
+using Executorlibs.Shared.Exceptions;
+using Executorlibs.Shared.Extensions;
 
 namespace Executorlibs.NeteaseMusic.Apis
 {
@@ -27,14 +28,15 @@ namespace Executorlibs.NeteaseMusic.Apis
                 new KeyValuePair<string, string>("n", "100000"),
                 new KeyValuePair<string, string>("s", "8")
             };
-            JObject j = (JObject)await client.PostAsync("https://music.163.com/api/v6/playlist/detail", new FormUrlEncodedContent(payload), token).GetJsonAsync(token).ConfigureAwait(false);
-            int code = j["code"].ToObject<int>();
+            using JsonDocument j = await client.PostAsync("https://music.163.com/api/v6/playlist/detail", new FormUrlEncodedContent(payload), token).GetJsonAsync(token).ConfigureAwait(false);
+            JsonElement root = j.RootElement;
+            int code = root.GetProperty("code").GetInt32();
             switch (code)
             {
                 case 200:
                     {
-                        SongInfo[] result = j["playlist"]["tracks"].Select(p => new SongInfo(p)).ToArray();
-                        IDictionary<long, bool> canPlayDic = await CheckMusicStatusAsync(client, result.Select(p => p.Id).ToArray(), token);
+                        SongInfo[] result = root.GetProperty("playlist").GetProperty("tracks").EnumerateArray().Select(SongInfo.Parse).ToArray();
+                        IDictionary<long, bool> canPlayDic = await CheckMusicStatusAsync(client, result.Select(p => p.Id).ToArray(), Quality.SuperQuality, token);
                         foreach (SongInfo song in result)
                         {
                             if (canPlayDic.TryGetValue(song.Id, out bool canPlay))
@@ -54,7 +56,7 @@ namespace Executorlibs.NeteaseMusic.Apis
                     }
                 default:
                     {
-                        throw new UnknownResponseException(j);
+                        throw new UnknownResponseException(root);
                     }
             }
         }

@@ -1,4 +1,4 @@
-﻿namespace Executorlibs.NeteaseMusic.Models
+namespace Executorlibs.NeteaseMusic.Models
 {
     public enum SearchType
     {

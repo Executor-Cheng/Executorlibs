@@ -1,10 +1,11 @@
-﻿using ExtendNetease_DGJModule.Extensions;
-using Executorlibs.NeteaseMusic.Models;
-using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Executorlibs.NeteaseMusic.Crypto;
+using Executorlibs.NeteaseMusic.Models;
+using Executorlibs.Shared.Extensions;
 
 namespace Executorlibs.NeteaseMusic.Apis
 {
@@ -13,11 +14,12 @@ namespace Executorlibs.NeteaseMusic.Apis
         /// <summary>
         /// 获取版权以及下载链接
         /// </summary>
-        /// <param name="session"></param>
-        /// <param name="bitRate"></param>
+        /// <param name="client"></param>
         /// <param name="songIds"></param>
+        /// <param name="bitRate"></param>
+        /// <param name="token"></param>
         /// <returns></returns>
-        private static Task<JToken> GetPlayerUrlResponseAsync(HttpClient client, long[] songIds, Quality bitRate = Quality.SuperQuality, CancellationToken token = default)
+        private static Task<JsonDocument> GetPlayerUrlResponseAsync(HttpClient client, long[] songIds, Quality bitRate = Quality.SuperQuality, CancellationToken token = default)
         {
             IDictionary<string, object> data = new Dictionary<string, object>
             {

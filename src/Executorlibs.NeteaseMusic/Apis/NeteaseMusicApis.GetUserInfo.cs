@@ -1,4 +1,4 @@
-﻿using ExtendNetease_DGJModule.Clients;
+using ExtendNetease_DGJModule.Clients;
 using ExtendNetease_DGJModule.Exceptions;
 using ExtendNetease_DGJModule.Extensions;
 using Executorlibs.NeteaseMusic.Models;
@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Executorlibs.Shared.Extensions;
 
 namespace Executorlibs.NeteaseMusic.Apis
 {

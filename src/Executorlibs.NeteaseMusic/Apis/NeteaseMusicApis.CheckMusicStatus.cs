@@ -18,7 +18,7 @@ namespace Executorlibs.NeteaseMusic.Apis
         /// <returns></returns>
         public static async Task<IDictionary<long, bool>> CheckMusicStatusAsync(HttpClient client, long[] songIds, Quality quality, CancellationToken token = default)
         {
-            JsonDocument j = await GetPlayerUrlResponseAsync(client, songIds, Quality.SuperQuality, token).ConfigureAwait(false);
+            using JsonDocument j = await GetPlayerUrlResponseAsync(client, songIds, Quality.SuperQuality, token).ConfigureAwait(false);
             JsonElement root = j.RootElement;
             if (root.GetProperty("code").GetInt32() == 200)
             {

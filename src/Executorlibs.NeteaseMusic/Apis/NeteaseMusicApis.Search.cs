@@ -1,10 +1,11 @@
-﻿using ExtendNetease_DGJModule.Extensions;
-using Executorlibs.NeteaseMusic.Models;
-using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Executorlibs.NeteaseMusic.Crypto;
+using Executorlibs.NeteaseMusic.Models;
+using Executorlibs.Shared.Extensions;
 
 namespace Executorlibs.NeteaseMusic.Apis
 {
@@ -18,7 +19,7 @@ namespace Executorlibs.NeteaseMusic.Apis
         /// <param name="pageSize">返回的json中,实体个数上限</param>
         /// <param name="offset">偏移量</param>
         /// <returns>服务器返回的Json</returns>
-        public static Task<JToken> SearchAsync(HttpClient client, string keyWords, SearchType type, int pageSize = 30, int offset = 0, CancellationToken token = default)
+        public static Task<JsonDocument> SearchAsync(HttpClient client, string keyWords, SearchType type, int pageSize = 30, int offset = 0, CancellationToken token = default)
         {
             IDictionary<string, object> data = new Dictionary<string, object>
             {

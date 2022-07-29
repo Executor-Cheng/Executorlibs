@@ -1,19 +1,25 @@
-﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
+using System.Text.Json;
 
 namespace Executorlibs.NeteaseMusic.Models
 {
     public class SongInfo
     {
         public long Id { get; }
+
         public string Name { get; }
+
         public ArtistInfo[] Artists { get; }
-        public string ArtistNames => Artists == null ? null : string.Join(",", Artists.Select(p => p.Name));
+
         public AlbumInfo Album { get; }
+
         public TimeSpan Duration { get; }
+
         public bool CanPlay { get; set; }
+
         public bool NeedPaymentToDownload { get; } // Fee == 8 | > 0
+
         public SongInfo(long id, string name, ArtistInfo[] artists, AlbumInfo album, TimeSpan duration, bool needPaymentToDownload)
         {
             Id = id;
@@ -23,9 +29,18 @@ namespace Executorlibs.NeteaseMusic.Models
             Duration = duration;
             NeedPaymentToDownload = needPaymentToDownload;
         }
-        public SongInfo(JToken jt) : this(jt["id"].ToObject<long>(), jt["name"].ToString(), (jt["artists"] ?? jt["ar"]).Select(p => new ArtistInfo(p)).ToArray(), new AlbumInfo(jt["album"] ?? jt["al"]), TimeSpan.FromMilliseconds((jt["duration"] ?? jt["dt"]).ToObject<double>()), jt["fee"].ToObject<bool>())
-        {
 
+        public static SongInfo Parse(JsonElement node)
+        {
+            if (!node.TryGetProperty("album", out JsonElement albumNode))
+            {
+                albumNode = node.GetProperty("al");
+            }
+            if (!node.TryGetProperty("duration", out JsonElement durationNode))
+            {
+                durationNode = node.GetProperty("dt");
+            }
+            return new SongInfo(node.GetProperty("id").GetInt64(), node.GetProperty("name").GetString()!, node.EnumerateArray().Select(ArtistInfo.Parse).ToArray(), AlbumInfo.Parse(albumNode), TimeSpan.FromMilliseconds(durationNode.GetDouble()), node.GetProperty("fee").GetInt32() != 0);
         }
     }
 }
