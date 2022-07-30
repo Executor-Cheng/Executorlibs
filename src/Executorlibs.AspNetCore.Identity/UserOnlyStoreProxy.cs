@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
+#pragma warning disable CS8613 // Nullability of reference types in return type doesn't match implicitly implemented member.
 namespace Executorlibs.AspNetCore.Identity
 {
     internal sealed class UserOnlyStoreProxy<TUser, TContext, TKey> : UserOnlyStore<TUser, TContext, TKey>, IUserStore<TUser, TContext>

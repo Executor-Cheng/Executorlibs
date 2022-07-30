@@ -11,7 +11,7 @@ namespace Executorlibs.NeteaseMusic.Exceptions
             PlaylistId = playlistId;
         }
 
-        protected PlaylistException(long playlistId, string message) : base(message)
+        protected PlaylistException(long playlistId, string? message) : base(message)
         {
             
         }

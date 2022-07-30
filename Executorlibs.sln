@@ -27,6 +27,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Executorlibs.Huya.Protocol"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Executorlibs.NeteaseMusic", "src\Executorlibs.NeteaseMusic\Executorlibs.NeteaseMusic.csproj", "{3C696DBC-BA29-46B0-9CD8-74809FAF312E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Executorlibs.FFmpegInterop", "src\Executorlibs.FFmpegInterop\Executorlibs.FFmpegInterop.csproj", "{40DFD5EC-B687-4182-B7EE-53425962B7AF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Executorlibs.AspNetCore.Identity", "src\Executorlibs.AspNetCore.Identity\Executorlibs.AspNetCore.Identity.csproj", "{646CA865-4676-43B2-8E16-A4319B749043}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Executorlibs.AspNetCore.Mvc", "src\Executorlibs.AspNetCore.Mvc\Executorlibs.AspNetCore.Mvc.csproj", "{D65C685A-7C8F-4087-8120-562F37686447}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +75,18 @@ Global
 		{3C696DBC-BA29-46B0-9CD8-74809FAF312E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C696DBC-BA29-46B0-9CD8-74809FAF312E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C696DBC-BA29-46B0-9CD8-74809FAF312E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40DFD5EC-B687-4182-B7EE-53425962B7AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40DFD5EC-B687-4182-B7EE-53425962B7AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40DFD5EC-B687-4182-B7EE-53425962B7AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40DFD5EC-B687-4182-B7EE-53425962B7AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{646CA865-4676-43B2-8E16-A4319B749043}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{646CA865-4676-43B2-8E16-A4319B749043}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{646CA865-4676-43B2-8E16-A4319B749043}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{646CA865-4676-43B2-8E16-A4319B749043}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D65C685A-7C8F-4087-8120-562F37686447}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D65C685A-7C8F-4087-8120-562F37686447}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D65C685A-7C8F-4087-8120-562F37686447}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D65C685A-7C8F-4087-8120-562F37686447}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

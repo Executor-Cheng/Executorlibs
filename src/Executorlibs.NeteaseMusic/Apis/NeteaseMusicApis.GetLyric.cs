@@ -7,6 +7,9 @@ using Executorlibs.NeteaseMusic.Models;
 using Executorlibs.Shared.Exceptions;
 using Executorlibs.Shared.Extensions;
 
+#if NETSTANDARD2_0
+#pragma warning disable CS8604 // Possible null reference argument.
+#endif
 namespace Executorlibs.NeteaseMusic.Apis
 {
     public static partial class NeteaseMusicApis
@@ -18,13 +21,13 @@ namespace Executorlibs.NeteaseMusic.Apis
         /// <param name="songId">单曲ID</param>
         public static async Task<LyricInfo?> GetLyricAsync(HttpClientv2 client, long songId, CancellationToken token = default)
         {
-            KeyValuePair<string, string>[] payload = new KeyValuePair<string, string>[5]
+            KeyValuePair<string?, string?>[] payload = new KeyValuePair<string?, string?>[5]
             {
-                new KeyValuePair<string, string>("id", songId.ToString()),
-                new KeyValuePair<string, string>("lv", "-1"),
-                new KeyValuePair<string, string>("tv", "-1"),
-                new KeyValuePair<string, string>("rv", "-1"),
-                new KeyValuePair<string, string>("kv", "-1")
+                new KeyValuePair<string?, string?>("id", songId.ToString()),
+                new KeyValuePair<string?, string?>("lv", "-1"),
+                new KeyValuePair<string?, string?>("tv", "-1"),
+                new KeyValuePair<string?, string?>("rv", "-1"),
+                new KeyValuePair<string?, string?>("kv", "-1")
             };
             using JsonDocument j = await client.PostAsync("https://music.163.com/api/song/lyric?_nmclfl=1", new FormUrlEncodedContent(payload), token).GetJsonAsync(token).ConfigureAwait(false);
             JsonElement root = j.RootElement;
