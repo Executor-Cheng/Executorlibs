@@ -23,16 +23,7 @@ namespace Executorlibs.NeteaseMusic.Apis
             JsonElement root = j.RootElement;
             if (root.GetProperty("code").GetInt32() == 200)
             {
-                SongInfo[] result = root.GetProperty("result").GetProperty("songs").EnumerateArray().Select(SongInfo.Parse).ToArray();
-                IDictionary<long, bool> canPlayDic = await CheckMusicStatusAsync(client, result.Select(p => p.Id).ToArray(), Quality.SuperQuality, token);
-                foreach (SongInfo song in result)
-                {
-                    if (canPlayDic.TryGetValue(song.Id, out bool canPlay))
-                    {
-                        song.CanPlay = canPlay;
-                    }
-                }
-                return result;
+                return root.GetProperty("result").GetProperty("songs").EnumerateArray().Select(SongInfo.Parse).ToArray();
             }
             throw new UnknownResponseException(root);
         }

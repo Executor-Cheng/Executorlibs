@@ -19,6 +19,7 @@ namespace Executorlibs.NeteaseMusic.Crypto
             _parameters = parameters;
         }
 
+#if NETSTANDARD2_0
         public override byte[] Encrypt(byte[] data, RSAEncryptionPadding padding)
         {
             if (_parameters.Modulus == null ||
@@ -26,12 +27,12 @@ namespace Executorlibs.NeteaseMusic.Crypto
             {
                 throw new InvalidOperationException();
             }
-            byte[] mb = new byte[_parameters.Modulus.Length],
-                   eb = new byte[_parameters.Exponent.Length],
-                   db = new byte[data.Length];
-            Unsafe.CopyBlock(ref mb[0], ref _parameters.Modulus[0], (uint)mb.Length);
-            Unsafe.CopyBlock(ref eb[0], ref _parameters.Exponent[0], (uint)eb.Length);
-            Unsafe.CopyBlock(ref db[0], ref data[0], (uint)data.Length);
+            byte[] mb = new byte[_parameters.Modulus.Length + 1],
+                   eb = new byte[_parameters.Exponent.Length + 1],
+                   db = new byte[data.Length + 1];
+            Unsafe.CopyBlock(ref mb[1], ref _parameters.Modulus[0], (uint)mb.Length);
+            Unsafe.CopyBlock(ref eb[1], ref _parameters.Exponent[0], (uint)eb.Length);
+            Unsafe.CopyBlock(ref db[1], ref data[0], (uint)data.Length);
             Array.Reverse(mb);
             Array.Reverse(eb);
             Array.Reverse(db);
@@ -43,6 +44,21 @@ namespace Executorlibs.NeteaseMusic.Crypto
             Array.Reverse(buffer);
             return buffer;
         }
+#else
+        public override byte[] Encrypt(byte[] data, RSAEncryptionPadding padding)
+        {
+            if (_parameters.Modulus == null ||
+                _parameters.Exponent == null)
+            {
+                throw new InvalidOperationException();
+            }
+            BigInteger m = new BigInteger(_parameters.Modulus, true, true),
+                       e = new BigInteger(_parameters.Exponent, true, true),
+                       d = new BigInteger(data, true, true),
+                       result = BigInteger.ModPow(d, e, m);
+            return result.ToByteArray(true, true);
+        }
+#endif
 
         public override byte[] Decrypt(byte[] data, RSAEncryptionPadding padding)
         {
