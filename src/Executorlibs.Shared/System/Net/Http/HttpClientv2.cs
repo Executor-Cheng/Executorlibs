@@ -2,7 +2,7 @@ namespace System.Net.Http
 {
     public abstract class HttpClientv2 : HttpClient
     {
-        private readonly HttpMessageHandler _handler;
+        protected readonly HttpMessageHandler _handler;
 
         public CookieContainer Cookie
         {

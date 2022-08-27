@@ -29,7 +29,7 @@ namespace Executorlibs.Shared.Helpers
                     }
                 case 0x82:
                     {
-                        BinaryPrimitives.ReverseEndianness(*(short*)localKeyPtr);
+                        count = BinaryPrimitives.ReverseEndianness(*(short*)localKeyPtr);
                         localKeyPtr += 2;
                         break;
                     }

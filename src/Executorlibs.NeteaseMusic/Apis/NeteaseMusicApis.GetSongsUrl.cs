@@ -32,9 +32,9 @@ namespace Executorlibs.NeteaseMusic.Apis
         /// <param name="songIds">单曲IDs</param>
         public static async Task<DownloadSongInfo[]> GetSongsUrlAsync(HttpClient client, long[] songIds, Quality bitRate = Quality.SuperQuality, CancellationToken token = default)
         {
-            using JsonDocument j = await GetPlayerUrlResponseAsync(client, songIds, bitRate, token).ConfigureAwait(false);
+            using JsonDocument j = await GetWebPlayerUrlResponseAsync(client, songIds, bitRate, token).ConfigureAwait(false);
             JsonElement root = j.RootElement;
-            return root.GetProperty("data").EnumerateArray().Select(DownloadSongInfo.Parse).ToArray();
+            return root.GetProperty("data").EnumerateArray().Where(p => p.GetProperty("code").GetInt32() == 200).Select(DownloadSongInfo.Parse).ToArray();
         }
     }
 }

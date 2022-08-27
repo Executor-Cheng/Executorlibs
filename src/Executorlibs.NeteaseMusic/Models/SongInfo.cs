@@ -27,6 +27,7 @@ namespace Executorlibs.NeteaseMusic.Models
             Artists = artists;
             Album = album;
             Duration = duration;
+            HasCopyright = hasCopyright;
             NeedPaymentToDownload = needPaymentToDownload;
         }
 

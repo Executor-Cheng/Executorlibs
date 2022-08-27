@@ -1,7 +1,9 @@
 using System;
 using System.Numerics;
-using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
+#if NETSTANDARD2_0
+using System.Runtime.CompilerServices;
+#endif
 
 namespace Executorlibs.NeteaseMusic.Crypto
 {
@@ -30,8 +32,8 @@ namespace Executorlibs.NeteaseMusic.Crypto
             byte[] mb = new byte[_parameters.Modulus.Length + 1],
                    eb = new byte[_parameters.Exponent.Length + 1],
                    db = new byte[data.Length + 1];
-            Unsafe.CopyBlock(ref mb[1], ref _parameters.Modulus[0], (uint)mb.Length);
-            Unsafe.CopyBlock(ref eb[1], ref _parameters.Exponent[0], (uint)eb.Length);
+            Unsafe.CopyBlock(ref mb[1], ref _parameters.Modulus[0], (uint)_parameters.Modulus.Length);
+            Unsafe.CopyBlock(ref eb[1], ref _parameters.Exponent[0], (uint)_parameters.Exponent.Length);
             Unsafe.CopyBlock(ref db[1], ref data[0], (uint)data.Length);
             Array.Reverse(mb);
             Array.Reverse(eb);
@@ -41,6 +43,10 @@ namespace Executorlibs.NeteaseMusic.Crypto
                        d = new BigInteger(db),
                        result = BigInteger.ModPow(d, e, m);
             byte[] buffer = result.ToByteArray();
+            if (buffer[buffer.Length - 1] == 0)
+            {
+                Array.Resize(ref buffer, buffer.Length - 1);
+            }
             Array.Reverse(buffer);
             return buffer;
         }
