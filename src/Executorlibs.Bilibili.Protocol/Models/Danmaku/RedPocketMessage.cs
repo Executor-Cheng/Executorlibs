@@ -13,7 +13,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 
         string Sender { get; }
 
-        int SenderId { get; }
+        long SenderId { get; }
 
         TimeSpan Duration { get; }
     }
@@ -28,7 +28,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 
         public string Sender { get; set; } = null!;
 
-        public int SenderId { get; set; }
+        public long SenderId { get; set; }
 
         public TimeSpan Duration { get; set; }
     }

@@ -32,7 +32,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
                 Type = (InteractType)data.GetProperty("msg_type").GetInt32(),
                 UserType = (InteractUserType)data.GetProperty("identities").EnumerateArray().Select(p => p.GetInt32()).Aggregate(0, (t, c) => t | 1 << (c - 1)),
                 UserName = data.GetProperty("uname").GetString()!,
-                UserId = data.GetProperty("uid").GetInt32(),
+                UserId = data.GetProperty("uid").GetInt64(),
                 Time = Utils.UnixTime2DateTime(data.GetProperty("timestamp").GetInt32()),
                 Rawdata = root
             };

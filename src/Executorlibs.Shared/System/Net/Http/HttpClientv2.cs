@@ -1,31 +1,47 @@
-using System.Reflection;
-
 namespace System.Net.Http
 {
     public abstract class HttpClientv2 : HttpClient
     {
-        public readonly HttpClientHandler _Handler;
+        protected readonly HttpMessageHandler _handler;
 
-        public CookieContainer Cookie => _Handler.CookieContainer;
-
-        public HttpClientv2()
+        public CookieContainer Cookie
         {
-            _Handler = (HttpClientHandler)typeof(HttpMessageInvoker).GetField("_handler", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(this)!;
+            get => _handler switch
+            {
+                HttpClientHandler clientHandler => clientHandler.CookieContainer,
+#if NETCOREAPP2_1_OR_GREATER
+                SocketsHttpHandler socketsHandler => socketsHandler.CookieContainer,
+#endif
+                _ => throw new NotSupportedException()
+            };
+            set => _ = _handler switch
+            {
+                HttpClientHandler clientHandler => clientHandler.CookieContainer = value,
+#if NETCOREAPP2_1_OR_GREATER
+                SocketsHttpHandler socketsHandler => socketsHandler.CookieContainer = value,
+#endif
+                _ => throw new NotSupportedException()
+            };
+        }
+
+        public HttpClientv2() : this(new HttpClientHandler())
+        {
+
         }
 
         public HttpClientv2(HttpMessageHandler handler) : base(handler)
         {
-            _Handler = (HttpClientHandler)handler;
+            _handler = handler;
         }
 
         public void ClearCookie()
         {
-            _Handler.CookieContainer = new CookieContainer();
+            Cookie = new CookieContainer();
         }
 
         public void SetCookie(Uri uri, string cookie)
         {
-            _Handler.CookieContainer.SetCookies(uri, cookie);
+            Cookie.SetCookies(uri, cookie);
         }
     }
 }

@@ -73,13 +73,11 @@ namespace Executorlibs.MessageFramework.Invoking
         {
             if (handlers.Count != 0)
             {
-                var expectedHandler = typeof(IContravarianceMessageHandler<TClient, TMessage>);
-                var expectedInvarianceHandler = typeof(IInvarianceMessageHandler<TClient, TMessage>);
                 for (LinkedListNode<IMessageHandler>? handlerNode = handlers.First; handlerNode != null; handlerNode = handlerNode.Next)
                 {
                     IMessageHandler handler = handlerNode.Value;
-                    if (expectedHandler.IsAssignableFrom(handler.GetType()) ||
-                        expectedInvarianceHandler.IsAssignableFrom(handler.GetType()))
+                    if (handler is IContravarianceMessageHandler<TClient, TMessage> ||
+                        handler is IInvarianceMessageHandler<TClient, TMessage>)
                     {
                         filtered.Add(handler);
                         handlers.Remove(handlerNode);

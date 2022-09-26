@@ -8,7 +8,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 
         int AwardNum { get; }
 
-        (string, int)[] AwardUsers { get; }
+        (string, long)[] AwardUsers { get; }
     }
 
     public abstract class CommonLotteryResultMessage : BilibiliMessage, ICommonLotteryResultMessage
@@ -17,6 +17,6 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 
         public int AwardNum { get; set; }
 
-        public (string, int)[] AwardUsers { get; set; } = null!;
+        public (string, long)[] AwardUsers { get; set; } = null!;
     }
 }

@@ -42,7 +42,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
             return new TImpl
             {
                 UserName = data.GetProperty("uname").GetString()!,
-                UserId = data.GetProperty("uid").GetInt32(),
+                UserId = data.GetProperty("uid").GetInt64(),
                 LordType = data.TryGetProperty("svip", out JsonElement svip) && svip.GetInt32() == 1 ? LordType.Yearly : LordType.Monthly,
                 IsAdmin = data.TryGetProperty("is_admin", out JsonElement admin) ? admin.GetBoolean() :
                           data.TryGetProperty("isadmin", out admin) ? admin.GetInt32() == 1 :

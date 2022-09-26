@@ -47,7 +47,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
             {
                 Time = Utils.UnixTime2DateTime(data.GetProperty("start_time").GetInt32()),
                 Comment = data.GetProperty("message").GetString()!,
-                UserId = userId.ValueKind == JsonValueKind.Number ? userId.GetInt32() : int.Parse(userId.GetString()!),
+                UserId = userId.ValueKind == JsonValueKind.Number ? userId.GetInt64() : int.Parse(userId.GetString()!),
                 UserName = user.GetProperty("uname").GetString()!,
                 IsAdmin = user.GetProperty("manager").GetInt32() == 1,
                 LordType = user.GetProperty("is_vip").GetInt32() == 1 ? (user.GetProperty("is_svip").GetInt32() == 1 ? LordType.Yearly : LordType.Monthly) : LordType.None,
@@ -56,7 +56,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
                     Level = medal.GetProperty("medal_level").GetInt32(),
                     Name = medal.GetProperty("medal_name").GetString()!,
                     Master = medal.GetProperty("anchor_uname").GetString()!,
-                    MasterId = medal.GetProperty("target_id").GetInt32(),
+                    MasterId = medal.GetProperty("target_id").GetInt64(),
                     RoomId = medal.GetProperty("anchor_roomid").GetInt32(),
 #if NETSTANDARD2_0
                     Color = medalColor.ValueKind == JsonValueKind.Number ? medalColor.GetInt32() : int.Parse(medalColor.GetString()!.Substring(1), NumberStyles.HexNumber),

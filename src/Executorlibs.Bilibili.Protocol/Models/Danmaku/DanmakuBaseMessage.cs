@@ -13,7 +13,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
     /// <item><see cref="IUserMessage"/></item>
     /// </list>
     /// </remarks>
-    public interface IDanmakuBaseMessage : IDanmakuBaseMessage<JsonElement, int>, IUserMessage
+    public interface IDanmakuBaseMessage : IDanmakuBaseMessage<JsonElement, long>, IUserMessage
     {
         /// <summary>
         /// 弹幕Token

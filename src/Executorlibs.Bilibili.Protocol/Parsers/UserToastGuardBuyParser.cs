@@ -44,7 +44,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
             TImpl message = new TImpl
             {
                 UserName = data.GetProperty("username").GetString()!,
-                UserId = data.GetProperty("uid").GetInt32(),
+                UserId = data.GetProperty("uid").GetInt64(),
                 Time = Utils.UnixTime2DateTime(data.GetProperty("start_time").GetInt32()),
                 GiftCount = data.GetProperty("num").GetInt32(),
                 GiftSeedPrice = data.GetProperty("price").GetInt32(),

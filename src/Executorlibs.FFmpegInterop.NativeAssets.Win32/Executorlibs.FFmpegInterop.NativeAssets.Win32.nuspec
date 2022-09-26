@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package>
+    <metadata>
+        <id>Executorlibs.FFmpegInterop.NativeAssets.Win32</id>
+        <title>Executorlibs.FFmpegInterop - Native Assets for Win32</title>
+        <version>5.0.0</version>
+        <description>FFmpeg动态链接库</description>
+        <summary>FFmpeg动态链接库</summary>
+        <authors>Executor</authors>
+        <copyright>Copyright © Executor 2022</copyright>
+        <projectUrl>https://github.com/Executor-Cheng/Executorlibs</projectUrl>
+        <requireLicenseAcceptance>true</requireLicenseAcceptance>
+        <license type="expression">GPL-3.0-or-later</license>
+
+        <dependencies>
+            <group targetFramework="net461"/>
+            <group targetFramework="net462"/>
+            <group targetFramework="netstandard2.0"/>
+        </dependencies>
+    </metadata>
+    
+    <files>
+        <file src="runtimes/win-x64/native/avcodec-59.dll" target="runtimes/win-x64/native/"/>
+        <file src="runtimes/win-x64/native/avdevice-59.dll" target="runtimes/win-x64/native/"/>
+        <file src="runtimes/win-x64/native/avfilter-8.dll" target="runtimes/win-x64/native/"/>
+        <file src="runtimes/win-x64/native/avformat-59.dll" target="runtimes/win-x64/native/"/>
+        <file src="runtimes/win-x64/native/avutil-57.dll" target="runtimes/win-x64/native/"/>
+        <file src="runtimes/win-x64/native/postproc-56.dll" target="runtimes/win-x64/native/"/>
+        <file src="runtimes/win-x64/native/swresample-4.dll" target="runtimes/win-x64/native/"/>
+        <file src="runtimes/win-x64/native/swscale-6.dll" target="runtimes/win-x64/native/"/>
+        <file src="Executorlibs.FFmpegInterop.NativeAssets.Win32.props" target="build/net461/"/>
+        <file src="Executorlibs.FFmpegInterop.NativeAssets.Win32.props" target="buildTransitive/net461/"/>
+        <file src="Executorlibs.FFmpegInterop.NativeAssets.Win32.props" target="build/net462/"/>
+        <file src="Executorlibs.FFmpegInterop.NativeAssets.Win32.props" target="buildTransitive/net462/"/>
+
+        <file src="_._" target="lib/net461/_._" />
+        <file src="_._" target="lib/net462/_._" />
+        <file src="_._" target="lib/netstandard2.0/_._" />
+    </files>
+</package>

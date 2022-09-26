@@ -17,7 +17,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
     /// </list>
     /// </remarks>
     [RegisterBilibiliParser(typeof(UserMutedParser))]
-    public interface IUserMutedMessage : IUserMutedMessage<JsonElement, int>, IUserMessage
+    public interface IUserMutedMessage : IUserMutedMessage<JsonElement, long>, IUserMessage
     {
         /// <summary>
         /// 是否为主播操作的禁言

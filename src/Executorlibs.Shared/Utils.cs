@@ -1,6 +1,7 @@
 using System;
 #if !NET6_0_OR_GREATER
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 #endif
@@ -35,23 +36,22 @@ namespace Executorlibs.Shared
         {
             JsonDocument documentRef = Unsafe.As<JsonElement, JsonDocument>(ref element);
             int idxPtr = Unsafe.AddByteOffset(ref Unsafe.As<JsonElement, int>(ref element), new IntPtr(IntPtr.Size));
-            ReadOnlyMemory<byte> memory = GetRawdata(documentRef, idxPtr, true);
+            ReadOnlyMemory<byte> memory = _jsonDocumentGetRawdataDelegate(documentRef, idxPtr, true);
             return JsonSerializer.Deserialize<T>(memory.Span, options)!;
         }
 
-        private static readonly unsafe delegate*<JsonDocument, void*, int, bool, ref ReadOnlyMemory<byte>> _jsonDocumentGetRawdataPtr = (delegate*<JsonDocument, void*, int, bool, ref ReadOnlyMemory<byte>>)(IntPtr)typeof(Delegate).GetField("_methodPtr", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(typeof(JsonDocument).GetMethod("GetRawValue", BindingFlags.NonPublic | BindingFlags.Instance)!.CreateDelegate(typeof(Func<int, bool, ReadOnlyMemory<byte>>), null))!;
-        //                                            ^          ^     ^     ^            ^
-        //                                            |          |     |     |            \-- ret
-        //                                            |          |     |     \-- includeQuotes
-        //                                            |          |     \-- idx
-        //                                            \-- this   \-- &j
-        // 751.1ns -> 577.1ns (-174ns, 76.83%) Alloc: -120B per invocation
-        // (调用实例方法, 且不用什么MethodInfo.Invoke, 还有什么Delegate。不同方法会有不同的参数列表, 请结合实际) 
+        private static readonly Func<JsonDocument, int, bool, ReadOnlyMemory<byte>> _jsonDocumentGetRawdataDelegate;
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static unsafe ReadOnlyMemory<byte> GetRawdata(JsonDocument j, int idx, bool includeQuotes)
+        static unsafe Utils()
         {
-            return _jsonDocumentGetRawdataPtr(j, Unsafe.AsPointer(ref j), idx, true);
+            DynamicMethod method = new DynamicMethod("", typeof(ReadOnlyMemory<byte>), new Type[] { typeof(JsonDocument), typeof(int), typeof(bool) }, typeof(JsonDocument), true);
+            ILGenerator generator = method.GetILGenerator();
+            generator.Emit(OpCodes.Ldarg_0);
+            generator.Emit(OpCodes.Ldarg_1);
+            generator.Emit(OpCodes.Ldarg_2);
+            generator.Emit(OpCodes.Call, typeof(JsonDocument).GetMethod("GetRawValue", BindingFlags.NonPublic | BindingFlags.Instance)!);
+            generator.Emit(OpCodes.Ret);
+            _jsonDocumentGetRawdataDelegate = (Func<JsonDocument, int, bool, ReadOnlyMemory<byte>>)method.CreateDelegate(typeof(Func<JsonDocument, int, bool, ReadOnlyMemory<byte>>));
         }
 #endif
     }

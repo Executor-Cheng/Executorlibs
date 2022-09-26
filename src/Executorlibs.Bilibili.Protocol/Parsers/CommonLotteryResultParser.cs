@@ -25,7 +25,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
                 Id = data.GetProperty("id").GetInt32(),
                 AwardName = data.GetProperty("award_name").GetString()!,
                 AwardNum = data.GetProperty("award_num").GetInt32(),
-                AwardUsers = data.GetProperty("award_users").EnumerateArray().Select(p => (p.GetProperty("uname").GetString()!, p.GetProperty("uid").GetInt32())).ToArray(),
+                AwardUsers = data.GetProperty("award_users").EnumerateArray().Select(p => (p.GetProperty("uname").GetString()!, p.GetProperty("uid").GetInt64())).ToArray(),
                 Time = DateTime.Now,
                 Rawdata = root
             };
