@@ -40,12 +40,12 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
         {
             JsonElement data = root.GetProperty("data"),
                         medal = data.GetProperty("medal_info");
-            int targetId = medal.GetProperty("target_id").GetInt32();
+            long targetId = medal.GetProperty("target_id").GetInt64();
             return new TImpl
             {
                 Id = long.Parse(data.GetProperty("tid").GetString()!),
                 UserName = data.GetProperty("uname").GetString()!,
-                UserId = data.GetProperty("uid").GetInt32(),
+                UserId = data.GetProperty("uid").GetInt64(),
                 GiftId = data.GetProperty("giftId").GetInt32(),
                 GiftName = data.GetProperty("giftName").GetString()!,
                 GiftCount = data.GetProperty("num").GetInt32(),

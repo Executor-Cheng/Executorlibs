@@ -20,7 +20,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
     /// </list>
     /// </remarks>
     [RegisterBilibiliParser(typeof(EnterParser))]
-    public interface IEnterMessage : IEnterMessage<JsonElement, int>, IInteractMessage, ILordMessage, IAdminMessage
+    public interface IEnterMessage : IEnterMessage<JsonElement, long>, IInteractMessage, ILordMessage, IAdminMessage
     {
 
     }

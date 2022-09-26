@@ -18,7 +18,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
     /// <item><see cref="IBilibiliMessage"/></item>
     /// </list>
     /// </remarks>
-    public interface IUserMessage : IUserMessage<JsonElement, int>, IBilibiliMessage
+    public interface IUserMessage : IUserMessage<JsonElement, long>, IBilibiliMessage
     {
 
     }
@@ -35,7 +35,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
         public string UserName { get; set; } = null!;
 
         /// <inheritdoc/>
-        public int UserId { get; set; }
+        public long UserId { get; set; }
 
 #if NETSTANDARD2_0
         object ISharedUserMessage.UserId => UserId!;

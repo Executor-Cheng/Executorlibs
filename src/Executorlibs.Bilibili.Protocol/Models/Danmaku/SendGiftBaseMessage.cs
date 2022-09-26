@@ -19,7 +19,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
     /// <item><see cref="IGuardMessage"/></item>
     /// </list>
     /// </remarks>
-    public interface ISendGiftBaseMessage : ISendGiftBaseMessage<JsonElement, int>, IUserMessage, IGuardMessage
+    public interface ISendGiftBaseMessage : ISendGiftBaseMessage<JsonElement, long>, IUserMessage, IGuardMessage
     {
 #if !NETSTANDARD2_0
         double SharedISendGiftBaseMessage.GiftPrice => GiftSeedPrice / 1000d;

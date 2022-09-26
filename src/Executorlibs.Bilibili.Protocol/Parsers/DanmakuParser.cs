@@ -49,7 +49,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
                 Time = Utils.UnixTime2DateTime(info_0[4].GetInt64()),
                 IsLotteryDanmaku = info_0[9].GetInt32() > 0,
                 Comment = info[1].GetString()!,
-                UserId = info_2[0].GetInt32(),
+                UserId = info_2[0].GetInt64(),
                 UserName = info_2[1].GetString()!,
                 IsAdmin = info_2[2].GetInt32() == 1,
                 LordType = info_2[3].GetInt32() == 1 ? (info_2[4].GetInt32() == 1 ? LordType.Yearly : LordType.Monthly) : LordType.None,

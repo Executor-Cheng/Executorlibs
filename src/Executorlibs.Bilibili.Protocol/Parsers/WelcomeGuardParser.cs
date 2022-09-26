@@ -30,7 +30,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
             return new WelcomeGuardMessage
             {
                 UserName = data.GetProperty("username").GetString()!,
-                UserId = data.GetProperty("uid").GetInt32(),
+                UserId = data.GetProperty("uid").GetInt64(),
                 GuardType = (GuardType)data.GetProperty("guard_level").GetInt32(),
                 Time = DateTime.Now,
                 Rawdata = root

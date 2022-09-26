@@ -41,7 +41,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
             return new TImpl
             {
                 UserName = root.GetProperty("uname").GetString()!,
-                UserId = userId.ValueKind == JsonValueKind.Number ? userId.GetInt32() : int.Parse(userId.GetString()!), // 破站的程序员真的该死
+                UserId = userId.ValueKind == JsonValueKind.Number ? userId.GetInt64() : long.Parse(userId.GetString()!), // 破站的程序员真的该死
                 MasterOperation = root.GetProperty("data").GetProperty("operator").GetInt32() == 2,
                 Time = DateTime.Now,
                 Rawdata = root

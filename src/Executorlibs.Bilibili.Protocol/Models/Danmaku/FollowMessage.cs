@@ -17,7 +17,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
     /// </list>
     /// </remarks>
     [RegisterBilibiliParser(typeof(FollowParser))]
-    public interface IFollowMessage : IFollowMessage<JsonElement, int>, IInteractMessage
+    public interface IFollowMessage : IFollowMessage<JsonElement, long>, IInteractMessage
     {
 
     }
