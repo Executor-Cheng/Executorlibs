@@ -13,7 +13,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
     }
 
     public class RedPocketParser<TMessage, TImpl> : BilibiliMappableMessageParser<TMessage> where TMessage : IRedPocketMessage
-                                                                                     where TImpl : RedPocketMessage, TMessage, new()
+                                                                                            where TImpl : RedPocketMessage, TMessage, new()
     {
         private const string Command = "RED_POCKET_START";
 
@@ -39,7 +39,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
                 Content = data.GetProperty("content").GetString()!,
                 Requirement = data.GetProperty("require_message").GetString()!,
                 Sender = data.GetProperty("sender_name").GetString()!,
-                SenderId = data.GetProperty("sender_uid").GetInt32(),
+                SenderId = data.GetProperty("sender_uid").GetInt64(),
                 Duration = TimeSpan.FromSeconds(data.GetProperty("remain_time").GetInt32()),
                 Time = DateTime.Now,
                 Rawdata = root

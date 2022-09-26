@@ -39,7 +39,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
             TImpl message = new TImpl
             {
                 UserName = data.GetProperty("username").GetString()!,
-                UserId = data.GetProperty("uid").GetInt32(),
+                UserId = data.GetProperty("uid").GetInt64(),
                 GuardType = (GuardType)data.GetProperty("guard_level").GetInt32(),
                 GiftCount = data.GetProperty("num").GetInt32(),
                 IsGoldGift = true,
