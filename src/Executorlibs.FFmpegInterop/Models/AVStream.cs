@@ -11,6 +11,9 @@ namespace Executorlibs.FFmpegInterop.Models
         [FieldOffset(0)]
         public int Index;
 
+        [FieldOffset(16)]
+        public AVRelational TimeBase;
+
         [FieldOffset(24)]
         public long StartTime;
 

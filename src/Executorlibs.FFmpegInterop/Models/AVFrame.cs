@@ -6,15 +6,7 @@ namespace Executorlibs.FFmpegInterop.Models
     public unsafe struct AVFrame
     {
         [FieldOffset(0)]
-        private fixed byte _data[448];
-
-        [FieldOffset(0)]
-        public fixed long Data[8];
-        //#if TARGET_64BIT
-        //        public fixed long Data[8];
-        //#else
-        //        public fixed int Data[8];
-        //#endif
+        public byte** Data;
 
         [FieldOffset(64)]
         public fixed int Linesize[8];
@@ -22,10 +14,28 @@ namespace Executorlibs.FFmpegInterop.Models
         [FieldOffset(96)]
         public byte** ExtendedData;
 
+        [FieldOffset(104)]
+        public int Width;
+
+        [FieldOffset(108)]
+        public int Height;
+
         [FieldOffset(112)]
         public int SampleCount;
 
         [FieldOffset(116)]
-        public AVSampleFormat Format;
+        public int Format;
+
+        [FieldOffset(120)]
+        public int KeyFrame;
+
+        [FieldOffset(136)]
+        public int Pts;
+
+        [FieldOffset(160)]
+        public int CodedPictureNumber;
+
+        [FieldOffset(384)]
+        public int PacketSize;
     }
 }

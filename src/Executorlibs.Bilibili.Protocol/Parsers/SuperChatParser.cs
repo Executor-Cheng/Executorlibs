@@ -47,7 +47,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
             {
                 Time = Utils.UnixTime2DateTime(data.GetProperty("start_time").GetInt32()),
                 Comment = data.GetProperty("message").GetString()!,
-                UserId = userId.ValueKind == JsonValueKind.Number ? userId.GetInt64() : int.Parse(userId.GetString()!),
+                UserId = userId.ValueKind == JsonValueKind.Number ? userId.GetInt64() : long.Parse(userId.GetString()!),
                 UserName = user.GetProperty("uname").GetString()!,
                 IsAdmin = user.GetProperty("manager").GetInt32() == 1,
                 LordType = user.GetProperty("is_vip").GetInt32() == 1 ? (user.GetProperty("is_svip").GetInt32() == 1 ? LordType.Yearly : LordType.Monthly) : LordType.None,

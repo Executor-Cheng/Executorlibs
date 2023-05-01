@@ -2,11 +2,14 @@ using System.Runtime.InteropServices;
 
 namespace Executorlibs.FFmpegInterop.Models
 {
-    [StructLayout(LayoutKind.Explicit)]
+    [StructLayout(LayoutKind.Explicit, Size = 104)]
     public unsafe struct AVPacket
     {
-        [FieldOffset(0)]
-        private fixed byte _data[104];
+        [FieldOffset(8)]
+        public long Pts;
+
+        [FieldOffset(16)]
+        public long Dts;
 
         [FieldOffset(24)]
         public byte* Data;
@@ -16,5 +19,8 @@ namespace Executorlibs.FFmpegInterop.Models
 
         [FieldOffset(36)]
         public int StreamIndex;
+
+        [FieldOffset(96)]
+        public AVRelational TimeBase;
     }
 }

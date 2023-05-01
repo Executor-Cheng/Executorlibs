@@ -6,31 +6,40 @@ namespace Executorlibs.FFmpegInterop
 {
     public static unsafe class AVFormatNativeMethods
     {
-        [DllImport("avformat-59.dll", EntryPoint = "avformat_alloc_context", CallingConvention = CallingConvention.StdCall)]
+        [DllImport("avformat-59.dll", EntryPoint = "avformat_alloc_context", CallingConvention = CallingConvention.Cdecl)]
         public static extern AVFormatContext* AllocateContext();
 
-        [DllImport("avformat-59.dll", EntryPoint = "avformat_free_context", CallingConvention = CallingConvention.StdCall)]
+        [DllImport("avformat-59.dll", EntryPoint = "avformat_free_context", CallingConvention = CallingConvention.Cdecl)]
         public static extern void FreeContext(AVFormatContext* context);
 
-        [DllImport("avformat-59.dll", EntryPoint = "avio_alloc_context", CallingConvention = CallingConvention.StdCall)]
+        [DllImport("avformat-59.dll", EntryPoint = "avio_alloc_context", CallingConvention = CallingConvention.Cdecl)]
         public static extern AVIOContext* AllocateIOContext(void* buffer, int bufferSize, int writeFlag, void* opaque,
                                                             delegate* unmanaged[Cdecl]<void*, byte*, int, int> readFunction,
                                                             delegate* unmanaged[Cdecl]<void*, byte*, int, int> writeFunction,
                                                             delegate* unmanaged[Cdecl]<void*, long, int, long> seekFunction);
 
-        [DllImport("avformat-59.dll", EntryPoint = "avio_context_free", CallingConvention = CallingConvention.StdCall)]
+        [DllImport("avformat-59.dll", EntryPoint = "avio_context_free", CallingConvention = CallingConvention.Cdecl)]
         public static extern void FreeIOContext(AVIOContext** context);
 
-        [DllImport("avformat-59.dll", EntryPoint = "avformat_open_input", CallingConvention = CallingConvention.StdCall)]
+        [DllImport("avformat-59.dll", EntryPoint = "avformat_open_input", CallingConvention = CallingConvention.Cdecl)]
         public static extern int OpenInput(AVFormatContext** context, byte* url, AVInputFormat* format, AVDictionary** options);
 
-        [DllImport("avformat-59.dll", EntryPoint = "avformat_find_stream_info", CallingConvention = CallingConvention.StdCall)]
+        [DllImport("avformat-59.dll", EntryPoint = "avformat_find_stream_info", CallingConvention = CallingConvention.Cdecl)]
         public static extern int FindStreamInfo(AVFormatContext* context, AVDictionary** options);
 
-        [DllImport("avformat-59.dll", EntryPoint = "av_find_best_stream", CallingConvention = CallingConvention.StdCall)]
+        [DllImport("avformat-59.dll", EntryPoint = "av_find_best_stream", CallingConvention = CallingConvention.Cdecl)]
         public static extern int FindBestStream(AVFormatContext* context, AVMediaType type, int wantedStreamCount, int relatedStream, AVCodec** decoder, int flags);
 
-        [DllImport("avformat-59.dll", EntryPoint = "av_read_frame", CallingConvention = CallingConvention.StdCall)]
+        [DllImport("avformat-59.dll", EntryPoint = "av_read_frame", CallingConvention = CallingConvention.Cdecl)]
         public static extern int ReadFrame(AVFormatContext* context, AVPacket* packet);
+
+        [DllImport("avformat-59.dll", EntryPoint = "avformat_write_header", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int WriteHeader(AVFormatContext* context, AVDictionary* options);
+
+        [DllImport("avformat-59.dll", EntryPoint = "av_write_trailer", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int WriteTrailer(AVFormatContext* context);
+
+        [DllImport("avformat-59.dll", EntryPoint = "av_seek_frame", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int SeekFrame(AVFormatContext* context, int streamIndex, long timestamp, int flags);
     }
 }

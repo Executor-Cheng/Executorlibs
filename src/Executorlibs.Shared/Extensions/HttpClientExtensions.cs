@@ -223,7 +223,7 @@ namespace Executorlibs.Shared.Extensions
             return responseTask.ContinueWith(p =>
             {
 #if !NETSTANDARD2_0
-                if (p.IsCompletedSuccessfully) // treats response as json
+                if (p.IsCompletedSuccessfully)
 #else
                 if ((p.Status & (TaskStatus.RanToCompletion | TaskStatus.Canceled | TaskStatus.Faulted)) == TaskStatus.RanToCompletion)
 #endif

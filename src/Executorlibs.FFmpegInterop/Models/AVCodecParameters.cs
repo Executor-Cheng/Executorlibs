@@ -2,12 +2,9 @@ using System.Runtime.InteropServices;
 
 namespace Executorlibs.FFmpegInterop.Models
 {
-    [StructLayout(LayoutKind.Explicit)]
+    [StructLayout(LayoutKind.Explicit, Size = 168)]
     public unsafe struct AVCodecParameters
     {
-        [FieldOffset(0)]
-        private fixed byte _data[144];
-
         [FieldOffset(0)]
         public int CodecType;
 

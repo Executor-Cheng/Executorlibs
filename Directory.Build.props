@@ -6,10 +6,10 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <Authors>Executor</Authors>
         <Company>Executor</Company>
-        <Version>1.4.0.0</Version>
-        <AssemblyVersion>1.4.0.0</AssemblyVersion>
-        <FileVersion>1.4.0.0</FileVersion>
-        <Copyright>Copyright © Executor 2021</Copyright>
+        <Version>1.5.0.0</Version>
+        <AssemblyVersion>1.5.0.0</AssemblyVersion>
+        <FileVersion>1.5.0.0</FileVersion>
+        <Copyright>Copyright © Executor 2023</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/Executor-Cheng/Executorlibs</PackageProjectUrl>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
