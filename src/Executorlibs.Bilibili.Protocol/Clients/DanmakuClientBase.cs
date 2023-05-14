@@ -383,7 +383,7 @@ namespace Executorlibs.Bilibili.Protocol.Clients
             }
         }
 
-        protected byte[] CreateJoinRoomPayload(int roomId, int userId, string token)
+        protected byte[] CreateJoinRoomPayload(int roomId, long userId, string token)
         {
             byte[] json = JsonSerializer.SerializeToUtf8Bytes(new
             {

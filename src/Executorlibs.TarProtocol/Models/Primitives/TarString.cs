@@ -58,12 +58,12 @@ namespace Executorlibs.TarProtocol.Models.Primitives
                     return;
                 }
             }
-            Span<byte> buffer = stackalloc byte[96];
+            Span<byte> buffer = stackalloc byte[93];
             ReadOnlySpan<char> chars = Value;
             while (true)
             {
-                bool c = 32 < chars.Length;
-                int readLimit = chars.Length ^ ((32 ^ chars.Length) & -Unsafe.As<bool, byte>(ref c));
+                bool c = 31 < chars.Length;
+                int readLimit = chars.Length ^ ((31 ^ chars.Length) & -Unsafe.As<bool, byte>(ref c));
                 int written = Encoding.UTF8.GetBytes(chars[..readLimit], buffer);
                 writer.WriteBytes(MemoryMarshal.CreateReadOnlySpan(ref MemoryMarshal.GetReference(buffer), written));
                 int remaining = chars.Length - readLimit;

@@ -72,7 +72,7 @@ namespace Executorlibs.Bilibili.Protocol.Clients
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        protected ValueTask SendJoinRoomAsync(Socket socket, int roomId, int userId, string token, CancellationToken cToken = default)
+        protected ValueTask SendJoinRoomAsync(Socket socket, int roomId, long userId, string token, CancellationToken cToken = default)
         {
             return new ValueTask(socket.SendAsync(CreateJoinRoomPayload(roomId, userId, token), SocketFlags.None, cToken).AsTask());
         }

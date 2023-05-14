@@ -32,13 +32,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsers
         public override TMessage Parse(in JsonElement root)
         {
             TImpl result = new TImpl();
-#if NETSTANDARD2_0
-            string subSessionKey = root.GetProperty("sub_session_key").GetString()!;
-            result.Time = Utils.UnixTime2DateTime(int.Parse(subSessionKey.Substring(subSessionKey.IndexOf(':'))));
-#else
-            ReadOnlySpan<char> subSessionKey = root.GetProperty("sub_session_key").GetString()!; // 181815281423909749sub_time:1632584495
-            result.Time = Utils.UnixTime2DateTime(int.Parse(subSessionKey[(subSessionKey.IndexOf(':') + 1)..]));
-#endif
+            result.Time = Utils.UnixTime2DateTime(root.GetProperty("live_time").GetInt32());
             result.Rawdata = root;
             return result;
         }

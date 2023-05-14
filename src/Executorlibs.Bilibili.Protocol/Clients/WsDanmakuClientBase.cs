@@ -54,7 +54,7 @@ namespace Executorlibs.Bilibili.Protocol.Clients
             return client.ReceiveFullyAsync(memory, token);
         }
 
-        protected ValueTask SendJoinRoomAsync(WebSocket client, int roomId, int userId, string token, CancellationToken cToken = default)
+        protected ValueTask SendJoinRoomAsync(WebSocket client, int roomId, long userId, string token, CancellationToken cToken = default)
         {
             return client.SendAsync(new ReadOnlyMemory<byte>(CreateJoinRoomPayload(roomId, userId, token)), WebSocketMessageType.Binary, true, cToken);
         }
