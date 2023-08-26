@@ -3,11 +3,11 @@ using Executorlibs.Bilibili.Protocol.Models.General;
 
 namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 {
-    public interface IPkBaseMessage : IBilibiliMessage
+    public interface IPkBaseMessage : IBilibiliJsonMessage
     {
-        int RedRoomId { get; }
+        uint RedRoomId { get; }
 
-        int BlueRoomId { get; }
+        uint BlueRoomId { get; }
 
         DateTime EndTime { get; }
     }
@@ -19,24 +19,24 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 
     public interface IPkEndMessage : IPkBaseMessage
     {
-        long RedScore { get; }
+        ulong RedScore { get; }
 
         string RedBestUserName { get; }
 
         int RedMatchResult { get; }
 
-        long BlueScore { get; }
+        ulong BlueScore { get; }
 
         string BlueBestUserName { get; }
 
         int BlueMatchResult { get; }
     }
 
-    public abstract class PkBaseMessage : BilibiliMessage, IPkBaseMessage
+    public abstract class PkBaseMessage : BilibiliJsonMessage, IPkBaseMessage
     {
-        public int RedRoomId { get; set; }
+        public uint RedRoomId { get; set; }
 
-        public int BlueRoomId { get; set; }
+        public uint BlueRoomId { get; set; }
 
         public DateTime EndTime { get; set; }
     }
@@ -48,13 +48,13 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 
     public class PkEndMessage : PkBaseMessage, IPkEndMessage
     {
-        public long RedScore { get; set; }
+        public ulong RedScore { get; set; }
 
         public string RedBestUserName { get; set; } = null!;
 
         public int RedMatchResult { get; set; }
 
-        public long BlueScore { get; set; }
+        public ulong BlueScore { get; set; }
 
         public string BlueBestUserName { get; set; } = null!;
 

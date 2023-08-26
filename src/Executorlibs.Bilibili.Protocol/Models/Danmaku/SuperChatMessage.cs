@@ -1,8 +1,8 @@
 using System;
 using System.Diagnostics;
 using System.Text.Json.Serialization;
-using Executorlibs.Bilibili.Protocol.Parsers;
-using Executorlibs.Bilibili.Protocol.Parsers.Attributes;
+using Executorlibs.Bilibili.Protocol.Parsing.Parsers;
+using Executorlibs.Bilibili.Protocol.Parsing.Parsers.Attributes;
 using Executorlibs.Shared.JsonConverters;
 
 namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
@@ -58,16 +58,16 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
         };
 
         /// <inheritdoc/>
-        public int GiftId => 12000;
+        public uint GiftId => 12000;
 
         /// <inheritdoc/>
         public string GiftName => "醒目留言";
 
         /// <inheritdoc/>
-        public int GiftCount => 1;
+        public uint GiftCount => 1;
 
         /// <inheritdoc/>
-        public int GiftSeedPrice { get; set; }
+        public uint GiftSeedPrice { get; set; }
 
         /// <inheritdoc/>
         public bool IsFree => false;
@@ -75,8 +75,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
         /// <inheritdoc/>
         public bool IsGoldGift => true;
 
-#if NETSTANDARD2_0
+        /// <inheritdoc/>
         public double GiftPrice => GiftSeedPrice / 1000d;
-#endif
     }
 }

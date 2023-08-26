@@ -2,20 +2,20 @@ using Executorlibs.Bilibili.Protocol.Models.General;
 
 namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 {
-    public interface IBeatstormMessage : IBilibiliMessage
+    public interface IBeatstormMessage : IBilibiliJsonMessage
     {
         bool Action { get; }
 
-        int Count { get; }
+        uint Count { get; }
 
         string? Content { get; }
     }
 
-    public class BeatstormMessage : BilibiliMessage, IBeatstormMessage
+    public class BeatstormMessage : BilibiliJsonMessage, IBeatstormMessage
     {
         public bool Action { get; set; }
 
-        public int Count { get; set; }
+        public uint Count { get; set; }
 
         public string? Content { get; set; }
     }

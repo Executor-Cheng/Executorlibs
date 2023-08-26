@@ -1,29 +1,22 @@
-using System.Text.Json;
+using System;
 using Executorlibs.MessageFramework.Models.General;
 using Executorlibs.Shared.Protocol.Models.General;
 
 namespace Executorlibs.Bilibili.Protocol.Models.General
 {
-    /// <summary>
-    /// 表示由B站发出的消息
-    /// </summary>
-    /// <remarks>
-    /// 继承自 <see cref="IMessage{JsonElement}"/>
-    /// </remarks>
-    public interface IBilibiliMessage : IProtocolMessage<JsonElement>
+    public interface IBilibiliMessage : IProtocolMessage
     {
-        /// <summary>
-        /// 房间号
-        /// </summary>
-        int RoomId { get; }
+        uint RoomId { get; }
     }
 
-    /// <summary>
-    /// 实现 <see cref="IBilibiliMessage"/> 的抽象类
-    /// </summary>
-    public abstract class BilibiliMessage : ProtocolMessage<JsonElement>, IBilibiliMessage
+    public abstract class BilibiliMessage : Message, IBilibiliMessage
     {
-        /// <inheritdoc/>
-        public int RoomId { get; set; }
+        public ulong Id { get; }
+
+        public uint RoomId { get; set; }
+
+        public DateTime Time { get; }
+
+        public override bool BlockRemainingHandlers { get; set; }
     }
 }

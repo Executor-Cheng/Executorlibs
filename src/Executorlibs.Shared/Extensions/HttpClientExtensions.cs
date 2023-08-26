@@ -180,7 +180,7 @@ namespace Executorlibs.Shared.Extensions
 #if !NETSTANDARD2_0
                 if (p.IsCompletedSuccessfully) // treats response as json
 #else
-                if ((p.Status & (TaskStatus.RanToCompletion | TaskStatus.Canceled | TaskStatus.Faulted)) == TaskStatus.RanToCompletion)
+                if (p.IsCompleted && !p.IsFaulted && !p.IsCanceled)
 #endif
                 {
                     HttpContentHeaders headers = p.Result.Content.Headers;
@@ -208,7 +208,7 @@ namespace Executorlibs.Shared.Extensions
 #if !NETSTANDARD2_0
                 if (p.IsCompletedSuccessfully) // treats response as text/plain; charset=utf-8
 #else
-                if ((p.Status & (TaskStatus.RanToCompletion | TaskStatus.Canceled | TaskStatus.Faulted)) == TaskStatus.RanToCompletion)
+                if (p.IsCompleted && !p.IsFaulted && !p.IsCanceled)
 #endif
                 {
                     HttpContentHeaders headers = p.Result.Content.Headers;
@@ -225,7 +225,7 @@ namespace Executorlibs.Shared.Extensions
 #if !NETSTANDARD2_0
                 if (p.IsCompletedSuccessfully) // treats response as json
 #else
-                if ((p.Status & (TaskStatus.RanToCompletion | TaskStatus.Canceled | TaskStatus.Faulted)) == TaskStatus.RanToCompletion)
+                if (p.IsCompleted && !p.IsFaulted && !p.IsCanceled)
 #endif
                 {
                     p.Result.EnsureSuccessStatusCode();

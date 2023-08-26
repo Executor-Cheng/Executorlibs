@@ -1,5 +1,5 @@
-using Executorlibs.Bilibili.Protocol.Parsers;
-using Executorlibs.Bilibili.Protocol.Parsers.Attributes;
+using Executorlibs.Bilibili.Protocol.Parsing.Parsers;
+using Executorlibs.Bilibili.Protocol.Parsing.Parsers.Attributes;
 //using ISharedCutOffMessage = LiveRoomMonitorV3.Shared.Protocol.Models.Danmaku.ICutOffMessage; // summary broken up
 
 namespace Executorlibs.Bilibili.Protocol.Models.Danmaku

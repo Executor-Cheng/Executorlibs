@@ -3,9 +3,9 @@ using Executorlibs.Bilibili.Protocol.Models.General;
 
 namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 {
-    public interface IRedPocketMessage : IBilibiliMessage
+    public interface IRedPocketMessage : IBilibiliJsonMessage
     {
-        int Count { get; }
+        uint Count { get; }
 
         string Content { get; }
 
@@ -13,14 +13,14 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 
         string Sender { get; }
 
-        long SenderId { get; }
+        ulong SenderId { get; }
 
         TimeSpan Duration { get; }
     }
 
-    public class RedPocketMessage : BilibiliMessage, IRedPocketMessage
+    public class RedPocketMessage : BilibiliJsonMessage, IRedPocketMessage
     {
-        public int Count { get; set; }
+        public uint Count { get; set; }
 
         public string Content { get; set; } = null!;
 
@@ -28,7 +28,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 
         public string Sender { get; set; } = null!;
 
-        public long SenderId { get; set; }
+        public ulong SenderId { get; set; }
 
         public TimeSpan Duration { get; set; }
     }

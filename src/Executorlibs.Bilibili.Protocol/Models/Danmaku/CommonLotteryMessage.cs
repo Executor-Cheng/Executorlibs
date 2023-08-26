@@ -5,11 +5,11 @@ using Executorlibs.Shared.JsonConverters;
 
 namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 {
-    public interface ICommonLotteryMessage : IBilibiliMessage
+    public interface ICommonLotteryMessage : IBilibiliJsonMessage
     {
         string AwardName { get; }
 
-        int AwardNum { get; }
+        uint AwardNum { get; }
 
         string Danmaku { get; }
 
@@ -17,36 +17,36 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 
         DateTime EndTime { get; }
 
-        int? GiftCost { get; }
+        uint? GiftCost { get; }
 
         string? GiftName { get; }
 
-        int? GiftNum { get; }
+        uint? GiftNum { get; }
 
-        int RequireType { get; }
+        uint RequireType { get; }
 
-        int RequireValue { get; }
+        uint RequireValue { get; }
 
         DateTime StartTime { get; }
     }
 
-    public abstract class CommonLotteryMessage : BilibiliMessage, ICommonLotteryMessage
+    public abstract class CommonLotteryMessage : BilibiliJsonMessage, ICommonLotteryMessage
     {
         public string Danmaku { get; set; } = null!;
 
         public string AwardName { get; set; } = null!;
 
-        public int AwardNum { get; set; }
+        public uint AwardNum { get; set; }
 
         public virtual string? GiftName { get; set; }
 
-        public virtual int? GiftNum { get; set; }
+        public virtual uint? GiftNum { get; set; }
 
-        public virtual int? GiftCost { get; set; }
+        public virtual uint? GiftCost { get; set; }
 
-        public int RequireType { get; set; }
+        public uint RequireType { get; set; }
 
-        public int RequireValue { get; set; }
+        public uint RequireValue { get; set; }
 
         [JsonConverter(typeof(UnixTimeStampJsonConverter))]
         public DateTime StartTime => EndTime.Add(-Duration);
@@ -59,7 +59,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 
         public CommonLotteryMessage() { }
 
-        public CommonLotteryMessage(int id, int roomId, string danmaku, string awardName, int awardNum, string? giftName, int? giftNum, int? giftCost, int requireType, int requireValue, TimeSpan duration, DateTime endTime)
+        public CommonLotteryMessage(uint id, uint roomId, string danmaku, string awardName, uint awardNum, string? giftName, uint? giftNum, uint? giftCost, uint requireType, uint requireValue, TimeSpan duration, DateTime endTime)
         {
             Id = id;
             RoomId = roomId;

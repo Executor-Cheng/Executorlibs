@@ -1,9 +1,7 @@
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using Executorlibs.Bilibili.Protocol.Models.Enums;
 using Executorlibs.Shared.JsonConverters;
-using Executorlibs.Shared.Protocol.Models.Danmaku;
-using SharedISendGiftBaseMessage = Executorlibs.Shared.Protocol.Models.Danmaku.ISendGiftBaseMessage;
+using ISharedSendGiftBaseMessage = Executorlibs.Shared.Protocol.Models.Danmaku.ISendGiftBaseMessage;
 
 namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 {
@@ -14,21 +12,17 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
     /// 消息来源是 Bilibili 直播平台<para/>
     /// 继承自以下接口:
     /// <list type="number">
-    /// <item><see cref="ISendGiftBaseMessage{TRawdata, TUserId}"/></item>
+    /// <item><see cref="ISharedSendGiftBaseMessage"/></item>
     /// <item><see cref="IUserMessage"/></item>
     /// <item><see cref="IGuardMessage"/></item>
     /// </list>
     /// </remarks>
-    public interface ISendGiftBaseMessage : ISendGiftBaseMessage<JsonElement, long>, IUserMessage, IGuardMessage
+    public interface ISendGiftBaseMessage : ISharedSendGiftBaseMessage, IUserMessage, IGuardMessage
     {
-#if !NETSTANDARD2_0
-        double SharedISendGiftBaseMessage.GiftPrice => GiftSeedPrice / 1000d;
-#endif
-
         /// <summary>
         /// 礼物价格 (单位:瓜子)
         /// </summary>
-        int GiftSeedPrice { get; }
+        uint GiftSeedPrice { get; }
         /// <summary>
         /// 是否为金瓜子礼物
         /// </summary>
@@ -46,16 +40,16 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
     public abstract class SendGiftBaseMessage : UserMessage, ISendGiftBaseMessage
     {
         /// <inheritdoc/>
-        public int GiftId { get; set; }
+        public uint GiftId { get; set; }
 
         /// <inheritdoc/>
         public string GiftName { get; set; } = null!;
 
         /// <inheritdoc/>
-        public int GiftCount { get; set; }
+        public uint GiftCount { get; set; }
 
         /// <inheritdoc/>
-        public int GiftSeedPrice { get; set; }
+        public uint GiftSeedPrice { get; set; }
 
         /// <inheritdoc/>
         public bool IsFree { get; set; }
@@ -70,8 +64,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
         [JsonConverter(typeof(ChangeTypeJsonConverter<Medal, IMedal>))]
         public IMedal? Medal { get; set; }
 
-#if NETSTANDARD2_0
-        double SharedISendGiftBaseMessage.GiftPrice => GiftSeedPrice / 1000d;
-#endif
+        /// <inheritdoc/>
+        public double GiftPrice => GiftSeedPrice / 1000d;
     }
 }

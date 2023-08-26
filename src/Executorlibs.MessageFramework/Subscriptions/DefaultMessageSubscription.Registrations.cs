@@ -1,0 +1,150 @@
+using System.Runtime.CompilerServices;
+using Executorlibs.MessageFramework.Handlers;
+
+// see: https://source.dot.net/#System.Private.CoreLib/src/libraries/System.Private.CoreLib/src/System/Threading/CancellationTokenSource.cs,130a9536ac96b392
+namespace Executorlibs.MessageFramework.Subscriptions
+{
+    public partial class DefaultMessageSubscription<TClient, TMessage>
+    {
+        protected internal sealed class Registrations
+        {
+            public long NextAvailableId = 1;
+
+            private readonly UInt32Lock _lock;
+
+            public RegistrationNode? EffictiveNodeList;
+
+            public RegistrationNode? FreeNodeList;
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private void Recycle(RegistrationNode node)
+            {
+                node.Id = 0;
+                node.Handler = default;
+
+                node.Prev = null;
+                node.Next = FreeNodeList;
+                FreeNodeList = node;
+            }
+
+            public RegistrationNode Register(IMessageHandler<TClient, TMessage> handler)
+            {
+                RegistrationNode? node = null;
+                if (FreeNodeList != null)
+                {
+                    EnterLock();
+                    try
+                    {
+                        node = FreeNodeList;
+                        if (node != null)
+                        {
+                            FreeNodeList = node.Next;
+
+                            node.Id = NextAvailableId++;
+                            node.Handler = handler;
+                            node.Next = EffictiveNodeList;
+                            EffictiveNodeList = node;
+                            if (node.Next != null)
+                            {
+                                node.Next.Prev = node;
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        ExitLock();
+                    }
+                }
+
+                if (node == null)
+                {
+                    node = new RegistrationNode(this)
+                    {
+                        Handler = handler
+                    };
+                    EnterLock();
+                    try
+                    {
+                        node.Id = NextAvailableId++;
+                        node.Next = EffictiveNodeList;
+                        if (node.Next != null)
+                        {
+                            node.Next.Prev = node;
+                        }
+                        EffictiveNodeList = node;
+                    }
+                    finally
+                    {
+                        ExitLock();
+                    }
+                }
+
+                return node;
+            }
+
+            public bool Unregister(long id, RegistrationNode node)
+            {
+                if (id == 0)
+                {
+                    return false;
+                }
+                EnterLock();
+                try
+                {
+                    if (node.Id != id)
+                    {
+                        return false;
+                    }
+                    if (EffictiveNodeList == node)
+                    {
+                        EffictiveNodeList = node.Next;
+                    }
+                    else
+                    {
+                        node.Prev!.Next = node.Next;
+                    }
+                    if (node.Next != null)
+                    {
+                        node.Next.Prev = node.Prev;
+                    }
+                    Recycle(node);
+                    return true;
+                }
+                finally
+                {
+                    ExitLock();
+                }
+            }
+
+            public void UnregisterAll()
+            {
+                EnterLock();
+                try
+                {
+                    RegistrationNode? node = EffictiveNodeList;
+                    EffictiveNodeList = null;
+                    while (node != null)
+                    {
+                        RegistrationNode? next = node.Next;
+                        Recycle(node);
+                        node = next;
+                    }
+                }
+                finally
+                {
+                    ExitLock();
+                }
+            }
+
+            private void EnterLock()
+            {
+                _lock.EnterWriteLock();
+            }
+
+            private void ExitLock()
+            {
+                _lock.ExitWriteLock();
+            }
+        }
+    }
+}

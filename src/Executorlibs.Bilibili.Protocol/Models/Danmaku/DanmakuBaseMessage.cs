@@ -1,6 +1,6 @@
-using System.Text.Json;
-using Executorlibs.Shared.Protocol.Models.Danmaku;
+using ISharedDanmakuBaseMessage = Executorlibs.Shared.Protocol.Models.Danmaku.IDanmakuMessage;
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 {
     /// <summary>
@@ -9,20 +9,21 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
     /// <remarks>
     /// 继承自以下接口:
     /// <list type="number">
-    /// <item><see cref="IDanmakuBaseMessage{TRawdata, TUserId}"/></item>
+    /// <item><see cref="ISharedDanmakuBaseMessage"/></item>
     /// <item><see cref="IUserMessage"/></item>
     /// </list>
     /// </remarks>
-    public interface IDanmakuBaseMessage : IDanmakuBaseMessage<JsonElement, long>, IUserMessage
+    public interface IDanmakuBaseMessage : IUserMessage, ISharedDanmakuBaseMessage
     {
         /// <summary>
         /// 弹幕Token
         /// </summary>
-        int Token { get; }
+        uint Token { get; }
+
         /// <summary>
         /// 用户等级
         /// </summary>
-        int Level { get; }
+        uint Level { get; }
     }
 
     /// <summary>
@@ -30,16 +31,13 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
     /// </summary>
     public abstract class DanmakuBaseMessage : UserMessage, IDanmakuBaseMessage
     {
-        ///// <inheritdoc/>
-        //public int Id { get; set; }
+        /// <inheritdoc/>
+        public uint Token { get; set; }
 
         /// <inheritdoc/>
-        public virtual int Token { get; set; }
+        public string Comment { get; set; }
 
         /// <inheritdoc/>
-        public string Comment { get; set; } = null!;
-
-        /// <inheritdoc/>
-        public int Level { get; set; }
+        public uint Level { get; set; }
     }
 }

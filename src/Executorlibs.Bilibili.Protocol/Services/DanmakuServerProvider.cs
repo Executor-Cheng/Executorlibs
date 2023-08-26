@@ -1,38 +1,36 @@
-using System;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Executorlibs.Bilibili.Protocol.Models;
-using Executorlibs.Bilibili.Protocol.Options;
 using Executorlibs.Shared.Exceptions;
 using Executorlibs.Shared.Extensions;
-using Executorlibs.Shared.Net.Http;
-using Microsoft.Extensions.Options;
 
 namespace Executorlibs.Bilibili.Protocol.Services
 {
-    public interface IDanmakuServerProvider : IDisposable
+    public interface IDanmakuServerProvider
     {
-        Task<DanmakuServerInfo> GetDanmakuServerInfoAsync(CancellationToken token = default);
+        Task<DanmakuServerInfo> GetDanmakuServerInfoAsync(uint roomId, CancellationToken token = default);
     }
 
     public class DanmakuServerProvider : IDanmakuServerProvider
     {
-        private readonly HttpClient _Client;
+        protected readonly HttpClient _client;
 
-        private readonly DanmakuClientOptions _Options;
-
-        public DanmakuServerProvider(IOptionsSnapshot<DanmakuClientOptions> options, PCHttpClient? client = null)
+        public DanmakuServerProvider(HttpClient client)
         {
-            _Client = client ?? new PCHttpClient();
-            _Options = options.Value;
+            _client = client;
         }
 
-        public async Task<DanmakuServerInfo> GetDanmakuServerInfoAsync(CancellationToken token = default)
+        public virtual Task<DanmakuServerInfo> GetDanmakuServerInfoAsync(uint roomId, CancellationToken token = default)
         {
-            using JsonDocument j = await _Client.GetAsync($"https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo?id={_Options.RoomId}&type=0", token).GetJsonAsync(token);
+            return GetDanmakuServerInfoAsync(roomId, 0, token);
+        }
+
+        protected async Task<DanmakuServerInfo> GetDanmakuServerInfoAsync(uint roomId, ulong userId, CancellationToken token)
+        {
+            using JsonDocument j = await _client.GetAsync($"https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo?id={roomId}&type=0", token).GetJsonAsync(token);
             JsonElement root = j.RootElement;
             if (root.GetProperty("code").GetInt32() == 0)
             {
@@ -43,15 +41,9 @@ namespace Executorlibs.Bilibili.Protocol.Services
                     p.GetProperty("port").GetInt32(),
                     p.GetProperty("ws_port").GetInt32(),
                     p.GetProperty("wss_port").GetInt32()
-                    )).ToArray(), data.GetProperty("token").GetString()!);
+                    )).ToArray(), userId, data.GetProperty("token").GetString()!);
             }
             throw new UnknownResponseException(in root);
-        }
-
-        public void Dispose()
-        {
-            _Client.Dispose();
-            GC.SuppressFinalize(this);
         }
     }
 }

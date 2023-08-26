@@ -2,13 +2,13 @@ using Executorlibs.Bilibili.Protocol.Models.General;
 
 namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 {
-    public interface IOnlineCountMessage : IBilibiliMessage
+    public interface IOnlineCountMessage : IBilibiliJsonMessage
     {
-        int Count { get; }
+        uint Count { get; }
     }
 
-    public class OnlineCountMessage : BilibiliMessage, IOnlineCountMessage
+    public class OnlineCountMessage : BilibiliJsonMessage, IOnlineCountMessage
     {
-        public int Count { get; set; }
+        public uint Count { get; set; }
     }
 }

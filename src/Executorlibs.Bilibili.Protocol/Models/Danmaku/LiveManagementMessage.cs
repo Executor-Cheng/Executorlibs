@@ -3,12 +3,12 @@ using ISharedLiveManagementMessage = Executorlibs.Shared.Protocol.Models.Danmaku
 
 namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 {
-    public interface ILiveManagementMessage : IBilibiliMessage, ISharedLiveManagementMessage
+    public interface ILiveManagementMessage : IBilibiliJsonMessage, ISharedLiveManagementMessage
     {
 
     }
 
-    public abstract class LiveManagementMessage : BilibiliMessage, ILiveManagementMessage
+    public abstract class LiveManagementMessage : BilibiliJsonMessage, ILiveManagementMessage
     {
         public string? Message { get; set; }
     }

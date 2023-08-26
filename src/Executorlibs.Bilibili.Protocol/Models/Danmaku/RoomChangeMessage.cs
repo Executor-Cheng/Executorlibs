@@ -2,20 +2,20 @@ using Executorlibs.Bilibili.Protocol.Models.General;
 
 namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 {
-    public interface IRoomChangeMessage : IBilibiliMessage
+    public interface IRoomChangeMessage : IBilibiliJsonMessage
     {
-        int AreaId { get; }
+        uint AreaId { get; }
 
-        int SubAreaId { get; }
+        uint SubAreaId { get; }
 
         string Title { get; }
     }
 
-    public class RoomChangeMessage : BilibiliMessage, IRoomChangeMessage
+    public class RoomChangeMessage : BilibiliJsonMessage, IRoomChangeMessage
     {
-        public int AreaId { get; set; }
+        public uint AreaId { get; set; }
 
-        public int SubAreaId { get; set; }
+        public uint SubAreaId { get; set; }
 
         public string Title { get; set; } = null!;
     }

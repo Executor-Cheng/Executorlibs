@@ -6,7 +6,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
     /// <summary>
     /// 表示具有老爷类型的信息接口
     /// </summary>
-    public interface ILordMessage : IBilibiliMessage
+    public interface ILordMessage : IBilibiliJsonMessage
     {
         /// <summary>
         /// 老爷类型

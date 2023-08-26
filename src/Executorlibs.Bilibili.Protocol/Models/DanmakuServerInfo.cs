@@ -4,11 +4,14 @@ namespace Executorlibs.Bilibili.Protocol.Models
     {
         public DanmakuServerHostInfo[] Hosts { get; }
 
+        public ulong UserId { get; }
+
         public string Token { get; }
 
-        public DanmakuServerInfo(DanmakuServerHostInfo[] hosts, string token)
+        public DanmakuServerInfo(DanmakuServerHostInfo[] hosts, ulong userId, string token)
         {
             Hosts = hosts;
+            UserId = userId;
             Token = token;
         }
     }

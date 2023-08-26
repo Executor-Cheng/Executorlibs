@@ -1,19 +1,10 @@
 using System;
-using System.Threading;
+using Executorlibs.MessageFramework.Models.General;
 
 namespace Executorlibs.Shared.Protocol.Models.General
 {
-    public interface IDisconnectedMessage : IConnectionChangedMessage
+    public interface IDisconnectedMessage : IMessage
     {
         Exception? Exception { get; }
-
-        CancellationToken Token { get; }
-    }
-
-    public class DisconnectedMessage : ConnectionChangedMessage, IDisconnectedMessage
-    {
-        public Exception? Exception { get; set; }
-
-        public CancellationToken Token { get; set; }
     }
 }

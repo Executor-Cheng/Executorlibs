@@ -1,6 +1,6 @@
 using System.Diagnostics;
-using Executorlibs.Bilibili.Protocol.Parsers;
-using Executorlibs.Bilibili.Protocol.Parsers.Attributes;
+using Executorlibs.Bilibili.Protocol.Parsing.Parsers;
+using Executorlibs.Bilibili.Protocol.Parsing.Parsers.Attributes;
 
 namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 {
@@ -17,7 +17,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
         /// <summary>
         /// 房间礼物积分
         /// </summary>
-        long RoomCost { get; }
+        ulong RoomCost { get; }
     }
 
     /// <summary>
@@ -30,6 +30,6 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
     public class SendGiftMessage : SendGiftBaseMessage, ISendGiftMessage
     {
         /// <inheritdoc/>
-        public long RoomCost { get; set; }
+        public ulong RoomCost { get; set; }
     }
 }

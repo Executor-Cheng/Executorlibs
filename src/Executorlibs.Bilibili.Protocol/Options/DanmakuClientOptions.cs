@@ -4,8 +4,19 @@ namespace Executorlibs.Bilibili.Protocol.Options
 {
     public class DanmakuClientOptions
     {
-        public int RoomId { get; set; }
+        public uint RoomId { get; set; }
 
         public TimeSpan HeartbeatInterval { get; set; }
+
+        public DanmakuClientOptions()
+        {
+
+        }
+
+        public DanmakuClientOptions(uint roomId, TimeSpan heartbeatInterval)
+        {
+            RoomId = roomId;
+            HeartbeatInterval = heartbeatInterval;
+        }
     }
 }

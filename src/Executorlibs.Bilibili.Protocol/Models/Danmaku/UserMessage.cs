@@ -1,10 +1,7 @@
-using System.Text.Json;
 using Executorlibs.Bilibili.Protocol.Models.General;
-using Executorlibs.Shared.Protocol.Models.Danmaku;
-#if NETSTANDARD2_0
 using ISharedUserMessage = Executorlibs.Shared.Protocol.Models.Danmaku.IUserMessage;
-#endif
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 {
     /// <summary>
@@ -14,13 +11,13 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
     /// 消息来源是 Bilibili 直播平台<para/>
     /// 继承自以下接口:
     /// <list type="number">
-    /// <item><see cref="IUserMessage{TRawdata, TUserId}"/></item>
-    /// <item><see cref="IBilibiliMessage"/></item>
+    /// <item><see cref="ISharedUserMessage"/></item>
+    /// <item><see cref="IBilibiliJsonMessage"/></item>
     /// </list>
     /// </remarks>
-    public interface IUserMessage : IUserMessage<JsonElement, long>, IBilibiliMessage
+    public interface IUserMessage : ISharedUserMessage, IBilibiliJsonMessage
     {
-
+        ulong UserId { get; }
     }
 
     /// <summary>
@@ -29,16 +26,12 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
     /// <remarks>
     /// 消息来源是 Bilibili 直播平台
     /// </remarks>
-    public abstract class UserMessage : BilibiliMessage, IUserMessage
+    public abstract class UserMessage : BilibiliJsonMessage, IUserMessage
     {
         /// <inheritdoc/>
-        public string UserName { get; set; } = null!;
+        public string UserName { get; set; }
 
         /// <inheritdoc/>
-        public long UserId { get; set; }
-
-#if NETSTANDARD2_0
-        object ISharedUserMessage.UserId => UserId!;
-#endif
+        public ulong UserId { get; set; }
     }
 }

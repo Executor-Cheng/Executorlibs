@@ -2,21 +2,21 @@ using Executorlibs.Bilibili.Protocol.Models.General;
 
 namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 {
-    public interface ICommonLotteryResultMessage : IBilibiliMessage
+    public interface ICommonLotteryResultMessage : IBilibiliJsonMessage
     {
         string AwardName { get; }
 
-        int AwardNum { get; }
+        uint AwardNum { get; }
 
-        (string, long)[] AwardUsers { get; }
+        (string, ulong)[] AwardUsers { get; }
     }
 
-    public abstract class CommonLotteryResultMessage : BilibiliMessage, ICommonLotteryResultMessage
+    public abstract class CommonLotteryResultMessage : BilibiliJsonMessage, ICommonLotteryResultMessage
     {
         public string AwardName { get; set; } = null!;
 
-        public int AwardNum { get; set; }
+        public uint AwardNum { get; set; }
 
-        public (string, long)[] AwardUsers { get; set; } = null!;
+        public (string, ulong)[] AwardUsers { get; set; } = null!;
     }
 }

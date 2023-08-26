@@ -3,12 +3,12 @@ using ISharedPopularityMessage = Executorlibs.Shared.Protocol.Models.Danmaku.IPo
 
 namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 {
-    public interface IPopularityMessage : IBilibiliMessage, ISharedPopularityMessage
+    public interface IPopularityMessage : IBilibiliRawMessage, ISharedPopularityMessage
     {
 
     }
 
-    public class PopularityMessage : BilibiliMessage, IPopularityMessage
+    public class PopularityMessage : BilibiliRawMessage, IPopularityMessage
     {
         public ulong Popularity { get; set; }
     }

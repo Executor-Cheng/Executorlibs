@@ -1,11 +1,11 @@
 namespace Executorlibs.Bilibili.Protocol.Models.General
 {
-    public interface IUnknownMessage : IBilibiliMessage
+    public interface IUnknownJsonMessage : IBilibiliJsonMessage
     {
 
     }
 
-    public class UnknownMessage : BilibiliMessage, IUnknownMessage
+    public class UnknownJsonMessage : BilibiliJsonMessage, IUnknownJsonMessage
     {
 
     }

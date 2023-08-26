@@ -1,6 +1,6 @@
 using System.Diagnostics;
-using Executorlibs.Bilibili.Protocol.Parsers;
-using Executorlibs.Bilibili.Protocol.Parsers.Attributes;
+using Executorlibs.Bilibili.Protocol.Parsing.Parsers;
+using Executorlibs.Bilibili.Protocol.Parsing.Parsers.Attributes;
 
 namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 {

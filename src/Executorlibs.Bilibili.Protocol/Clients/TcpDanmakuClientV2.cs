@@ -1,55 +1,36 @@
-using System.IO;
-using System.IO.Compression;
-using Executorlibs.Bilibili.Protocol.Invokers;
-using Executorlibs.Bilibili.Protocol.Options;
+using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
+using Executorlibs.Bilibili.Protocol.Dispatchers;
+using Executorlibs.Bilibili.Protocol.Models.General;
 using Executorlibs.Bilibili.Protocol.Services;
-using Microsoft.Extensions.Options;
+#if NETSTANDARD2_0
+using System;
+using Executorlibs.Shared.Extensions;
+#endif
 
 namespace Executorlibs.Bilibili.Protocol.Clients
 {
-    public class TcpDanmakuClientV2 : TcpDanmakuClientBase
+    public class TcpDanmakuClientV2 : TcpDanmakuClient<DeflatePayloadDecoder>
     {
-        protected override byte Version => 2;
-
-        public TcpDanmakuClientV2(IBilibiliMessageHandlerInvoker invoker, IBilibiliMessageSubscriptionResolver resolver, IOptionsSnapshot<DanmakuClientOptions> options, IDanmakuServerProvider credentialProvider) : base(invoker, resolver, options, credentialProvider)
+        public TcpDanmakuClientV2(IBilibiliRawdataDispatcher invoker, IDanmakuServerProvider credentialProvider, IBilibiliMessageDispatcher<IDisconnectedMessage>? disconnectDispatcher = null) : base(invoker, credentialProvider, disconnectDispatcher)
         {
 
         }
 
-        protected override void HandlePayload(ref ReceiveMethodLocals locals)
+        protected override ValueTask SendJoinRoomAsync(Socket socket, uint roomId, ulong userId, string token, CancellationToken cToken = default)
         {
-#if BIGENDIAN
-            const long gzipCompressed = 0x0500000002001000L; // Magic = 0x10; Version = 0x2; Action = 0x5, cmp once
+#if !NETSTANDARD2_0
+            var task = socket.SendAsync(CreateJoinRoomPayload(2, roomId, userId, token), SocketFlags.None, cToken);
+            if (task.IsCompletedSuccessfully)
+            {
+                task.GetAwaiter().GetResult();
+                return default;
+            }
+            return new ValueTask(task.AsTask());
 #else
-            const long gzipCompressed = 0x0000000500020010L;
+            return new ValueTask(socket.SendAsync(new ArraySegment<byte>(CreateJoinRoomPayload(2, roomId, userId, token)), SocketFlags.None));
 #endif
-            // Skip PacketLength (4 bytes)
-            if (locals.Protocol.CompressedFlag == gzipCompressed)
-            {
-                ProcessGZipPayload(locals.payloadLength, locals.protocolBuffer, locals.payload, ref locals.decompressBuffer);
-            }
-            else
-            {
-                base.HandlePayload(ref locals);
-            }
-        }
-
-        private void ProcessGZipPayload(int payloadLength, byte[] protocolBuffer, byte[] payload, ref byte[] decompressBuffer)
-        {
-            using MemoryStream ms = new MemoryStream(payload, 2, payloadLength - 2); // skip 0x78 0xDA
-            using DeflateStream deflate = new DeflateStream(ms, CompressionMode.Decompress);
-            ref BilibiliDanmakuProtocol protocol = ref Interpret(protocolBuffer);
-            while (deflate.Read(protocolBuffer, 0, 16) > 0)
-            {
-                protocol.ChangeEndian();
-                payloadLength = protocol.PacketLength - 16;
-                if (decompressBuffer.Length < payloadLength)
-                {
-                    decompressBuffer = new byte[payloadLength];
-                }
-                deflate.Read(decompressBuffer, 0, payloadLength);
-                base.ProcessDanmaku(in protocol, decompressBuffer);
-            }
         }
     }
 }

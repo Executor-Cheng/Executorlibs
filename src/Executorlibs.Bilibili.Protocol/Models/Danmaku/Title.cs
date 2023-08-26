@@ -15,7 +15,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
         /// <summary>
         /// 从Id
         /// </summary>
-        int SubId { get; }
+        uint SubId { get; }
     }
 
     /// <summary>
@@ -27,15 +27,15 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
         public string Name { get; set; } = null!;
 
         /// <inheritdoc/>
-        public int Id { get; set; }
+        public uint Id { get; set; }
 
         /// <inheritdoc/>
-        public int SubId { get; set; }
+        public uint SubId { get; set; }
 
         /// <summary>
-        /// 尝试将格式为 title-x-x 的头衔字符串处理为 <see cref="Title"/>
+        /// 尝试将格式为 title-x-y 的头衔字符串处理为 <see cref="Title"/>
         /// </summary>
-        /// <param name="title">格式为 title-x-x 的头衔字符串</param>
+        /// <param name="title">格式为 title-x-y 的头衔字符串</param>
         /// <returns>对应 <paramref name="title"/> 的一个 <see cref="Title"/> 实例。如果未能成功处理则返回 <see langword="null"/></returns>
         public static Title? Parse(string? title)
         {
@@ -45,8 +45,8 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
                 int first = title!.IndexOf('-') + 1,
                     last = title.IndexOf('-', first);
                 if (first <= last &&
-                    int.TryParse(title.Substring(first, last - first), out int id) &&
-                    int.TryParse(title.Substring(last + 1), out int subId)) // SC 的 Title 字符串是 "0"
+                    uint.TryParse(title.Substring(first, last - first), out uint id) &&
+                    uint.TryParse(title.Substring(last + 1), out uint subId)) // SC 的 Title 字符串是 "0"
                 {
                     return new Title
                     {
@@ -63,8 +63,8 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
                 int first = titleSpan.IndexOf('-') + 1,
                     last = titleSpan[first..].IndexOf('-') + first;
                 if (first <= last &&
-                    int.TryParse(titleSpan[first..last], out int id) &&
-                    int.TryParse(titleSpan[(last + 1)..], out int subId)) // SC 的 Title 字符串是 "0"
+                    uint.TryParse(titleSpan[first..last], out uint id) &&
+                    uint.TryParse(titleSpan[(last + 1)..], out uint subId)) // SC 的 Title 字符串是 "0"
                 {
                     return new Title
                     {

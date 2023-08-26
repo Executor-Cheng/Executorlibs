@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using System.Text.Json.Serialization;
 using Executorlibs.Bilibili.Protocol.Models.Enums;
-using Executorlibs.Bilibili.Protocol.Parsers;
-using Executorlibs.Bilibili.Protocol.Parsers.Attributes;
+using Executorlibs.Bilibili.Protocol.Parsing.Parsers;
+using Executorlibs.Bilibili.Protocol.Parsing.Parsers.Attributes;
 using Executorlibs.Shared.JsonConverters;
 
 namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
@@ -27,19 +27,23 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
         /// 弹幕类型
         /// </summary>
         DanmakuMode Mode { get; }
+
         /// <summary>
         /// 用户排名
         /// </summary>
-        int? Rank { get; }
+        uint? Rank { get; }
+
         /// <summary>
         /// 是否为抽奖弹幕
         /// </summary>
         bool IsLotteryDanmaku { get; } // 0.9 > 0
+
         /// <summary>
         /// 头衔信息
         /// </summary>
         [JsonConverter(typeof(ChangeTypeJsonConverter<Title, ITitle>))]
         ITitle? Title { get; }
+
         /// <summary>
         /// 勋章信息
         /// </summary>
@@ -60,7 +64,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
         public DanmakuMode Mode { get; set; }
 
         /// <inheritdoc/>
-        public int? Rank { get; set; }
+        public uint? Rank { get; set; }
 
         /// <inheritdoc/>
         public bool IsAdmin { get; set; }

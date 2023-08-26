@@ -10,24 +10,22 @@ namespace Executorlibs.Shared.Extensions
 {
     public static class SocketExtension
     {
-        public static ValueTask ReceiveFullyAsync(this Socket socket, byte[] buffer, CancellationToken token = default)
-            => socket.ReceiveFullyAsync(new Memory<byte>(buffer, 0, buffer.Length), token);
-
-        public static ValueTask ReceiveFullyAsync(this Socket socket, byte[] buffer, int offset, int size, CancellationToken token = default)
+        public static ValueTask ReceiveFullyAsync(this Socket socket, byte[] buffer, SocketFlags flags, CancellationToken token = default)
         {
-            if (offset + size > buffer.Length)
-            {
-                throw new ArgumentException("Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.");
-            }
-            Memory<byte> memory = new Memory<byte>(buffer, offset, size);
-            return socket.ReceiveFullyAsync(memory, token);
+            return socket.ReceiveFullyAsync(new Memory<byte>(buffer, 0, buffer.Length), flags, token);
+        }
+
+        public static ValueTask ReceiveFullyAsync(this Socket socket, byte[] buffer, int offset, int size, SocketFlags flags, CancellationToken token = default)
+        {
+            var memory = new Memory<byte>(buffer, offset, size);
+            return socket.ReceiveFullyAsync(memory, flags, token);
         }
 
 #if !NETSTANDARD2_0
 #pragma warning disable CA2012 // Use ValueTasks correctly
-        public static ValueTask ReceiveFullyAsync(this Socket socket, Memory<byte> memory, CancellationToken token = default)
+        public static ValueTask ReceiveFullyAsync(this Socket socket, Memory<byte> memory, SocketFlags flags, CancellationToken token = default)
         {
-            ValueTask<int> vt = socket.ReceiveAsync(memory, SocketFlags.None, token);
+            var vt = socket.ReceiveAsync(memory, flags, token);
             if (vt.IsCompletedSuccessfully)
             {
                 int recved = vt.Result;
@@ -37,55 +35,54 @@ namespace Executorlibs.Shared.Extensions
                 }
                 vt = new ValueTask<int>(recved);
             }
-            return Await(socket, memory, vt, token);
+            return Await(socket, memory, vt, flags, token);
 
-            static async ValueTask Await(Socket socket, Memory<byte> memory, ValueTask<int> recvTask, CancellationToken token)
+            static async ValueTask Await(Socket socket, Memory<byte> memory, ValueTask<int> recvTask, SocketFlags flags, CancellationToken token)
             {
                 while (true)
                 {
                     int n = await recvTask;
+                    if (n == memory.Length)
+                    {
+                        return;
+                    }
                     if (n < 1)
                     {
                         throw new SocketException((int)SocketError.ConnectionReset);
                     }
-                    else if (n == memory.Length)
-                    {
-                        return;
-                    }
                     memory = memory[n..];
-                    recvTask = socket.ReceiveAsync(memory, SocketFlags.None, token);
+                    recvTask = socket.ReceiveAsync(memory, flags, token);
                 }
             }
         }
 #else
-        public static async ValueTask ReceiveFullyAsync(this Socket socket, Memory<byte> memory, CancellationToken token = default)
+        public static async ValueTask ReceiveFullyAsync(this Socket socket, Memory<byte> memory, SocketFlags flags, CancellationToken token = default)
         {
             if (MemoryMarshal.TryGetArray(memory, out ArraySegment<byte> segment))
             {
-                int offset = segment.Offset, count = segment.Count;
                 while (true)
                 {
-                    int n = await Task.Factory.FromAsync(socket.BeginReceive(segment.Array, offset, count, SocketFlags.None, null, null), socket.EndReceive);
-                    if (n < 1)
-                    {
-                        throw new SocketException(10054);
-                    }
-                    else if (n == count)
+                    int n = await SocketTaskExtensions.ReceiveAsync(socket, segment, flags);
+                    if (n == segment.Count)
                     {
                         return;
                     }
-                    offset += n;
-                    count -= n;
+                    if (n < 1)
+                    {
+                        throw new SocketException((int)SocketError.ConnectionReset);
+                    }
+                    token.ThrowIfCancellationRequested();
+                    segment = new ArraySegment<byte>(segment.Array, segment.Offset + n, segment.Count - n);
                 }
             }
             throw new NotSupportedException();
         }
 
-        public static ValueTask<int> SendAsync(this Socket socket, ReadOnlyMemory<byte> memory, SocketFlags socketFlags, CancellationToken token = default)
+        public static ValueTask<int> SendAsync(this Socket socket, ReadOnlyMemory<byte> memory, SocketFlags flags, CancellationToken token = default)
         {
             if (MemoryMarshal.TryGetArray(memory, out ArraySegment<byte> segment))
             {
-                return new ValueTask<int>(Task.Factory.FromAsync(socket.BeginSend(segment.Array, segment.Offset, segment.Count, socketFlags, null, null), socket.EndSend));
+                return new ValueTask<int>(SocketTaskExtensions.SendAsync(socket, segment, flags));
             }
             throw new NotSupportedException();
         }
