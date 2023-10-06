@@ -39,7 +39,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsing.Parsers
                 Master = info_3[2].GetString()!,
                 MasterId = info_3[12].GetUInt64(),
                 RoomId = info_3[3].GetUInt32(),
-                Color = info_3[12].GetUInt32(),
+                Color = info_3[4].GetUInt32(),
                 // Badge = null 以后再整
             } : null;
             message.Level = info_4[0].GetUInt32();

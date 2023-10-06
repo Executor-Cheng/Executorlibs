@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace Executorlibs.Bilibili.Protocol.Models
 {
     public class DanmakuServerInfo
@@ -16,6 +18,7 @@ namespace Executorlibs.Bilibili.Protocol.Models
         }
     }
 
+    [DebuggerDisplay("{Host,nq}:{Port}/{WsPort}/{WssPort}")]
     public struct DanmakuServerHostInfo
     {
         public string Host { get; set; }

@@ -2,8 +2,8 @@
   <PropertyGroup>
     <!-- 要想改变目标框架, 必须同时指定 TargetFramework 和 TargetFrameworks -->
     
-    <TargetFramework>net6.0</TargetFramework>
-    <TargetFrameworks>net6.0</TargetFrameworks>
+    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net8.0</TargetFrameworks>
     
     <!--你想target到.NET Framework就这样, 4.6.0就是460-->
     

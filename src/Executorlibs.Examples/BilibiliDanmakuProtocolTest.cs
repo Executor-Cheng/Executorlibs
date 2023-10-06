@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Executorlibs.Bilibili.Protocol.Clients;
-using Executorlibs.Bilibili.Protocol.Dispatchers;
 using Executorlibs.Bilibili.Protocol.Extensions;
 using Executorlibs.Bilibili.Protocol.Handlers;
 using Executorlibs.Bilibili.Protocol.Models.Danmaku;
@@ -10,8 +9,6 @@ using Executorlibs.Bilibili.Protocol.Models.General;
 using Executorlibs.Bilibili.Protocol.Options;
 using Executorlibs.Bilibili.Protocol.Parsing.Parsers;
 using Executorlibs.Bilibili.Protocol.Services;
-using Executorlibs.MessageFramework.Dispatchers;
-using Executorlibs.MessageFramework.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -25,25 +22,47 @@ namespace Executorlibs.Examples
             IHostBuilder hb = Host.CreateDefaultBuilder()
                                   .ConfigureLogging((ILoggingBuilder factory) =>
                                   {
+                                      // factory.ClearProviders();
                                       factory.AddSimpleConsole(options =>
                                       {
                                           options.IncludeScopes = false;
                                           options.TimestampFormat = "[HH:mm:ss]";
                                       });
-                                      factory.SetMinimumLevel(LogLevel.Trace);
+                                      factory.SetMinimumLevel(LogLevel.Information);
                                   })
                                   .ConfigureServices((context, services) =>
                                   {
-                                      services.AddBilibiliDanmakuFramework().AddDefaultRawdataDispatcher(parsingBuilder =>
+                                      services.AddBilibiliDanmakuFramework().AddDefaultRawdataDispatcher(rawContext =>
                                       {
-                                          parsingBuilder.AddDefaultContext().WithMessage<IPopularityMessage>(parser => { }, dispatcher => { });
+                                          rawContext.WithDefault()
+                                                    .WithDefaultDispatcher()
+                                                    .WithDefaultSubscription()
+                                                    .WithMessage<IPopularityMessage>(
+                                                        parser => parser.AddComponent<PopularityParser>(),
+                                                        handler => handler.AddComponent<PopularityMesssageHandler>());
 
-                                          parsingBuilder.AddJsonContext().WithMessage<IDanmakuMessage>(parser => { }, dispatcher => { });
+                                          rawContext.TransistToJson(dispatcher =>
+                                          {
+                                              dispatcher.AddDefault(jsonContext =>
+                                              {
+                                                  jsonContext.WithDefault()
+                                                             .WithDefaultDispatcher()
+                                                             .WithDefaultSubscription()
+                                                             .WithMessage<IDanmakuMessage>(
+                                                                 parser => parser.AddComponent<DanmakuParser>(),
+                                                                 handler => handler.AddComponent<DanmakuMessageHandler>())
+                                                             .WithMessage<IUnknownJsonMessage>(
+                                                                 parser => parser.AddComponent<UnknownJsonMessageParser>(),
+                                                                 handler => handler.AddComponent<UnknownMessageHandler>());
+                                              });
+                                          });
+                                                        
                                       })
-                                      .WithDanmakuCredentialProvider().AddComponent<DanmakuServerProvider>().Builder.AddClient<TcpDanmakuClientV3>();
+                                      .WithDanmakuCredentialProvider().AddComponent<DanmakuServerProvider>().Builder
+                                      .AddClient<TcpDanmakuClientV3>();
 
                                       services.AddHostedService<TestHostedService>();
-                                      services.AddHttpClient();
+                                      services.AddHttpClient(); 
                                   });
             return hb.RunConsoleAsync();
         }
@@ -64,7 +83,7 @@ namespace Executorlibs.Examples
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var options = new DanmakuClientOptions(164725, TimeSpan.FromSeconds(30));
+            var options = new DanmakuClientOptions(5096, TimeSpan.FromSeconds(30));
             return _client.ConnectAsync(options, stoppingToken);
         }
     }

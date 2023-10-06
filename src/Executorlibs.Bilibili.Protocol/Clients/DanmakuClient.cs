@@ -89,7 +89,7 @@ namespace Executorlibs.Bilibili.Protocol.Clients
         {
             byte[] json = JsonSerializer.SerializeToUtf8Bytes(new
             {
-                uid = 8455327,
+                uid = userId,
                 roomid = roomId,
                 protover = version,
                 //platform = "web",
