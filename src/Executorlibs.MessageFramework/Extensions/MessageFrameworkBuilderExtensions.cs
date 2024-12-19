@@ -101,14 +101,14 @@ namespace Executorlibs.MessageFramework.Extensions
             return new DefaultParsingContextBuilder<TClient, TRawdata>(context);
         }
 
-        public static DefaultParsingContextBuilder<TClient, TRawdata>.DefaultDispatcherBuilder WithDefaultDispatcher<TClient, TRawdata>(this DefaultParsingContextBuilder<TClient, TRawdata> builder, ServiceLifetime? lifetime = null) where TClient : class, IMessageClient
+        public static DefaultContextDispatcherBuilder<TClient, TRawdata> WithDefaultDispatcher<TClient, TRawdata>(this DefaultParsingContextBuilder<TClient, TRawdata> builder, ServiceLifetime? lifetime = null) where TClient : class, IMessageClient
         {
-            return new DefaultParsingContextBuilder<TClient, TRawdata>.DefaultDispatcherBuilder(builder, lifetime);
+            return new DefaultContextDispatcherBuilder<TClient, TRawdata>(builder, lifetime);
         }
 
-        public static DefaultParsingContextBuilder<TClient, TRawdata>.DefaultDispatcherBuilder.DefaultSubscriptionBuilder WithDefaultSubscription<TClient, TRawdata>(this DefaultParsingContextBuilder<TClient, TRawdata>.DefaultDispatcherBuilder builder, ServiceLifetime? lifetime = null) where TClient : class, IMessageClient
+        public static DefaultContextSubscriptionBuilder<TClient, TRawdata> WithDefaultSubscription<TClient, TRawdata>(this DefaultContextDispatcherBuilder<TClient, TRawdata> builder, ServiceLifetime? lifetime = null) where TClient : class, IMessageClient
         {
-            return new DefaultParsingContextBuilder<TClient, TRawdata>.DefaultDispatcherBuilder.DefaultSubscriptionBuilder(builder, lifetime);
+            return new DefaultContextSubscriptionBuilder<TClient, TRawdata>(builder, lifetime);
         }
     }
 }

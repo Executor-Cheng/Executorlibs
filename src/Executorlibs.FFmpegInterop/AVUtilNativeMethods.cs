@@ -6,28 +6,34 @@ namespace Executorlibs.FFmpegInterop
 {
     public static unsafe class AVUtilNativeMethods
     {
-        [DllImport("avutil-57.dll", EntryPoint = "av_malloc", CallingConvention = CallingConvention.StdCall)]
-        public static extern void* Allocate(ulong size);
+        [DllImport("avutil-57.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "av_malloc")]
+        public unsafe static extern void* Allocate(ulong size);
 
-        [DllImport("avutil-57.dll", EntryPoint = "av_free", CallingConvention = CallingConvention.StdCall)]
-        public static extern void Free(void* ptr);
+        [DllImport("avutil-57.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "av_free")]
+        public unsafe static extern void Free(void* ptr);
 
-        [DllImport("avutil-57.dll", EntryPoint = "av_frame_alloc", CallingConvention = CallingConvention.StdCall)]
-        public static extern AVFrame* AllocateFrame();
+        [DllImport("avutil-57.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "av_frame_alloc")]
+        public unsafe static extern AVFrame* AllocateFrame();
 
-        [DllImport("avutil-57.dll", EntryPoint = "av_frame_free", CallingConvention = CallingConvention.StdCall)]
-        public static extern void FreeFrame(AVFrame** frame);
+        [DllImport("avutil-57.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "av_frame_free")]
+        public unsafe static extern void FreeFrame(AVFrame** frame);
 
-        [DllImport("avutil-57.dll", EntryPoint = "av_frame_unref", CallingConvention = CallingConvention.StdCall)]
-        public static extern void UnreferenceFrame(AVFrame* frame);
+        [DllImport("avutil-57.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "av_frame_get_buffer")]
+        public unsafe static extern int GetFrameBuffer(AVFrame* frame, int align);
 
-        [DllImport("avutil-57.dll", EntryPoint = "av_get_bytes_per_sample", CallingConvention = CallingConvention.StdCall)]
+        [DllImport("avutil-57.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "av_frame_unref")]
+        public unsafe static extern void UnreferenceFrame(AVFrame* frame);
+
+        [DllImport("avutil-57.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "av_get_bytes_per_sample")]
         public static extern int GetBytesPerSample(AVSampleFormat format);
 
-        [DllImport("avutil-57.dll", EntryPoint = "av_get_channel_layout_nb_channels", CallingConvention = CallingConvention.StdCall)]
+        [DllImport("avutil-57.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "av_get_channel_layout_nb_channels")]
         public static extern int GetChannelsByChannelLayout(ulong channelLayout);
 
-        [DllImport("avutil-57.dll", EntryPoint = "av_samples_get_buffer_size", CallingConvention = CallingConvention.StdCall)]
-        public static extern int GetSamplesBufferSize(int* linesize, int channels, int samples, AVSampleFormat sampleFormat, int align);
+        [DllImport("avutil-57.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "av_samples_get_buffer_size")]
+        public unsafe static extern int GetSamplesBufferSize(int* linesize, int channels, int samples, AVSampleFormat sampleFormat, int align);
+
+        [DllImport("avutil-57.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "av_image_alloc")]
+        public unsafe static extern int AllocateImage(byte** pointers, int* lineSize, int width, int height, int pixelFormat, int align);
     }
 }

@@ -1,9 +1,6 @@
 using System;
-using System.Buffers;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.IO.Compression;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -92,9 +89,9 @@ namespace Executorlibs.Bilibili.Protocol.Clients
                 uid = userId,
                 roomid = roomId,
                 protover = version,
-                //platform = "web",
-                //clientver = "1.13.4",
-                //type = 2,
+                buvid = "ACE72788-DC2B-41A4-B9D3-8C63AB0B193827573infoc",
+                platform = "web",
+                type = 2,
                 key = token
             });
             return CreatePayload(7, json);

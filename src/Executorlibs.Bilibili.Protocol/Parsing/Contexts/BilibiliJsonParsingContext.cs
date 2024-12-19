@@ -63,7 +63,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsing.Contexts
 #if NETSTANDARD2_0
         public virtual bool TryGetMessageKey(out string? key)
 #else
-        public virtual bool TryGetMessageKey([NotNullWhen(true)] out string? key)
+        public virtual bool TryGetMessageKey([NotNullWhen(true)]out string? key)
 #endif
         {
             foreach (var mappedParser in _mappedParsers)
@@ -77,7 +77,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsing.Contexts
 
         public override bool CanParse(JsonElement rawdata)
         {
-            if (rawdata.TryGetProperty("cmd", out JsonElement cmdToken) &&
+            if (rawdata.TryGetProperty("cmd", out var cmdToken) &&
                 TryGetMessageKey(out string? key) &&
                 cmdToken.GetString() == key)
             {

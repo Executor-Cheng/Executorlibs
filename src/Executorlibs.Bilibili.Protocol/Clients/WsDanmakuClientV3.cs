@@ -12,7 +12,7 @@ namespace Executorlibs.Bilibili.Protocol.Clients
     {
         public WsDanmakuClientV3(IBilibiliRawdataDispatcher invoker, IDanmakuServerProvider credentialProvider, IBilibiliMessageDispatcher<IDisconnectedMessage>? disconnectDispatcher = null) : base(invoker, credentialProvider, disconnectDispatcher)
         {
-
+            
         }
 
         protected override ValueTask SendJoinRoomAsync(WebSocket socket, uint roomId, ulong userId, string token, CancellationToken cToken = default)

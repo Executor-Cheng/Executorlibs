@@ -12,7 +12,7 @@ namespace Executorlibs.Shared.Extensions
     public static class WebSocketExtensions
     {
 #if !NETSTANDARD2_0
-        public static async ValueTask ReceiveFullyAsync(this WebSocket ws, Memory<byte> buffer, CancellationToken token = default)
+        public static async Task ReceiveFullyAsync(this WebSocket ws, Memory<byte> buffer, CancellationToken token = default)
         {
             while (true)
             {
@@ -29,7 +29,7 @@ namespace Executorlibs.Shared.Extensions
             }
         }
 
-        public static async ValueTask<byte[]> ReceiveFullyAsync(this WebSocket webSocket, CancellationToken token = default)
+        public static async Task<byte[]> ReceiveFullyAsync(this WebSocket webSocket, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             byte[] buffer = new byte[1024];

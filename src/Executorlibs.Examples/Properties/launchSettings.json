@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Executorlibs.Examples": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_TieredCompilation": "0",
+        "DOTNET_JitDisasm2": "Executorlibs.Examples.*:*",
+        "DOTNET_JitDisasmWithCodeBytes": "1"
+      }
+    }
+  }
+}

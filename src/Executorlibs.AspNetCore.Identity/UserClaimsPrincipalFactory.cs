@@ -42,7 +42,7 @@ namespace Executorlibs.AspNetCore.Identity
 
         public virtual Task<ClaimsPrincipal> CreateAsync(TUser user)
         {
-            IUserClaimsPrincipalLoader<TUser, TContext> loader = GetUserLoader(user);
+            var loader = GetUserLoader(user);
             return loader.CreateAsync(user);
         }
     }

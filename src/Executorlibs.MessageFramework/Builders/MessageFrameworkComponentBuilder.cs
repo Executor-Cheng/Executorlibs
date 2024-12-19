@@ -40,7 +40,7 @@ namespace Executorlibs.MessageFramework.Builders
             return this;
         }
 
-        public virtual MessageFrameworkComponentBuilder<TClient, TMessage, TComponent> AddComponent(Func<IServiceProvider, TComponent> factory, ServiceLifetime? lifetime = null)
+        public virtual MessageFrameworkComponentBuilder<TClient, TMessage, TComponent> AddComponent<TComponentImpl>(Func<IServiceProvider, TComponentImpl> factory, ServiceLifetime? lifetime = null) where TComponentImpl : class, TComponent
         {
             _componentBuilder.AddService(factory, lifetime ?? ComponentLifetime);
             return this;

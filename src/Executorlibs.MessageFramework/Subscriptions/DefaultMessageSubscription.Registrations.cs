@@ -10,7 +10,7 @@ namespace Executorlibs.MessageFramework.Subscriptions
         {
             public long NextAvailableId = 1;
 
-            private readonly UInt32Lock _lock;
+            private UInt32Lock _lock;
 
             public RegistrationNode? EffictiveNodeList;
 

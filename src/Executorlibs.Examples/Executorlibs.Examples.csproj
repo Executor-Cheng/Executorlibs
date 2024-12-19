@@ -15,6 +15,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
+    <PackageReference Include="System.Linq.Async" Version="6.0.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Executorlibs.Bilibili.Protocol\Executorlibs.Bilibili.Protocol.csproj" />
@@ -22,5 +23,6 @@
     <ProjectReference Include="..\Executorlibs.NeteaseMusic\Executorlibs.NeteaseMusic.csproj" />
     <ProjectReference Include="..\Executorlibs.Shared.Protocol\Executorlibs.Shared.Protocol.csproj" />
     <ProjectReference Include="..\Executorlibs.Shared\Executorlibs.Shared.csproj" />
+    <ProjectReference Include="..\Executorlibs.TarsProtocol\Executorlibs.TarsProtocol.csproj" />
   </ItemGroup>
 </Project>

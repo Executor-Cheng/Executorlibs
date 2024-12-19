@@ -2,14 +2,14 @@ using System.Runtime.InteropServices;
 
 namespace Executorlibs.FFmpegInterop.Models
 {
-    [StructLayout(LayoutKind.Explicit)]
-    public unsafe struct AVStream
+    [StructLayout(LayoutKind.Explicit, Size = 224)]
+    public struct AVStream
     {
         [FieldOffset(0)]
-        private fixed byte _data[224];
-
-        [FieldOffset(0)]
         public int Index;
+
+        [FieldOffset(16)]
+        public AVRelational TimeBase;
 
         [FieldOffset(24)]
         public long StartTime;
@@ -21,6 +21,6 @@ namespace Executorlibs.FFmpegInterop.Models
         public long FrameCount;
 
         [FieldOffset(208)]
-        public AVCodecParameters* CodecParameters;
+        public unsafe AVCodecParameters* CodecParameters;
     }
 }

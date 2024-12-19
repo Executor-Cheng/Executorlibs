@@ -8,12 +8,12 @@ namespace Executorlibs.MessageFramework.Builders
     {
         public IServiceCollection Services { get; }
 
-        public ServiceBuilder(IServiceCollection services)
+        protected ServiceBuilder(IServiceCollection services)
         {
             Services = services;
         }
 
-        public ServiceBuilder(ServiceBuilder builder) : this(builder.Services)
+        protected ServiceBuilder(ServiceBuilder builder) : this(builder.Services)
         {
 
         }
@@ -31,9 +31,9 @@ namespace Executorlibs.MessageFramework.Builders
 
         }
 
-        public virtual ServiceBuilder<TService> AddService<TImpl>(ServiceLifetime lifetime = ServiceLifetime.Scoped) where TImpl : class, TService
+        public virtual ServiceBuilder<TService> AddService<TImplementation>(ServiceLifetime lifetime = ServiceLifetime.Scoped) where TImplementation : class, TService
         {
-            Services.TryAdd(new ServiceDescriptor(typeof(TService), typeof(TImpl), lifetime));
+            Services.TryAdd(new ServiceDescriptor(typeof(TService), typeof(TImplementation), lifetime));
             return this;
         }
 

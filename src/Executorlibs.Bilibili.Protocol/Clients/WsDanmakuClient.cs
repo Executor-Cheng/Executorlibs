@@ -41,7 +41,11 @@ namespace Executorlibs.Bilibili.Protocol.Clients
 
         protected override ValueTask ReceiveAsync(WebSocketConnectionContext context, Memory<byte> memory, CancellationToken token)
         {
+#if NETSTANDARD2_0
             return context.WebSocket.ReceiveFullyAsync(memory, token);
+#else
+            return new ValueTask(context.WebSocket.ReceiveFullyAsync(memory, token));
+#endif
         }
 
         protected abstract ValueTask SendJoinRoomAsync(WebSocket client, uint roomId, ulong userId, string token, CancellationToken cToken = default);

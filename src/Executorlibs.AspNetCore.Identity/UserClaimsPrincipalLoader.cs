@@ -11,7 +11,7 @@ namespace Executorlibs.AspNetCore.Identity
 {
     public interface IUserClaimsPrincipalLoader<TUser, TRole, TContext> : IUserClaimsPrincipalLoader<TUser, TContext> where TUser : class where TRole : class where TContext : DbContext
     {
-        RoleManager<TRole> RoleManager { get; }
+        RoleManager<TRole, TContext> RoleManager { get; }
 
         bool UserRolesLoaded { get; }
 
@@ -32,9 +32,9 @@ namespace Executorlibs.AspNetCore.Identity
 
         protected ClaimsIdentity? UserClaims { get; set; }
 
-        public UserManager<TUser> UserManager { get; private set; }
+        public UserManager<TUser, TContext> UserManager { get; }
 
-        public IdentityOptions Options { get; private set; }
+        public IdentityOptions Options { get; }
 
         public bool UserIdLoaded { get; protected set; }
 
@@ -216,7 +216,7 @@ namespace Executorlibs.AspNetCore.Identity
     {
         TUser? User { get; }
 
-        UserManager<TUser> UserManager { get; }
+        UserManager<TUser, TContext> UserManager { get; }
 
         IdentityOptions Options { get; }
 
@@ -244,13 +244,13 @@ namespace Executorlibs.AspNetCore.Identity
     public class UserClaimsPrincipalLoader<TUser, TRole, TContext> : UserClaimsPrincipalLoader<TUser, TContext>,
                                                                      IUserClaimsPrincipalLoader<TUser, TRole, TContext> where TUser : class where TRole : class where TContext : DbContext
     {
-        public RoleManager<TRole> RoleManager { get; private set; }
+        public RoleManager<TRole, TContext> RoleManager { get; private set; }
 
         public bool UserRolesLoaded { get; protected set; }
 
         public bool RoleClaimsLoaded { get; protected set; }
 
-        protected override RoleClaimsLoadingOptions ClaimsOptions => Unsafe.As<ClaimsLoadingOptions, RoleClaimsLoadingOptions>(ref Unsafe.AsRef(in _claimsOptions));
+        protected override RoleClaimsLoadingOptions ClaimsOptions => (RoleClaimsLoadingOptions)_claimsOptions;
 
         public UserClaimsPrincipalLoader(UserManager<TUser, TContext> userManager, RoleManager<TRole, TContext> roleManager, IOptions<IdentityOptions> optionsAccessor, IOptionsSnapshot<RoleClaimsLoadingOptions> claimsOptionsAccessor) : base(userManager, optionsAccessor, claimsOptionsAccessor)
         {
@@ -315,17 +315,19 @@ namespace Executorlibs.AspNetCore.Identity
             {
                 await LoadUserRolesAsyncCore(user, id).ConfigureAwait(false);
             }
+            var roleClaims = new List<Claim>();
             foreach (Claim claim in id.Claims)
             {
                 if (claim.Type == Options.ClaimsIdentity.RoleClaimType)
                 {
-                    TRole? role = await RoleManager.FindByNameAsync(claim.Value).ConfigureAwait(false);
+                    var role = await RoleManager.FindByNameAsync(claim.Value).ConfigureAwait(false);
                     if (role != null)
                     {
-                        id.AddClaims(await RoleManager.GetClaimsAsync(role).ConfigureAwait(false));
+                        roleClaims.AddRange(await RoleManager.GetClaimsAsync(role).ConfigureAwait(false));
                     }
                 }
             }
+            id.AddClaims(roleClaims);
             RoleClaimsLoaded = true;
         }
     }

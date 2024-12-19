@@ -100,13 +100,7 @@ namespace Executorlibs.MessageFramework.Models.General
 
         protected void SetFlag(uint flag, bool status)
         {
-#if NET8_0
-            uint x = status ? 1u : 0;
-            x = (uint)-(int)x;
-#else
-            uint x = Bool2Byte(status);
-            x--;
-#endif
+            uint x = status ? uint.MaxValue : 0;
             _flag ^= (x ^ _flag) & flag;
         }
     }

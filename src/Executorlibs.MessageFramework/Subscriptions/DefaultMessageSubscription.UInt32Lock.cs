@@ -19,7 +19,7 @@ namespace Executorlibs.MessageFramework.Subscriptions
             private static uint CompareExchange(ref uint location1, uint value, uint comparand)
             {
 #if !NET5_0_OR_GREATER
-            return (uint)Interlocked.CompareExchange(ref Unsafe.As<uint, int>(ref location1), (int)value, (int)comparand);
+                return (uint)Interlocked.CompareExchange(ref Unsafe.As<uint, int>(ref location1), (int)value, (int)comparand);
 #else
                 return Interlocked.CompareExchange(ref location1, value, comparand);
 #endif
@@ -27,45 +27,37 @@ namespace Executorlibs.MessageFramework.Subscriptions
 
             public void EnterWriteLock()
             {
-                do
-                {
-                    // 不允许其它线程持有写锁以及任何一个读锁
-                    while (_lock != 0)
-                    {
-
-                    }
-                }
-                while (CompareExchange(ref _lock, 0x80000000, 0) != 0);
+                while (CompareExchange(ref _lock, 0x80000000, 0) != 0) { }
             }
 
             public void ExitWriteLock()
             {
-                _lock = 0u;
+                Volatile.Write(ref _lock, 0);
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void EnterReadLock()
             {
-                uint lastLock, currentLock;
-                do
+                uint value = Volatile.Read(ref _lock);
+                while (true)
                 {
-                    // 不允许其它线程持有写锁
-                    while ((int)(lastLock = _lock) < 0)
+                    value &= 0x7FFFFFFF;
+                    uint original = CompareExchange(ref _lock, value + 1, value);
+                    if (value == original)
                     {
-
+                        break;
                     }
-                    currentLock = lastLock + 1;
+                    value = original;
                 }
-                while (CompareExchange(ref _lock, currentLock, lastLock) != lastLock);
             }
 
             public void ExitReadLock()
             {
-                uint lastLock;
-                do
-                {
-                    lastLock = _lock;
-                }
-                while (CompareExchange(ref _lock, lastLock - 1, lastLock) != lastLock);
+#if NETSTANDARD
+                Interlocked.Decrement(ref Unsafe.As<uint, int>(ref _lock));
+#else
+                Interlocked.Decrement(ref _lock);
+#endif
             }
         }
     }

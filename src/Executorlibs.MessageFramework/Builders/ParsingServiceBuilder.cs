@@ -1,6 +1,5 @@
 using Executorlibs.MessageFramework.Clients;
 using Executorlibs.MessageFramework.Dispatchers;
-using Executorlibs.MessageFramework.Models.General;
 using Executorlibs.MessageFramework.Parsing.Context;
 using Executorlibs.MessageFramework.Parsing.Parsers;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,21 +34,17 @@ namespace Executorlibs.MessageFramework.Builders
         }
     }
 
-    //public class ParsingServiceBuilder<TClient, TRawdata, TMessage> : ServiceBuilder where TClient : class, IMessageClient where TMessage : IMessage<TRawdata>
-    //{
-    //    public ParsingServiceBuilder(IServiceCollection services) : base(services)
-    //    {
+    public readonly struct DependencyBuilder<TService, TImplementation> where TService : class
+                                                                        where TImplementation : class, TService
+    {
+        private readonly ServiceBuilder<TService> _builder;
 
-    //    }
+        private readonly ServiceLifetime _lifetime;
 
-    //    public ParsingServiceBuilder(ParsingServiceBuilder<TClient, TRawdata, TMessage> builder) : base(builder)
-    //    {
-
-    //    }
-
-    //    public virtual ParserServiceBuilder<TClient, TRawdata, TMessage, TParser> WithParser<TParser>() where TParser : class, IMessageParser<TClient, TRawdata, TMessage>
-    //    {
-    //        return new ParserServiceBuilder<TClient, TRawdata, TMessage, TParser>(Services);
-    //    }
-    //}
+        public DependencyBuilder(ServiceBuilder<TService> builder, ServiceLifetime lifetime)
+        {
+            _builder = builder;
+            _lifetime = lifetime;
+        }
+    }
 }

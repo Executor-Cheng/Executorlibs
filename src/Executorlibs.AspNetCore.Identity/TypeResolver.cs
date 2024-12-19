@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Executorlibs.AspNetCore.Identity
 {
@@ -6,7 +6,7 @@ namespace Executorlibs.AspNetCore.Identity
     {
         protected static Type? FindGenericBaseType(Type currentType, Type genericBaseType)
         {
-            Type? type = currentType;
+            var type = currentType;
             do
             {
                 if (type.IsGenericType && type.GetGenericTypeDefinition() == genericBaseType)

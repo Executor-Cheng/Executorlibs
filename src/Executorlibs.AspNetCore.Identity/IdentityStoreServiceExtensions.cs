@@ -8,9 +8,9 @@ namespace Executorlibs.AspNetCore.Identity
 {
     public static class IdentityStoreServiceExtensions
     {
-        internal static IdentityBuilder AddDefaultEFStoresServices(this IdentityBuilder builder)
+        private static IdentityBuilder AddDefaultEFStoresServices(this IdentityBuilder builder)
         {
-            IServiceCollection services = builder.Services;
+            var services = builder.Services;
             services.TryAddScoped(typeof(UserManager<,>), typeof(DefaultUserManager<,>));
             services.TryAddScoped(typeof(SignInManager<,>), typeof(DefaultSignInManager<,>));
             services.TryAddScoped(typeof(IUserClaimsPrincipalFactory<,>), typeof(DefaultUserClaimsPrincipalFactory<,>));
@@ -25,7 +25,7 @@ namespace Executorlibs.AspNetCore.Identity
             {
                 throw new InvalidOperationException();
             }
-            IServiceCollection services = builder.Services;
+            var services = builder.Services;
 
             services.TryAddSingleton<IIdentityUserStoreResolver<TUser>, DefaultIdentityStoreResolver<TUser>>();
             services.TryAddSingleton<IUserClaimsPrincipalFactoryResolver<TUser>, DefaultUserClaimsPrincipalFactoryResolver<TUser>>();
@@ -34,8 +34,13 @@ namespace Executorlibs.AspNetCore.Identity
             services.TryAddScoped(typeof(UserOnlyStoreProxy<,,,,,>));
 
             services.TryAddScoped<ManagerProvider<TUser, TContext>, DefaultManagerProvider<TUser, TContext>>();
-            services.TryAddScoped<IUserManagerProvider<TUser>>(services => services.GetRequiredService<ManagerProvider<TUser, TContext>>());
-            services.TryAddScoped<ISignInManagerProvider<TUser>>(services => services.GetRequiredService<ManagerProvider<TUser, TContext>>());
+
+            static ManagerProvider<TUser, TContext> GetManagerProvider(IServiceProvider services)
+            {
+                return services.GetRequiredService<ManagerProvider<TUser, TContext>>();
+            }
+            services.TryAddScoped<IUserManagerProvider<TUser>>(GetManagerProvider);
+            services.TryAddScoped<ISignInManagerProvider<TUser>>(GetManagerProvider);
 
             services.TryAddTransient(typeof(IUserClaimsPrincipalLoader<,>), typeof(DefaultUserClaimsPrincipalLoader<,>));
 
@@ -55,11 +60,16 @@ namespace Executorlibs.AspNetCore.Identity
             {
                 throw new InvalidOperationException();
             }
-            IServiceCollection services = builder.Services;
+            var services = builder.Services;
 
             services.TryAddSingleton<IdentityStoreResolver<TUser, TRole>, DefaultIdentityStoreResolver<TUser, TRole>>();
-            services.TryAddSingleton<IIdentityUserStoreResolver<TUser>>(services => services.GetRequiredService<IdentityStoreResolver<TUser, TRole>>());
-            services.TryAddSingleton<IIdentityRoleStoreResolver<TRole>>(services => services.GetRequiredService<IdentityStoreResolver<TUser, TRole>>());
+
+            static IdentityStoreResolver<TUser, TRole> GetIdentityStoreResolver(IServiceProvider services)
+            {
+                return services.GetRequiredService<IdentityStoreResolver<TUser, TRole>>();
+            }
+            services.TryAddSingleton<IIdentityUserStoreResolver<TUser>>(GetIdentityStoreResolver);
+            services.TryAddSingleton<IIdentityRoleStoreResolver<TRole>>(GetIdentityStoreResolver);
             services.TryAddSingleton<IUserClaimsPrincipalFactoryResolver<TUser>, DefaultUserClaimsPrincipalFactoryResolver<TUser, TRole>>();
 
             services.TryAddScoped(typeof(RoleManager<,>), typeof(DefaultRoleManager<,>));
@@ -71,9 +81,14 @@ namespace Executorlibs.AspNetCore.Identity
             services.TryAddScoped(typeof(IUserClaimsPrincipalFactory<,,>), typeof(DefaultUserClaimsPrincipalFactory<,,>));
 
             services.TryAddScoped<ManagerProvider<TUser, TRole, TContext>, DefaultManagerProvider<TUser, TRole, TContext>>();
-            services.TryAddScoped<IUserManagerProvider<TUser>>(services => services.GetRequiredService<ManagerProvider<TUser, TRole, TContext>>());
-            services.TryAddScoped<ISignInManagerProvider<TUser>>(services => services.GetRequiredService<ManagerProvider<TUser, TRole, TContext>>());
-            services.TryAddScoped<IRoleManagerProvider<TRole>>(services => services.GetRequiredService<ManagerProvider<TUser, TRole, TContext>>());
+
+            static ManagerProvider<TUser, TRole, TContext> GetManagerProvider(IServiceProvider services)
+            {
+                return services.GetRequiredService<ManagerProvider<TUser, TRole, TContext>>();
+            }
+            services.TryAddScoped<IUserManagerProvider<TUser>>(GetManagerProvider);
+            services.TryAddScoped<ISignInManagerProvider<TUser>>(GetManagerProvider);
+            services.TryAddScoped<IRoleManagerProvider<TRole>>(GetManagerProvider);
 
             services.TryAddTransient(typeof(IUserClaimsPrincipalLoader<,,>), typeof(DefaultUserClaimsPrincipalLoader<,,>));
 

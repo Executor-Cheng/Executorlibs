@@ -27,12 +27,17 @@ namespace Executorlibs.AspNetCore.Identity
     {
         protected readonly IServiceProvider _services;
 
-        protected Type _identityDbContextType;
+        protected readonly Type _identityDbContextType;
 
-        public ManagerProvider(IServiceProvider services, IHttpContextAccessor accessor)
+        public ManagerProvider(IServiceProvider services, IHttpContextAccessor accessor) : this(services, GetIdentityDbContextType(accessor.HttpContext))
+        {
+            
+        }
+
+        protected ManagerProvider(IServiceProvider services, Type identityDbContextType)
         {
             _services = services;
-            _identityDbContextType = GetIdentityDbContextType(accessor.HttpContext);
+            _identityDbContextType = identityDbContextType;
         }
 
         public SignInManager<TUser> GetSignInManager()
@@ -55,13 +60,19 @@ namespace Executorlibs.AspNetCore.Identity
             return typeof(UserManager<,>).MakeGenericType(typeof(TUser), _identityDbContextType);
         }
 
-        protected virtual Type GetIdentityDbContextType(HttpContext? context)
+        protected static Type GetIdentityDbContextType(HttpContext? context)
         {
-            if (context != null &&
-                context.GetEndpoint() is Endpoint endpoint &&
-                endpoint.Metadata.GetMetadata<IdentityDbContextAttribute>() is IdentityDbContextAttribute identityDbContextAttribute)
+            if (context != null)
             {
-                return identityDbContextAttribute.DbContextType;
+                var endpoint = context.GetEndpoint();
+                if (endpoint != null)
+                {
+                    var identityDbContextAttribute = endpoint.Metadata.GetMetadata<IdentityDbContextAttribute>();
+                    if (identityDbContextAttribute != null)
+                    {
+                        return identityDbContextAttribute.DbContextType;
+                    }
+                }
             }
             return typeof(TContext);
         }

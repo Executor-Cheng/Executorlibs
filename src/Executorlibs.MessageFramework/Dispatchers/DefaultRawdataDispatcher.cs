@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,18 +8,15 @@ namespace Executorlibs.MessageFramework.Dispatchers
 {
     public class DefaultRawdataDispatcher<TClient, TRawdata> : RawdataDispatcher<TClient, TRawdata> where TClient : IMessageClient
     {
-        protected readonly IServiceProvider _services;
-
         protected readonly IParsingContext<TClient, TRawdata>[] _contexts;
 
-        public DefaultRawdataDispatcher(IServiceProvider services, IEnumerable<IParsingContext<TClient, TRawdata>> contexts) : this(services, contexts is IParsingContext<TClient, TRawdata>[] array ? array : contexts.ToArray())
+        public DefaultRawdataDispatcher(IEnumerable<IParsingContext<TClient, TRawdata>> contexts) : this(contexts is IParsingContext<TClient, TRawdata>[] array ? array : contexts.ToArray())
         {
             
         }
 
-        protected DefaultRawdataDispatcher(IServiceProvider services, IParsingContext<TClient, TRawdata>[] contexts)
+        protected DefaultRawdataDispatcher(IParsingContext<TClient, TRawdata>[] contexts)
         {
-            _services = services;
             _contexts = contexts;
         }
 
@@ -59,6 +55,15 @@ namespace Executorlibs.MessageFramework.Dispatchers
                 await context.InvokeAsync(client, rawdata);
                 i++;
             }
+        }
+    }
+
+    public class DefaultRawdataDispatcher<TClient, TRawdata, TContext> : DefaultRawdataDispatcher<TClient, TRawdata> where TClient : IMessageClient
+                                                                                                                     where TContext : class, IParsingContext<TClient, TRawdata>
+    {
+        public DefaultRawdataDispatcher(IEnumerable<TContext> contexts) : base(contexts)
+        {
+
         }
     }
 }

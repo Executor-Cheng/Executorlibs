@@ -19,7 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Executorlibs.TarProtocol", "src\Executorlibs.TarProtocol\Executorlibs.TarProtocol.csproj", "{1A1398FA-B756-4B1E-AEF3-F825299161C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Executorlibs.TarsProtocol", "src\Executorlibs.TarsProtocol\Executorlibs.TarsProtocol.csproj", "{1A1398FA-B756-4B1E-AEF3-F825299161C4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Executorlibs.Caching", "src\Executorlibs.Caching\Executorlibs.Caching.csproj", "{BB5162B0-2F62-4F96-96CB-898AF21C7E10}"
 EndProject
