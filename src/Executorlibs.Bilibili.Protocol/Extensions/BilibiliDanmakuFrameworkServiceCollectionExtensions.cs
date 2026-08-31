@@ -4,11 +4,8 @@ using Executorlibs.Bilibili.Protocol.Builders;
 using Executorlibs.Bilibili.Protocol.Clients;
 using Executorlibs.Bilibili.Protocol.Dispatchers;
 using Executorlibs.Bilibili.Protocol.Handlers;
-using Executorlibs.Bilibili.Protocol.Models.Danmaku;
 using Executorlibs.Bilibili.Protocol.Models.General;
 using Executorlibs.Bilibili.Protocol.Parsing.Contexts;
-using Executorlibs.Bilibili.Protocol.Parsing.Parsers;
-using Executorlibs.Bilibili.Protocol.Subscriptions;
 using Executorlibs.MessageFramework.Builders;
 using Executorlibs.MessageFramework.Extensions;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,11 +29,6 @@ namespace Executorlibs.Bilibili.Protocol.Extensions
             return builder.WithHandler<IBilibiliMessageHandler<TMessage>>();
         }
 
-        public static SubscriptionServiceBuilder<IDanmakuClient, TMessage, IBilibiliMessageSubscription<TMessage>> WithDefaultSubscription<TMessage>(this MessageFrameworkBuilder<IDanmakuClient, TMessage> builder) where TMessage : IBilibiliMessage
-        {
-            return builder.WithSubscription<IBilibiliMessageSubscription<TMessage>>();
-        }
-
         public static ParsingContextServiceBuilder<IDanmakuClient, byte[], IBilibiliRawParsingContext> WithDefaultParsingContext(this ParsingServiceBuilder<IDanmakuClient, byte[]> builder)
         {
             return builder.WithParsingContext<IBilibiliRawParsingContext>();
@@ -57,38 +49,21 @@ namespace Executorlibs.Bilibili.Protocol.Extensions
             return builder.WithParsingContext<IBilibiliJsonParsingContext>();
         }
 
-        public static ParsingServiceBuilder<IDanmakuClient, byte[]> AddDefaultRawdataDispatcher(this ParsingServiceBuilder<IDanmakuClient, byte[]> builder, Action<ParsingContextServiceBuilder<IDanmakuClient, byte[], IBilibiliRawParsingContext>>? parsingBuilderAction, ServiceLifetime? lifetime = null)
-        {
-            if (parsingBuilderAction != null)
-            {
-                var parsingContextBuilder = builder.WithDefaultParsingContext();
-                parsingBuilderAction.Invoke(parsingContextBuilder);
-            }
-            builder.WithDefaultDispatcher().AddDefaultDispatcher(lifetime);
-            return builder;
-        }
-
         public static RawdataDispatcherServiceBuilder<IDanmakuClient, byte[], IBilibiliRawdataDispatcher> AddDefaultDispatcher(this RawdataDispatcherServiceBuilder<IDanmakuClient, byte[], IBilibiliRawdataDispatcher> builder, ServiceLifetime? lifetime = null)
         {
-            builder.AddComponent<BilibiliRawdataDispatcher>(lifetime);
+            builder.AddService<BilibiliRawdataDispatcher>(lifetime);
             return builder;
         }
 
         public static RawdataDispatcherServiceBuilder<IDanmakuClient, JsonElement, IBilibiliJsonDispatcher> AddDefaultDispatcher(this RawdataDispatcherServiceBuilder<IDanmakuClient, JsonElement, IBilibiliJsonDispatcher> builder, ServiceLifetime? lifetime = null)
         {
-            builder.AddComponent<BilibiliJsonDispatcher>(lifetime);
-            return builder;
-        }
-
-        public static SubscriptionServiceBuilder<IDanmakuClient, TMessage, IBilibiliMessageSubscription<TMessage>> AddDefaultSubscription<TMessage>(this SubscriptionServiceBuilder<IDanmakuClient, TMessage, IBilibiliMessageSubscription<TMessage>> builder, ServiceLifetime? lifetime = null) where TMessage : IBilibiliMessage
-        {
-            builder.AddComponent<BilibiliMessageSubscription<TMessage>>(lifetime);
+            builder.AddService<BilibiliJsonDispatcher>(lifetime);
             return builder;
         }
 
         public static MessageDispatcherServiceBuilder<IDanmakuClient, TMessage, IBilibiliMessageDispatcher<TMessage>> AddDefaultDispatcher<TMessage>(this MessageDispatcherServiceBuilder<IDanmakuClient, TMessage, IBilibiliMessageDispatcher<TMessage>> builder, ServiceLifetime? lifetime = null) where TMessage : IBilibiliMessage
         {
-            builder.AddComponent<BilibiliMessageDispatcher<TMessage>>(lifetime);
+            builder.AddService<BilibiliMessageDispatcher<TMessage>>(lifetime);
             return builder;
         }
 
@@ -100,18 +75,13 @@ namespace Executorlibs.Bilibili.Protocol.Extensions
 
     public static class DefaultBilibiliMessageFrameworkExtensions
     {
-        public static void AddDefault<TMessage>(this MessageDispatcherServiceBuilder<IDanmakuClient, TMessage, IBilibiliMessageDispatcher<TMessage>> dispatcherBuilder, Action<SubscriptionServiceBuilder<IDanmakuClient, TMessage, IBilibiliMessageSubscription<TMessage>>> subscriptionBuilderAction, ServiceLifetime? lifetime = null) where TMessage : IBilibiliMessage
+        public static ParsingServiceBuilder<IDanmakuClient, byte[]> UseContext(this ParsingServiceBuilder<IDanmakuClient, byte[]> builder, Action<ParsingContextServiceBuilder<IDanmakuClient, byte[], IBilibiliRawParsingContext>> parsingBuilderAction, ServiceLifetime? lifetime = null)
         {
-            var subscriptionBuilder = dispatcherBuilder.Builder.WithDefaultSubscription();
-            subscriptionBuilderAction.Invoke(subscriptionBuilder);
-            dispatcherBuilder.AddDefaultDispatcher(lifetime);
-        }
+            var parsingContextBuilder = builder.WithDefaultParsingContext();
+            parsingBuilderAction.Invoke(parsingContextBuilder);
 
-        public static void AddDefault<TMessage>(this SubscriptionServiceBuilder<IDanmakuClient, TMessage, IBilibiliMessageSubscription<TMessage>> subscription, Action<HandlerServiceBuilder<IDanmakuClient, TMessage, IBilibiliMessageHandler<TMessage>>> handlerBuilderAction, ServiceLifetime? lifetime = null) where TMessage : IBilibiliMessage
-        {
-            var handlerBuilder = subscription.Builder.WithDefaultHandler();
-            handlerBuilderAction.Invoke(handlerBuilder);
-            subscription.AddDefaultSubscription(lifetime);
+            builder.WithDefaultDispatcher().AddDefaultDispatcher(lifetime);
+            return builder;
         }
 
         public static void AddDefault(this RawdataDispatcherServiceBuilder<IDanmakuClient, byte[], IBilibiliRawdataDispatcher> dispatcher, Action<ParsingContextServiceBuilder<IDanmakuClient, byte[], IBilibiliRawParsingContext>> parsingContextBuilderAction, ServiceLifetime? lifetime = null)
@@ -121,7 +91,7 @@ namespace Executorlibs.Bilibili.Protocol.Extensions
             dispatcher.AddDefaultDispatcher(lifetime);
         }
 
-        public static void AddDefault(this RawdataDispatcherServiceBuilder<IDanmakuClient, JsonElement, IBilibiliJsonDispatcher> dispatcher, Action<ParsingContextServiceBuilder<IDanmakuClient, JsonElement, IBilibiliJsonParsingContext>> parsingContextBuilderAction, ServiceLifetime? lifetime = null)
+        public static void UseContext(this RawdataDispatcherServiceBuilder<IDanmakuClient, JsonElement, IBilibiliJsonDispatcher> dispatcher, Action<ParsingContextServiceBuilder<IDanmakuClient, JsonElement, IBilibiliJsonParsingContext>> parsingContextBuilderAction, ServiceLifetime? lifetime = null)
         {
             var parsingContextBuilder = dispatcher.Builder.WithDefaultParsingContext();
             parsingContextBuilderAction.Invoke(parsingContextBuilder);
@@ -132,38 +102,23 @@ namespace Executorlibs.Bilibili.Protocol.Extensions
         {
             var dispatcherBuilder = builder.Builder.WithRawdata<JsonElement>().WithDefaultDispatcher();
             dispatcherBuilderAction.Invoke(dispatcherBuilder);
-            builder.AddComponent<BilibiliRawToJsonParsingContext>(lifetime);
+            builder.AddService<BilibiliRawToJsonParsingContext>(lifetime);
             return builder;
         }
 
-        public static DefaultRawParsingContextBuilder WithDefault(this ParsingContextServiceBuilder<IDanmakuClient, byte[], IBilibiliRawParsingContext> builder)
+        public static BilibiliRawParsingContextBuilder UseDefault(this ParsingContextServiceBuilder<IDanmakuClient, byte[], IBilibiliRawParsingContext> builder)
         {
-            return new DefaultRawParsingContextBuilder(builder);
+            return new BilibiliRawParsingContextBuilder(builder);
         }
 
-        public static DefaultRawParsingContextBuilder.DefaultDispatcherBuilder WithDefaultDispatcher(this DefaultRawParsingContextBuilder builder, ServiceLifetime? lifetime = null)
+        public static BilibiliJsonParsingContextBuilder UseDefault(this ParsingContextServiceBuilder<IDanmakuClient, JsonElement, IBilibiliJsonParsingContext> builder)
         {
-            return new DefaultRawParsingContextBuilder.DefaultDispatcherBuilder(builder, lifetime);
+            return new BilibiliJsonParsingContextBuilder(builder);
         }
 
-        public static DefaultRawParsingContextBuilder.DefaultDispatcherBuilder.DefaultSubscriptionBuilder WithDefaultSubscription(this DefaultRawParsingContextBuilder.DefaultDispatcherBuilder builder, ServiceLifetime? lifetime = null)
+        public static BilibiliDispatcherBuilder UseDispatcher(this MessageFrameworkBuilder<IDanmakuClient> builder)
         {
-            return new DefaultRawParsingContextBuilder.DefaultDispatcherBuilder.DefaultSubscriptionBuilder(builder, lifetime);
-        }
-
-        public static DefaultJsonParsingContextBuilder WithDefault(this ParsingContextServiceBuilder<IDanmakuClient, JsonElement, IBilibiliJsonParsingContext> builder)
-        {
-            return new DefaultJsonParsingContextBuilder(builder);
-        }
-
-        public static DefaultJsonParsingContextBuilder.DefaultDispatcherBuilder AddDefaultDispatcher(this DefaultJsonParsingContextBuilder builder, ServiceLifetime? lifetime = null)
-        {
-            return new DefaultJsonParsingContextBuilder.DefaultDispatcherBuilder(builder, lifetime);
-        }
-
-        public static DefaultJsonParsingContextBuilder.DefaultDispatcherBuilder.DefaultSubscriptionBuilder AddDefaultSubscription(this DefaultJsonParsingContextBuilder.DefaultDispatcherBuilder builder, ServiceLifetime? lifetime = null)
-        {
-            return new DefaultJsonParsingContextBuilder.DefaultDispatcherBuilder.DefaultSubscriptionBuilder(builder, lifetime);
+            return new BilibiliDispatcherBuilder(builder);
         }
     }
 }

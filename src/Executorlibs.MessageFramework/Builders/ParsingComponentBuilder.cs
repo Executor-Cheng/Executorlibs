@@ -1,47 +1,40 @@
-using System;
 using Executorlibs.MessageFramework.Clients;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Executorlibs.MessageFramework.Builders
 {
-    public abstract class ParsingComponentBuilder<TClient, TRawdata, TComponent> where TClient : class, IMessageClient
-                                                                                 where TComponent : class
+    public abstract class ParsingComponentBuilder<TClient, TRawdata, TComponent> : ServiceBuilder<TComponent> where TClient : class, IMessageClient
+                                                                                                              where TComponent : class
+    {
+        protected readonly ParsingServiceBuilder<TClient, TRawdata> _builder;
+        
+        public ParsingServiceBuilder<TClient, TRawdata> Builder => _builder;
+
+        protected ParsingComponentBuilder(ParsingServiceBuilder<TClient, TRawdata> builder) : base(builder.Services)
+        {
+            _builder = builder;
+        }
+
+        protected ParsingComponentBuilder(ParsingComponentBuilder<TClient, TRawdata, TComponent> builder) : this(builder._builder)
+        {
+
+        }
+    }
+
+    public abstract class ParsingEnumerableComponentBuilder<TClient, TRawdata, TComponent> : EnumerableServiceBuilder<TComponent> where TClient : class, IMessageClient
+                                                                                                                                  where TComponent : class
     {
         protected readonly ParsingServiceBuilder<TClient, TRawdata> _builder;
 
-        protected readonly ServiceBuilder<TComponent> _componentBuilder;
-
-        protected abstract ServiceLifetime ComponentLifetime { get; }
-
         public ParsingServiceBuilder<TClient, TRawdata> Builder => _builder;
 
-        protected ParsingComponentBuilder(ParsingServiceBuilder<TClient, TRawdata> builder, ServiceBuilder<TComponent> componentBuilder)
+        protected ParsingEnumerableComponentBuilder(ParsingServiceBuilder<TClient, TRawdata> builder) : base(builder.Services)
         {
             _builder = builder;
-            _componentBuilder = componentBuilder;
         }
 
-        protected ParsingComponentBuilder(ParsingComponentBuilder<TClient, TRawdata, TComponent> builder) : this(builder._builder, builder._componentBuilder)
+        protected ParsingEnumerableComponentBuilder(ParsingEnumerableComponentBuilder<TClient, TRawdata, TComponent> builder) : this(builder._builder)
         {
 
-        }
-
-        public virtual ParsingComponentBuilder<TClient, TRawdata, TComponent> AddComponent<TComponentImpl>(ServiceLifetime? lifetime = null) where TComponentImpl : class, TComponent
-        {
-            _componentBuilder.AddService<TComponentImpl>(lifetime ?? ComponentLifetime);
-            return this;
-        }
-
-        public virtual ParsingComponentBuilder<TClient, TRawdata, TComponent> AddComponent(TComponent handlerInstance)
-        {
-            _componentBuilder.AddService(handlerInstance);
-            return this;
-        }
-
-        public virtual ParsingComponentBuilder<TClient, TRawdata, TComponent> AddComponent(Func<IServiceProvider, TComponent> factory, ServiceLifetime? lifetime = null)
-        {
-            _componentBuilder.AddService(factory, lifetime ?? ComponentLifetime);
-            return this;
         }
     }
 }

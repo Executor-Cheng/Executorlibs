@@ -15,9 +15,10 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
     /// <item><see cref="ISharedSendGiftBaseMessage"/></item>
     /// <item><see cref="IUserMessage"/></item>
     /// <item><see cref="IGuardMessage"/></item>
+    /// <item><see cref="IMedalMessage"/></item>
     /// </list>
     /// </remarks>
-    public interface ISendGiftBaseMessage : ISharedSendGiftBaseMessage, IUserMessage, IGuardMessage
+    public interface ISendGiftBaseMessage : ISharedSendGiftBaseMessage, IUserMessage, IGuardMessage, IMedalMessage
     {
         /// <summary>
         /// 礼物价格 (单位:瓜子)
@@ -27,11 +28,6 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
         /// 是否为金瓜子礼物
         /// </summary>
         bool IsGoldGift { get; }
-        /// <summary>
-        /// 勋章信息
-        /// </summary>
-        [JsonConverter(typeof(ChangeTypeJsonConverter<Medal, IMedal>))]
-        IMedal? Medal { get; }
     }
 
     /// <summary>

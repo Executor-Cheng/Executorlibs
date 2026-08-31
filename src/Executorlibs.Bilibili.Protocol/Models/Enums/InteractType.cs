@@ -8,6 +8,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.Enums
     [Flags]
     public enum InteractType
     {
+        None = 0,
         /// <summary>
         /// 进入直播间
         /// </summary>

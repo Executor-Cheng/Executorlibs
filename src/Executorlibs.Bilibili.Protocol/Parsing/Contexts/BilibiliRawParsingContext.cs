@@ -97,6 +97,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsing.Contexts
                 if (parser.CanParse(rawdata))
                 {
                     var message = parser.Parse(rawdata);
+                    message.RoomId = client.RoomId;
                     return _dispatcher.HandleMessageAsync(client, message);
                 }
             }
@@ -105,6 +106,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsing.Contexts
                 if (parser.CanParse(rawdata))
                 {
                     var message = parser.Parse(rawdata);
+                    message.RoomId = client.RoomId;
                     return _dispatcher.HandleMessageAsync(client, message);
                 }
             }

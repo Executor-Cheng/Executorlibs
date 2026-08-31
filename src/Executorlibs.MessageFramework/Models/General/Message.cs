@@ -37,7 +37,7 @@ namespace Executorlibs.MessageFramework.Models.General
     /// </remarks>
     public interface IMessage<TRawdata> : IMessage
     {
-        bool RawdataPersisted { get; set; }
+        bool RawdataPersisted { get; }
 
         /// <summary>
         /// 原始数据
@@ -68,7 +68,7 @@ namespace Executorlibs.MessageFramework.Models.General
         public bool RawdataPersisted
         {
             get => (_flag & RawdataPersistedFlag) != 0;
-            set => SetFlag(RawdataPersistedFlag, value);
+            protected set => SetFlag(RawdataPersistedFlag, value);
         }
 
         /// <inheritdoc/>
@@ -84,14 +84,6 @@ namespace Executorlibs.MessageFramework.Models.General
         }
 
         protected abstract TRawdata? DeepClone();
-
-#if !NET8_0
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        protected static byte Bool2Byte(bool x)
-        {
-            return System.Runtime.CompilerServices.Unsafe.As<bool, byte>(ref x);
-        }
-#endif
 
         protected void SetFlag(uint flag)
         {

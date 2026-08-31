@@ -4,6 +4,7 @@ using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Compression;
+using Executorlibs.Bilibili.Protocol.Clients.Coding;
 using Executorlibs.Bilibili.Protocol.Utility;
 
 namespace Executorlibs.Bilibili.Protocol.Clients
@@ -15,6 +16,8 @@ namespace Executorlibs.Bilibili.Protocol.Clients
         protected ReadOnlyMemory<byte> _rawdata;
 
         protected bool _done;
+
+        public override ushort ProtocolVersion => 3;
 
         public override bool TryOpen(byte[] rawdata)
         {
@@ -28,11 +31,7 @@ namespace Executorlibs.Bilibili.Protocol.Clients
             return false;
         }
 
-#if NETSTANDARD2_0
-        public override bool TryProcess(out byte[]? decodedRawdata)
-#else
-        public override bool TryProcess([NotNullWhen(true)] out byte[]? decodedRawdata)
-#endif
+        public override bool TryProcess([NotNullWhen(true)]out byte[]? decodedRawdata)
         {
             if (_done)
             {

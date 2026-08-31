@@ -1,8 +1,12 @@
+using System.Text.Json.Serialization;
+using Executorlibs.Bilibili.Protocol.Models.General;
+using Executorlibs.Shared.JsonConverters;
 using ISharedMedal = Executorlibs.Shared.Protocol.Models.Danmaku.IMedal;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
 {
+
     /// <summary>
     /// 表示勋章信息的接口
     /// </summary>

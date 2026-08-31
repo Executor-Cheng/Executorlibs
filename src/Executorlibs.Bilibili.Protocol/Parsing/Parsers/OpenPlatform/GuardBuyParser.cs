@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using Executorlibs.Bilibili.Protocol.Models.Danmaku;
 using Executorlibs.Bilibili.Protocol.Models.Enums;
 using Executorlibs.Shared;
@@ -21,7 +21,6 @@ namespace Executorlibs.Bilibili.Protocol.Parsing.Parsers.OpenPlatform
             message.UserId = user.GetProperty("uid").GetUInt64();
 
             message.Id = data.GetProperty("msg_id").GetUInt64();
-            message.RoomId = data.GetProperty("room_id").GetUInt32();
             message.GuardType = (GuardType)data.GetProperty("guard_level").GetInt32();
             message.GiftName = message.GuardType switch
             {

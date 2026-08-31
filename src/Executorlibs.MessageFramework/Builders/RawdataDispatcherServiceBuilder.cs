@@ -8,9 +8,9 @@ namespace Executorlibs.MessageFramework.Builders
                                                                                    where TClient : class, IMessageClient
                                                                                    where TDispatcher : class, IRawdataDispatcher<TClient, TRawdata>
     {
-        protected override ServiceLifetime ComponentLifetime => ServiceLifetime.Scoped;
+        protected override ServiceLifetime DefaultLifetime => ServiceLifetime.Scoped;
 
-        public RawdataDispatcherServiceBuilder(ParsingServiceBuilder<TClient, TRawdata> builder) : base(builder, new ServiceBuilder<TDispatcher>(builder.Services))
+        public RawdataDispatcherServiceBuilder(ParsingServiceBuilder<TClient, TRawdata> builder) : base(builder)
         {
             
         }
@@ -19,23 +19,5 @@ namespace Executorlibs.MessageFramework.Builders
         {
             
         }
-
-        //public virtual RawdataDispatcherServiceBuilder<TClient, TRawdata, TDispatcher> AddDispatcher<TDispatcherImpl>(ServiceLifetime lifetime = ServiceLifetime.Scoped) where TDispatcherImpl : class, TDispatcher
-        //{
-        //    _dispatcherBuilder.AddService<TDispatcherImpl>(lifetime);
-        //    return this;
-        //}
-
-        //public virtual RawdataDispatcherServiceBuilder<TClient, TRawdata, TDispatcher> AddDispatcher(TDispatcher dispatcherInstance)
-        //{
-        //    _dispatcherBuilder.AddService(dispatcherInstance);
-        //    return this;
-        //}
-
-        //public virtual RawdataDispatcherServiceBuilder<TClient, TRawdata, TDispatcher> AddDispatcher(Func<IServiceProvider, TDispatcher> factory, ServiceLifetime lifetime = ServiceLifetime.Scoped)
-        //{
-        //    _dispatcherBuilder.AddService(factory, lifetime);
-        //    return this;
-        //}
     }
 }

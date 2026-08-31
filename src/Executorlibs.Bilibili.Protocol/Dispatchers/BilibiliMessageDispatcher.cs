@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using Executorlibs.Bilibili.Protocol.Clients;
+using Executorlibs.Bilibili.Protocol.Handlers;
 using Executorlibs.Bilibili.Protocol.Models.General;
 using Executorlibs.Bilibili.Protocol.Subscriptions;
 using Executorlibs.MessageFramework.Dispatchers;
@@ -12,7 +14,7 @@ namespace Executorlibs.Bilibili.Protocol.Dispatchers
 
     public class BilibiliMessageDispatcher<TMessage> : DefaultMessageDispatcher<IDanmakuClient, TMessage>, IBilibiliMessageDispatcher<TMessage> where TMessage : IBilibiliMessage
     {
-        public BilibiliMessageDispatcher(IBilibiliMessageSubscription<TMessage> subscription) : base(subscription)
+        public BilibiliMessageDispatcher(IEnumerable<IBilibiliMessageHandler<TMessage>> handlers) : base(new BilibiliMessageSubscription<TMessage>(handlers))
         {
 
         }

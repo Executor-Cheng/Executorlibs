@@ -6,7 +6,7 @@ namespace Executorlibs.Bilibili.Protocol.Models.General
 {
     public interface IBilibiliMessage : IProtocolMessage
     {
-        uint RoomId { get; }
+        uint RoomId { get; set; }
     }
 
     public abstract class BilibiliMessage : Message, IBilibiliMessage

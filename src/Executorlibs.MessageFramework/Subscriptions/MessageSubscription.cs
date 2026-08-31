@@ -8,17 +8,12 @@ using Executorlibs.MessageFramework.Models.General;
 
 namespace Executorlibs.MessageFramework.Subscriptions
 {
-    public interface IMessageSubscription<TClient, TMessage> : IMessageHandler<TClient, TMessage>,
-                                                               IEnumerable<IMessageHandler<TClient, TMessage>> where TClient : IMessageClient
-                                                                                                               where TMessage : IMessage
-    {
-        IDisposable AddHandler(IMessageHandler<TClient, TMessage> handler);
-    }
-
     public abstract class MessageSubscription<TClient, TMessage> : IMessageHandler<TClient, TMessage>,
-                                                                   IMessageSubscription<TClient, TMessage> where TClient : IMessageClient
-                                                                                                           where TMessage : IMessage
+                                                                   IEnumerable<IMessageHandler<TClient, TMessage>> where TClient : IMessageClient
+                                                                                                                   where TMessage : IMessage
     {
+        public abstract bool IsEmpty { get; }
+
         public abstract IDisposable AddHandler(IMessageHandler<TClient, TMessage> handler);
 
         public abstract Task HandleMessageAsync(TClient client, TMessage message);

@@ -1,21 +1,28 @@
-using System.Threading.Tasks;
+using System;
 using Executorlibs.MessageFramework.Clients;
+using Executorlibs.MessageFramework.Handlers;
 using Executorlibs.MessageFramework.Models.General;
 
 namespace Executorlibs.MessageFramework.Dispatchers
 {
-    public interface IMessageDispatcher<in TClient, in TMessage> where TClient : IMessageClient where TMessage : IMessage
+    public interface IMessageDispatcher<TClient, TMessage> : IMessageHandler<TClient, TMessage> where TClient : IMessageClient
+                                                                                                where TMessage : IMessage
     {
-        Task HandleMessageAsync(TClient client, TMessage message);
+        bool IsEmpty { get; }
+
+        IDisposable AddHandler(IMessageHandler<TClient, TMessage> handler);
     }
 
-    public abstract class MessageDispatcher<TClient, TMessage> : IMessageDispatcher<TClient, TMessage> where TClient : IMessageClient where TMessage : IMessage
+    public abstract class MessageDispatcher<TClient, TMessage> : MessageHandler<TClient, TMessage>,
+                                                                 IMessageDispatcher<TClient, TMessage> where TClient : IMessageClient where TMessage : IMessage
     {
+        public abstract bool IsEmpty { get; }
+
         protected MessageDispatcher()
         {
 
         }
 
-        public abstract Task HandleMessageAsync(TClient client, TMessage message);
+        public abstract IDisposable AddHandler(IMessageHandler<TClient, TMessage> handler);
     }
 }

@@ -16,7 +16,6 @@ namespace Executorlibs.Bilibili.Protocol.Parsing.Parsers.OpenPlatform
             var message = base.CreateMessage(rawdata);
             var data = rawdata.GetProperty("data");
             message.Id = data.GetProperty("msg_id").GetUInt64();
-            message.RoomId = data.GetProperty("room_id").GetUInt32();
             message.UserName = data.GetProperty("uname").GetString()!;
             message.UserId = data.GetProperty("uid").GetUInt64();
             message.Comment = data.GetProperty("msg").GetString()!;
@@ -27,8 +26,8 @@ namespace Executorlibs.Bilibili.Protocol.Parsing.Parsers.OpenPlatform
                 var medal = new Medal()
                 {
                     Level = data.GetProperty("fans_medal_level").GetUInt32(),
-                    Name = data.GetProperty("fans_medal_name").GetString()!,
-                    RoomId = message.RoomId
+                    //Name = data.GetProperty("fans_medal_name").GetString()!,
+                    //RoomId = message.RoomId
                 };
                 message.Medal = medal;
             }

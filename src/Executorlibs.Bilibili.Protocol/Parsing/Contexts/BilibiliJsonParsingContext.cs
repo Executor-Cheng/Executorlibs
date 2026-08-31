@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
@@ -13,11 +12,9 @@ namespace Executorlibs.Bilibili.Protocol.Parsing.Contexts
 {
     public interface IBilibiliJsonParsingContext : IParsingContext<IDanmakuClient, JsonElement>
     {
-#if NETSTANDARD2_0
-        bool TryGetMessageKey(out string? key);
-#else
+        bool HasNonMappedParser { get; }
+
         bool TryGetMessageKey([NotNullWhen(true)]out string? key);
-#endif
     }
 
     public interface IBilibiliJsonParsingContext<TMessage> : IBilibiliJsonParsingContext where TMessage : IBilibiliJsonMessage
@@ -34,6 +31,8 @@ namespace Executorlibs.Bilibili.Protocol.Parsing.Contexts
 
         protected readonly IBilibiliJsonMessageParser<TMessage>[] _nonMappedParsers;
 
+        public bool HasNonMappedParser => _nonMappedParsers.Length != 0;
+
         public BilibiliJsonParsingContext(IBilibiliMessageDispatcher<TMessage> dispatcher, IEnumerable<IBilibiliJsonMessageParser<TMessage>> parsers)
         {
             string? key = null;
@@ -49,7 +48,8 @@ namespace Executorlibs.Bilibili.Protocol.Parsing.Contexts
                     }
                     else if (key != mappableParser.Key)
                     {
-                        throw new InvalidOperationException("处理同一个消息类型的解析上下文不应具有键值不相同的可映射解析器");
+                        nonMappedParsers.Add(parser);
+                        continue;
                     }
                     mappedParsers.Add(mappableParser);
                     continue;
@@ -60,11 +60,8 @@ namespace Executorlibs.Bilibili.Protocol.Parsing.Contexts
             _mappedParsers = mappedParsers.ToArray();
             _nonMappedParsers = nonMappedParsers.ToArray();
         }
-#if NETSTANDARD2_0
-        public virtual bool TryGetMessageKey(out string? key)
-#else
+
         public virtual bool TryGetMessageKey([NotNullWhen(true)]out string? key)
-#endif
         {
             foreach (var mappedParser in _mappedParsers)
             {
@@ -106,6 +103,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsing.Contexts
                 if (parser.CanParse(rawdata))
                 {
                     var message = parser.Parse(rawdata);
+                    message.RoomId = client.RoomId;
                     return _dispatcher.HandleMessageAsync(client, message);
                 }
             }
@@ -114,6 +112,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsing.Contexts
                 if (parser.CanParse(rawdata))
                 {
                     var message = parser.Parse(rawdata);
+                    message.RoomId = client.RoomId;
                     return _dispatcher.HandleMessageAsync(client, message);
                 }
             }

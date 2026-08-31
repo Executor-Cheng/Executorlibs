@@ -6,12 +6,7 @@ using Executorlibs.MessageFramework.Subscriptions;
 
 namespace Executorlibs.Bilibili.Protocol.Subscriptions
 {
-    public interface IBilibiliMessageSubscription<TMessage> : IMessageSubscription<IDanmakuClient, TMessage> where TMessage : IBilibiliMessage
-    {
-
-    }
-
-    public class BilibiliMessageSubscription<TMessage> : DefaultMessageSubscription<IDanmakuClient, TMessage>, IBilibiliMessageSubscription<TMessage> where TMessage : IBilibiliMessage
+    public class BilibiliMessageSubscription<TMessage> : DefaultMessageSubscription<IDanmakuClient, TMessage> where TMessage : IBilibiliMessage
     {
         public BilibiliMessageSubscription(IEnumerable<IBilibiliMessageHandler<TMessage>> handlers) : base(handlers)
         {

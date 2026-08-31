@@ -1,7 +1,6 @@
-using System;
 using Executorlibs.MessageFramework.Clients;
 using Executorlibs.MessageFramework.Dispatchers;
-using Executorlibs.MessageFramework.Extensions;
+using Executorlibs.MessageFramework.Handlers;
 using Executorlibs.MessageFramework.Models.General;
 using Executorlibs.MessageFramework.Parsing.Context;
 using Executorlibs.MessageFramework.Parsing.Parsers;
@@ -9,27 +8,45 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Executorlibs.MessageFramework.Builders
 {
-    public readonly struct DefaultParsingContextBuilder<TClient, TRawdata> where TClient : class, IMessageClient
+    public class DefaultParsingContextBuilder<TClient, TRawdata> where TClient : class, IMessageClient
     {
-        private readonly ParsingContextServiceBuilder<TClient, TRawdata, IParsingContext<TClient, TRawdata>> _contextBuilder;
+        protected readonly ParsingContextServiceBuilder<TClient, TRawdata, IParsingContext<TClient, TRawdata>> _contextBuilder;
+
+        public ParsingServiceBuilder<TClient, TRawdata> Builder => _contextBuilder.Builder;
+
+        public DefaultParsingContextBuilder(DefaultParsingContextBuilder<TClient, TRawdata> builder) : this(builder._contextBuilder)
+        {
+
+        }
 
         public DefaultParsingContextBuilder(ParsingContextServiceBuilder<TClient, TRawdata, IParsingContext<TClient, TRawdata>> contextBuilder)
         {
             _contextBuilder = contextBuilder;
         }
 
-        public DefaultParsingContextBuilder<TClient, TRawdata> WithMessage<TMessage>(Action<ParserServiceBuilder<TClient, TRawdata, IMessageParser<TClient, TRawdata, TMessage>>> parserBuilderAction, Action<MessageDispatcherServiceBuilder<TClient, TMessage, IMessageDispatcher<TClient, TMessage>>> dispatcherBuilderAction, ServiceLifetime? lifetime = null) where TMessage : IMessage<TRawdata>
+        protected virtual void ConfigureDispatcher<TMessage>(MessageFrameworkBuilder<TClient, TMessage> builder, ServiceLifetime? lifetime) where TMessage : IMessage
         {
-            var contextBuilder = _contextBuilder;
-            var builder = contextBuilder.Builder;
+            var dispatcherBuilder = builder.WithDispatcher<IMessageDispatcher<TClient, TMessage>>();
+            dispatcherBuilder.AddService<DefaultMessageDispatcher<TClient, TMessage>>(lifetime);
+        }
 
-            var parserBuilder = builder.WithParser<IMessageParser<TClient, TRawdata, TMessage>>();
+        public DefaultParsingContextBuilder<TClient, TRawdata> AddMessage<TMessage>(ServiceBuilderAction<IMessageParser<TRawdata, TMessage>> parserBuilderAction, ServiceBuilderAction<IMessageHandler<TClient, TMessage>>? handlerBuilderAction = null, ServiceLifetime? lifetime = null) where TMessage : IMessage<TRawdata>
+        {
+            var builder = _contextBuilder.Builder;
+
+            var parserBuilder = builder.WithParser<IMessageParser<TRawdata, TMessage>>();
             parserBuilderAction.Invoke(parserBuilder);
 
-            var dispatcherBuilder = builder.WithMessage<TMessage>().WithDefaultDispatcher();
-            dispatcherBuilderAction.Invoke(dispatcherBuilder);
+            var msgBuilder = builder.WithMessage<TMessage>();
+            if (handlerBuilderAction != null)
+            {
+                var handlerBuilder = msgBuilder.WithHandler<IMessageHandler<TClient, TMessage>>();
+                handlerBuilderAction.Invoke(handlerBuilder);
+            }
 
-            contextBuilder.AddComponent<DefaultParsingContext<TClient, TRawdata, TMessage>>(lifetime);
+            ConfigureDispatcher(msgBuilder, lifetime);
+
+            _contextBuilder.AddService<DefaultParsingContext<TClient, TRawdata, TMessage>>(lifetime);
             return this;
         }
     }

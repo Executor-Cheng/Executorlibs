@@ -7,9 +7,9 @@ namespace Executorlibs.Bilibili.Protocol.Builders
 {
     public class DanmakuCredentialProviderBuilder : ParsingComponentBuilder<IDanmakuClient, byte[], IDanmakuServerProvider>
     {
-        protected override ServiceLifetime ComponentLifetime => ServiceLifetime.Scoped;
+        protected override ServiceLifetime DefaultLifetime => ServiceLifetime.Scoped;
 
-        public DanmakuCredentialProviderBuilder(ParsingServiceBuilder<IDanmakuClient, byte[]> builder) : base(builder, new ServiceBuilder<IDanmakuServerProvider>(builder.Services))
+        public DanmakuCredentialProviderBuilder(ParsingServiceBuilder<IDanmakuClient, byte[]> builder) : base(builder)
         {
             
         }
@@ -18,23 +18,5 @@ namespace Executorlibs.Bilibili.Protocol.Builders
         {
             
         }
-
-        //public virtual DanmakuCredentialProviderBuilder AddDanmakuCredentialProvider<TProvider>(ServiceLifetime lifetime = ServiceLifetime.Scoped) where TProvider : class, IDanmakuServerProvider
-        //{
-        //    _providerBuilder.AddService<TProvider>(lifetime);
-        //    return this;
-        //}
-
-        //public virtual DanmakuCredentialProviderBuilder AddDanmakuCredentialProvider(IDanmakuServerProvider instance)
-        //{
-        //    _providerBuilder.AddService(instance);
-        //    return this;
-        //}
-
-        //public virtual DanmakuCredentialProviderBuilder AddDanmakuCredentialProvider(Func<IServiceProvider, IDanmakuServerProvider> factory, ServiceLifetime lifetime = ServiceLifetime.Scoped)
-        //{
-        //    _providerBuilder.AddService(factory, lifetime);
-        //    return this;
-        //}
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using Executorlibs.Bilibili.Protocol.Models.Danmaku;
 using Executorlibs.Bilibili.Protocol.Models.Enums;
 using Executorlibs.Shared;
@@ -17,7 +17,6 @@ namespace Executorlibs.Bilibili.Protocol.Parsing.Parsers.OpenPlatform
             var data = rawdata.GetProperty("data");
 
             message.Id = data.GetProperty("message_id").GetUInt64();
-            message.RoomId = data.GetProperty("room_id").GetUInt32();
             message.UserName = data.GetProperty("uname").GetString()!;
             message.UserId = data.GetProperty("uid").GetUInt64();
             message.GuardType = (GuardType)data.GetProperty("guard_level").GetInt32();
@@ -30,8 +29,8 @@ namespace Executorlibs.Bilibili.Protocol.Parsing.Parsers.OpenPlatform
                 var medal = new Medal()
                 {
                     Level = data.GetProperty("fans_medal_level").GetUInt32(),
-                    Name = data.GetProperty("fans_medal_name").GetString()!,
-                    RoomId = message.RoomId
+                    //Name = data.GetProperty("fans_medal_name").GetString()!,
+                    //RoomId = message.RoomId
                 };
                 message.Medal = medal;
             }

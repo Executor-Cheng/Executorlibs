@@ -18,7 +18,7 @@ namespace Executorlibs.Shared.Extensions
 #if !NETSTANDARD2_0
             return MemoryMarshal.CreateSpan(ref Unsafe.Add(ref MemoryMarshal.GetReference(span), start), length);
 #else
-            return new Span<T>(Unsafe.AsPointer(ref Unsafe.Add(ref MemoryMarshal.GetReference(span), start)), length);
+            return span.Slice(start, length);
 #endif
         }
 
@@ -34,7 +34,7 @@ namespace Executorlibs.Shared.Extensions
 #if !NETSTANDARD2_0
             return MemoryMarshal.CreateReadOnlySpan(ref Unsafe.Add(ref MemoryMarshal.GetReference(span), start), length);
 #else
-            return new ReadOnlySpan<T>(Unsafe.AsPointer(ref Unsafe.Add(ref MemoryMarshal.GetReference(span), start)), length);
+            return span.Slice(start, length);
 #endif
         }
 

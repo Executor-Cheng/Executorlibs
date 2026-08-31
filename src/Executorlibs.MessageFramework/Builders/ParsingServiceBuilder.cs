@@ -18,7 +18,7 @@ namespace Executorlibs.MessageFramework.Builders
             
         }
 
-        public virtual ParserServiceBuilder<TClient, TRawdata, TParser> WithParser<TParser>() where TParser : class, IMessageParser<TClient, TRawdata>
+        public virtual ParserServiceBuilder<TClient, TRawdata, TParser> WithParser<TParser>() where TParser : class, IMessageParser<TRawdata>
         {
             return new ParserServiceBuilder<TClient, TRawdata, TParser>(this);
         }
@@ -31,20 +31,6 @@ namespace Executorlibs.MessageFramework.Builders
         public virtual ParsingContextServiceBuilder<TClient, TRawdata, TParsingContext> WithParsingContext<TParsingContext>() where TParsingContext : class, IParsingContext<TClient, TRawdata>
         {
             return new ParsingContextServiceBuilder<TClient, TRawdata, TParsingContext>(this);
-        }
-    }
-
-    public readonly struct DependencyBuilder<TService, TImplementation> where TService : class
-                                                                        where TImplementation : class, TService
-    {
-        private readonly ServiceBuilder<TService> _builder;
-
-        private readonly ServiceLifetime _lifetime;
-
-        public DependencyBuilder(ServiceBuilder<TService> builder, ServiceLifetime lifetime)
-        {
-            _builder = builder;
-            _lifetime = lifetime;
         }
     }
 }

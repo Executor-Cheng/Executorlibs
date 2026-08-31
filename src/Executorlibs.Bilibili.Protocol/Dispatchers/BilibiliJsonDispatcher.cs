@@ -28,15 +28,17 @@ namespace Executorlibs.Bilibili.Protocol.Dispatchers
             var nonMappedContexts = new List<IBilibiliJsonParsingContext>();
             foreach (var context in contexts)
             {
-                if (context is IBilibiliJsonParsingContext bpContext &&
-                    bpContext.TryGetMessageKey(out string? key))
+                if (context.TryGetMessageKey(out string? key))
                 {
                     if (mappedParsingContexts.ContainsKey(key!))
                     {
                         throw new InvalidOperationException("不应注册多个具有相同键值的解析上下文");
                     }
-                    mappedParsingContexts.Add(key!, bpContext);
-                    continue;
+                    mappedParsingContexts.Add(key!, context);
+                    if (!context.HasNonMappedParser)
+                    {
+                        continue;
+                    }
                 }
                 if (context is IBilibiliJsonParsingContext<IUnknownJsonMessage> unknownMessageParsingContext)
                 {

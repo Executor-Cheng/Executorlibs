@@ -16,6 +16,8 @@ namespace Executorlibs.MessageFramework.Subscriptions
 
         protected Registrations? _registrations;
 
+        public override bool IsEmpty => _staticHandlers.Length == 0 && _registrations?.EffictiveNodeList == null;
+
         public DefaultMessageSubscription(IEnumerable<IMessageHandler<TClient, TMessage>> handlers) : this(handlers is IMessageHandler<TClient, TMessage>[] array ? array : handlers.ToArray())
         {
             
@@ -40,10 +42,8 @@ namespace Executorlibs.MessageFramework.Subscriptions
 
         public override async Task HandleMessageAsync(TClient client, TMessage message)
         {
-            var enumerator = new Enumerator(this);
-            while (enumerator.MoveNext())
+            foreach (var handler in this)
             {
-                var handler = enumerator.Current;
                 await handler.HandleMessageAsync(client, message);
                 if (message.BlockRemainingHandlers)
                 {

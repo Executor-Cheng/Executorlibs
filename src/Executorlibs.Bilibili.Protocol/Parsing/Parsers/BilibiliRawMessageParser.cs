@@ -1,15 +1,14 @@
-using Executorlibs.Bilibili.Protocol.Clients;
 using Executorlibs.Bilibili.Protocol.Models.General;
 using Executorlibs.MessageFramework.Parsing.Parsers;
 
 namespace Executorlibs.Bilibili.Protocol.Parsing.Parsers
 {
-    public interface IBilibiliRawMessageParser<out TMessage> : IMessageParser<IDanmakuClient, byte[], TMessage> where TMessage : IBilibiliRawMessage
+    public interface IBilibiliRawMessageParser<out TMessage> : IMessageParser<byte[], TMessage> where TMessage : IBilibiliRawMessage
     {
 
     }
 
-    public abstract class BilibiliRawMessageParser<TMessage, TMessageImpl> : MessageParser<IDanmakuClient, byte[], TMessage>,
+    public abstract class BilibiliRawMessageParser<TMessage, TMessageImpl> : MessageParser<byte[], TMessage>,
                                                                              IBilibiliRawMessageParser<TMessage> where TMessage : IBilibiliRawMessage
                                                                                                                  where TMessageImpl : BilibiliRawMessage, TMessage, new()
     {

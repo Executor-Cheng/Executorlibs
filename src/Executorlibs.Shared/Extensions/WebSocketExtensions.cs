@@ -16,7 +16,7 @@ namespace Executorlibs.Shared.Extensions
         {
             while (true)
             {
-                ValueWebSocketReceiveResult result = await ws.ReceiveAsync(buffer, token);
+                var result = await ws.ReceiveAsync(buffer, token);
                 if (result.Count == buffer.Length)
                 {
                     return;
@@ -32,26 +32,26 @@ namespace Executorlibs.Shared.Extensions
         public static async Task<byte[]> ReceiveFullyAsync(this WebSocket webSocket, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            byte[] buffer = new byte[1024];
-            using MemoryStream ms = new MemoryStream(1024);
-            ValueWebSocketReceiveResult result;
-            do
+            var buffer = new byte[1024];
+            var ms = new MemoryStream(1024);
+            while (true)
             {
-                result = await webSocket.ReceiveAsync(buffer.AsMemory(), token);
+                var result = await webSocket.ReceiveAsync(buffer.AsMemory(), token);
                 ms.Write(buffer, 0, result.Count);
+                if (result.EndOfMessage)
+                {
+                    return ms.ToArray();
+                }
             }
-            while (!result.EndOfMessage);
-            ms.Write(buffer, 0, result.Count);
-            return ms.ToArray();
         }
 #else
-        public static async ValueTask ReceiveFullyAsync(this WebSocket ws, Memory<byte> buffer, CancellationToken token = default)
+        public static async Task ReceiveFullyAsync(this WebSocket ws, Memory<byte> buffer, CancellationToken token = default)
         {
             if (MemoryMarshal.TryGetArray(buffer, out ArraySegment<byte> segment))
             {
                 while (true)
                 {
-                    WebSocketReceiveResult result = await ws.ReceiveAsync(segment, token);
+                    var result = await ws.ReceiveAsync(segment, token);
                     if (result.Count == segment.Count)
                     {
                         return;
@@ -66,29 +66,29 @@ namespace Executorlibs.Shared.Extensions
             throw new NotSupportedException();
         }
 
-        public static async ValueTask<byte[]> ReceiveFullyAsync(this WebSocket webSocket, CancellationToken token = default)
+        public static async Task<byte[]> ReceiveFullyAsync(this WebSocket webSocket, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            byte[] buffer = new byte[1024];
-            using MemoryStream ms = new MemoryStream(1024);
-            WebSocketReceiveResult result;
-            do
+            var buffer = new byte[1024];
+            var ms = new MemoryStream(1024);
+            while (true)
             {
-                result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), token);
+                var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), token);
                 ms.Write(buffer, 0, result.Count);
+                if (result.EndOfMessage)
+                {
+                    return ms.ToArray();
+                }
             }
-            while (!result.EndOfMessage);
-            ms.Write(buffer, 0, result.Count);
-            return ms.ToArray();
         }
 
-        public static ValueTask SendAsync(this WebSocket webSocket, ReadOnlyMemory<byte> memory, WebSocketMessageType messageType, bool endOfMessage, CancellationToken token)
+        public static Task SendAsync(this WebSocket webSocket, ReadOnlyMemory<byte> memory, WebSocketMessageType messageType, bool endOfMessage, CancellationToken token)
         {
             if (MemoryMarshal.TryGetArray(memory, out ArraySegment<byte> segment))
             {
-                return new ValueTask(webSocket.SendAsync(segment, messageType, endOfMessage, token));
+                return webSocket.SendAsync(segment, messageType, endOfMessage, token);
             }
-            return new ValueTask(Task.FromException(new NotSupportedException()));
+            return Task.FromException(new NotSupportedException());
         }
 #endif
     }

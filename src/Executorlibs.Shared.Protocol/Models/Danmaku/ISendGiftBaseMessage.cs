@@ -6,6 +6,10 @@ namespace Executorlibs.Shared.Protocol.Models.Danmaku
     public interface ISendGiftBaseMessage : IUserMessage
     {
         /// <summary>
+        /// 礼物Id
+        /// </summary>
+        uint GiftId { get; }
+        /// <summary>
         /// 礼物名称
         /// </summary>
         string GiftName { get; }

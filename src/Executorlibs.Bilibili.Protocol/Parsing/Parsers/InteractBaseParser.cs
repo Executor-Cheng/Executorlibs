@@ -3,6 +3,7 @@ using System.Text.Json;
 using Executorlibs.Bilibili.Protocol.Models.Danmaku;
 using Executorlibs.Bilibili.Protocol.Models.Enums;
 using Executorlibs.Shared;
+using Google.Protobuf;
 
 namespace Executorlibs.Bilibili.Protocol.Parsing.Parsers
 {

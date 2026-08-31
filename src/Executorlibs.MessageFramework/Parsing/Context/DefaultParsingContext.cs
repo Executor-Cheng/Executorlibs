@@ -11,16 +11,16 @@ namespace Executorlibs.MessageFramework.Parsing.Context
     public class DefaultParsingContext<TClient, TRawdata, TMessage> : ParsingContext<TClient, TRawdata> where TClient : IMessageClient
                                                                                                         where TMessage : IMessage<TRawdata>
     {
-        protected readonly IMessageParser<TClient, TRawdata, TMessage>[] _parsers;
+        protected readonly IMessageParser<TRawdata, TMessage>[] _parsers;
 
         protected readonly IMessageDispatcher<TClient, TMessage> _dispatcher;
 
-        public DefaultParsingContext(IEnumerable<IMessageParser<TClient, TRawdata, TMessage>> parsers, IMessageDispatcher<TClient, TMessage> dispatcher) : this(parsers is IMessageParser<TClient, TRawdata, TMessage>[] array ? array : parsers.ToArray(), dispatcher)
+        public DefaultParsingContext(IEnumerable<IMessageParser<TRawdata, TMessage>> parsers, IMessageDispatcher<TClient, TMessage> dispatcher) : this(parsers is IMessageParser<TRawdata, TMessage>[] array ? array : parsers.ToArray(), dispatcher)
         {
 
         }
 
-        protected DefaultParsingContext(IMessageParser<TClient, TRawdata, TMessage>[] parsers, IMessageDispatcher<TClient, TMessage> dispatcher)
+        protected DefaultParsingContext(IMessageParser<TRawdata, TMessage>[] parsers, IMessageDispatcher<TClient, TMessage> dispatcher)
         {
             _parsers = parsers;
             _dispatcher = dispatcher;

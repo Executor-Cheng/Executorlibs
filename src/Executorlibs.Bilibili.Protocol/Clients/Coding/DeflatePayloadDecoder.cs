@@ -4,11 +4,13 @@ using System.IO;
 using System.IO.Compression;
 using Executorlibs.Bilibili.Protocol.Utility;
 
-namespace Executorlibs.Bilibili.Protocol.Clients
+namespace Executorlibs.Bilibili.Protocol.Clients.Coding
 {
     public class DeflatePayloadDecoder : PayloadDecoder
     {
         protected DeflateStream? _deflater;
+
+        public override ushort ProtocolVersion => 2;
 
         public DeflatePayloadDecoder()
         {
@@ -26,11 +28,8 @@ namespace Executorlibs.Bilibili.Protocol.Clients
             }
             return false;
         }
-#if NETSTANDARD2_0
-        public override bool TryProcess(out byte[]? decodedRawdata)
-#else
-        public override bool TryProcess([NotNullWhen(true)] out byte[]? decodedRawdata)
-#endif
+
+        public override bool TryProcess([NotNullWhen(true)]out byte[]? decodedRawdata)
         {
             var deflater = _deflater ?? throw new InvalidOperationException("必须先执行打开操作");
             var decompressBuffer = _decompressBuffer;

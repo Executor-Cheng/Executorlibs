@@ -32,7 +32,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsing.Parsers
         protected override TImpl CreateMessage(JsonElement rawdata)
         {
             var message = base.CreateMessage(rawdata);
-            message.Time = Utils.UnixTime2DateTime(rawdata.GetProperty("live_time").GetInt32());
+            message.Time = rawdata.TryGetProperty("live_time", out var liveTime) ? Utils.UnixTime2DateTime(liveTime.GetInt32()) : DateTime.Now;
             message.Rawdata = rawdata;
             return message;
         }

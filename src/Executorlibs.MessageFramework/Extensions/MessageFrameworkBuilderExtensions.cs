@@ -28,11 +28,6 @@ namespace Executorlibs.MessageFramework.Extensions
             return builder.WithHandler<IMessageHandler<TClient, TMessage>>();
         }
 
-        public static SubscriptionServiceBuilder<TClient, TMessage, IMessageSubscription<TClient, TMessage>> WithDefaultSubscription<TClient, TMessage>(this MessageFrameworkBuilder<TClient, TMessage> builder) where TClient : class, IMessageClient where TMessage : IMessage
-        {
-            return builder.WithSubscription<IMessageSubscription<TClient, TMessage>>();
-        }
-
         public static RawdataDispatcherServiceBuilder<TClient, TRawdata, IRawdataDispatcher<TClient, TRawdata>> WithDefaultDispatcher<TClient, TRawdata>(this ParsingServiceBuilder<TClient, TRawdata> builder) where TClient : class, IMessageClient
         {
             return builder.WithDispatcher<IRawdataDispatcher<TClient, TRawdata>>();
@@ -43,9 +38,9 @@ namespace Executorlibs.MessageFramework.Extensions
             return builder.WithParsingContext<IParsingContext<TClient, TRawdata>>();
         }
 
-        public static ParserServiceBuilder<TClient, TRawdata, IMessageParser<TClient, TRawdata>> WithDefaultParser<TClient, TRawdata>(this ParsingServiceBuilder<TClient, TRawdata> builder) where TClient : class, IMessageClient
+        public static ParserServiceBuilder<TClient, TRawdata, IMessageParser<TRawdata>> WithDefaultParser<TClient, TRawdata>(this ParsingServiceBuilder<TClient, TRawdata> builder) where TClient : class, IMessageClient
         {
-            return builder.WithParser<IMessageParser<TClient, TRawdata>>();
+            return builder.WithParser<IMessageParser<TRawdata>>();
         }
 
         public static MessageFrameworkBuilder<TClient, TMessage> AddDefaultDispatcher<TClient, TMessage>(this MessageFrameworkBuilder<TClient, TMessage> builder, ServiceLifetime? lifetime = null) where TClient : class, IMessageClient where TMessage : IMessage
@@ -56,59 +51,70 @@ namespace Executorlibs.MessageFramework.Extensions
 
         public static MessageDispatcherServiceBuilder<TClient, TMessage, IMessageDispatcher<TClient, TMessage>> AddDefaultDispatcher<TClient, TMessage>(this MessageDispatcherServiceBuilder<TClient, TMessage, IMessageDispatcher<TClient, TMessage>> builder, ServiceLifetime? lifetime = null) where TClient : class, IMessageClient where TMessage : IMessage
         {
-            builder.AddComponent<DefaultMessageDispatcher<TClient, TMessage>>(lifetime);
-            return builder;
-        }
-
-        public static SubscriptionServiceBuilder<TClient, TMessage, IMessageSubscription<TClient, TMessage>> AddDefaultSubscription<TClient, TMessage>(this SubscriptionServiceBuilder<TClient, TMessage, IMessageSubscription<TClient, TMessage>> builder, ServiceLifetime? lifetime = null) where TClient : class, IMessageClient where TMessage : IMessage
-        {
-            builder.AddComponent<DefaultMessageSubscription<TClient, TMessage>>(lifetime);
+            builder.AddService<DefaultMessageDispatcher<TClient, TMessage>>(lifetime);
             return builder;
         }
 
         public static RawdataDispatcherServiceBuilder<TClient, TRawdata, IRawdataDispatcher<TClient, TRawdata>> AddDefaultDispatcher<TClient, TRawdata>(this RawdataDispatcherServiceBuilder<TClient, TRawdata, IRawdataDispatcher<TClient, TRawdata>> builder, ServiceLifetime? lifetime = null) where TClient : class, IMessageClient
         {
-            builder.AddComponent<DefaultRawdataDispatcher<TClient, TRawdata>>(lifetime);
+            builder.AddService<DefaultRawdataDispatcher<TClient, TRawdata>>(lifetime);
+            return builder;
+        }
+    }
+
+    public static class DefaultParsingFrameworkBuilderExtensions
+    {
+        public static DefaultParsingContextBuilder<TClient, TRawdata> UseDefault<TClient, TRawdata>(this ParsingContextServiceBuilder<TClient, TRawdata, IParsingContext<TClient, TRawdata>> context) where TClient : class, IMessageClient
+        {
+            return new DefaultParsingContextBuilder<TClient, TRawdata>(context);
+        }
+
+        public static PrioritizedParsingContextBuilder<TClient, TRawdata> UsePriority<TClient, TRawdata>(this DefaultParsingContextBuilder<TClient, TRawdata> builder) where TClient : class, IMessageClient
+        {
+            return new PrioritizedParsingContextBuilder<TClient, TRawdata>(builder);
+        }
+
+        public static ParsingServiceBuilder<TClient, TRawdata> UseParsingContext<TClient, TRawdata>(this ParsingServiceBuilder<TClient, TRawdata> builder, Action<ParsingContextServiceBuilder<TClient, TRawdata, IParsingContext<TClient, TRawdata>>> parsingBuilderAction) where TClient : class, IMessageClient
+        {
+            var parsingContextBuilder = builder.WithDefaultParsingContext();
+            parsingBuilderAction.Invoke(parsingContextBuilder);
+
+            builder.WithDefaultDispatcher().AddDefaultDispatcher();
             return builder;
         }
     }
 
     public static class DefaultMessageFrameworkBuilderExtensions
     {
-        public static void AddDefault<TClient, TMessage>(this MessageDispatcherServiceBuilder<TClient, TMessage, IMessageDispatcher<TClient, TMessage>> dispatcherBuilder, Action<SubscriptionServiceBuilder<TClient, TMessage, IMessageSubscription<TClient, TMessage>>> subscriptionBuilderAction, ServiceLifetime? lifetime = null) where TClient : class, IMessageClient where TMessage : IMessage
+        public static DefaultDispatcherBuilder<TClient> UseDispatcher<TClient>(this MessageFrameworkBuilder<TClient> builder) where TClient : class, IMessageClient
         {
-            var subscriptionBuilder = dispatcherBuilder.Builder.WithDefaultSubscription();
-            subscriptionBuilderAction.Invoke(subscriptionBuilder);
-            dispatcherBuilder.AddDefaultDispatcher(lifetime);
+            return new DefaultDispatcherBuilder<TClient>(builder);
         }
 
-        public static void AddDefault<TClient, TMessage>(this SubscriptionServiceBuilder<TClient, TMessage, IMessageSubscription<TClient, TMessage>> subscription, Action<HandlerServiceBuilder<TClient, TMessage, IMessageHandler<TClient, TMessage>>> handlerBuilderAction, ServiceLifetime? lifetime = null) where TClient : class, IMessageClient where TMessage : IMessage
+        public static PrioritizedDispatcherBuilder<TClient> UsePriority<TClient>(this DefaultDispatcherBuilder<TClient> builder) where TClient : class, IMessageClient
         {
-            var handlerBuilder = subscription.Builder.WithDefaultHandler();
-            handlerBuilderAction.Invoke(handlerBuilder);
-            subscription.AddDefaultSubscription(lifetime);
+            return new PrioritizedDispatcherBuilder<TClient>(builder);
         }
 
-        public static void AddDefault<TClient, TRawdata>(this RawdataDispatcherServiceBuilder<TClient, TRawdata, IRawdataDispatcher<TClient, TRawdata>> dispatcher, Action<ParsingContextServiceBuilder<TClient, TRawdata, IParsingContext<TClient, TRawdata>>> parsingContextBuilderAction, ServiceLifetime? lifetime = null) where TClient : class, IMessageClient
-        {
-            var parsingContextBuilder = dispatcher.Builder.WithDefaultParsingContext();
-            parsingContextBuilderAction.Invoke(parsingContextBuilder);
-            dispatcher.AddDefaultDispatcher(lifetime);
-        }
+        //public static void AddDefault<TClient, TMessage>(this MessageDispatcherServiceBuilder<TClient, TMessage, IMessageDispatcher<TClient, TMessage>> dispatcherBuilder, Action<SubscriptionServiceBuilder<TClient, TMessage, IMessageSubscription<TClient, TMessage>>> subscriptionBuilderAction, ServiceLifetime? lifetime = null) where TClient : class, IMessageClient where TMessage : IMessage
+        //{
+        //    var subscriptionBuilder = dispatcherBuilder.Builder.WithDefaultSubscription();
+        //    subscriptionBuilderAction.Invoke(subscriptionBuilder);
+        //    dispatcherBuilder.AddDefaultDispatcher(lifetime);
+        //}
 
-        public static DefaultParsingContextBuilder<TClient, TRawdata> WithDefault<TClient, TRawdata>(this ParsingContextServiceBuilder<TClient, TRawdata, IParsingContext<TClient, TRawdata>> context) where TClient : class, IMessageClient
-        {
-            return new DefaultParsingContextBuilder<TClient, TRawdata>(context);
-        }
+        //public static void AddDefault<TClient, TMessage>(this SubscriptionServiceBuilder<TClient, TMessage, IMessageSubscription<TClient, TMessage>> subscription, Action<HandlerServiceBuilder<TClient, TMessage, IMessageHandler<TClient, TMessage>>> handlerBuilderAction, ServiceLifetime? lifetime = null) where TClient : class, IMessageClient where TMessage : IMessage
+        //{
+        //    var handlerBuilder = subscription.Builder.WithDefaultHandler();
+        //    handlerBuilderAction.Invoke(handlerBuilder);
+        //    subscription.AddDefaultSubscription(lifetime);
+        //}
 
-        public static DefaultContextDispatcherBuilder<TClient, TRawdata> WithDefaultDispatcher<TClient, TRawdata>(this DefaultParsingContextBuilder<TClient, TRawdata> builder, ServiceLifetime? lifetime = null) where TClient : class, IMessageClient
-        {
-            return new DefaultContextDispatcherBuilder<TClient, TRawdata>(builder, lifetime);
-        }
-
-        public static DefaultContextSubscriptionBuilder<TClient, TRawdata> WithDefaultSubscription<TClient, TRawdata>(this DefaultContextDispatcherBuilder<TClient, TRawdata> builder, ServiceLifetime? lifetime = null) where TClient : class, IMessageClient
-        {
-            return new DefaultContextSubscriptionBuilder<TClient, TRawdata>(builder, lifetime);
-        }
+        //public static void UseContext<TClient, TRawdata>(this RawdataDispatcherServiceBuilder<TClient, TRawdata, IRawdataDispatcher<TClient, TRawdata>> dispatcher, Action<ParsingContextServiceBuilder<TClient, TRawdata, IParsingContext<TClient, TRawdata>>> parsingContextBuilderAction, ServiceLifetime? lifetime = null) where TClient : class, IMessageClient
+        //{
+        //    var parsingContextBuilder = dispatcher.Builder.WithDefaultParsingContext();
+        //    parsingContextBuilderAction.Invoke(parsingContextBuilder);
+        //    dispatcher.AddDefaultDispatcher(lifetime);
+        //}
     }
 }

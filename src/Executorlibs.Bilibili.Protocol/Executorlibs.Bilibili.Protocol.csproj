@@ -11,8 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Clients\Decoding\" />
-    <Folder Include="Clients\Contexts\" />
+    <PackageReference Include="Google.Protobuf" Version="3.33.5" />
   </ItemGroup>
 
 </Project>

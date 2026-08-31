@@ -1,14 +1,11 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Executorlibs.Bilibili.Protocol.Dispatchers;
-using Executorlibs.Bilibili.Protocol.Models.General;
+using Executorlibs.Bilibili.Protocol.Clients.Contexts;
+using Executorlibs.Bilibili.Protocol.Clients.Coding;
 using Executorlibs.Bilibili.Protocol.Options;
 using Executorlibs.Bilibili.Protocol.Utility;
 using Executorlibs.MessageFramework.Clients;
@@ -20,6 +17,8 @@ namespace Executorlibs.Bilibili.Protocol.Clients
     {
         uint RoomId { get; }
 
+        ulong UserId { get; }
+
         bool Connected { get; }
 
         Task ConnectAsync(DanmakuClientOptions options, CancellationToken token = default);
@@ -27,272 +26,188 @@ namespace Executorlibs.Bilibili.Protocol.Clients
         void Disconnect();
     }
 
-    public abstract class DanmakuClient : IDanmakuClient
+    /*
+    //public interface IDanmakuEventHandler<TContext> where TContext : ConnectionContext
+    //{
+    //    void HandleDisconnect(TContext context, Exception? exception);
+
+    //    Task HandlePacketAsync(byte[] buffer, uint length);
+    //}
+
+    //public abstract class SimpleDanmakuEventHandler<TContext> : IDanmakuEventHandler<TContext> where TContext : ConnectionContext
+    //{
+    //    public event Action<TContext, Exception?>? OnDisconnect;
+
+    //    public void HandleDisconnect(TContext context, Exception? exception)
+    //    {
+    //        OnDisconnect?.Invoke(context, exception);
+    //    }
+
+    //    public abstract Task HandlePacketAsync(byte[] buffer, uint length);
+    //}
+
+    //public class MessageDanmakuEventHandler<TContext> : IDanmakuEventHandler<TContext> where TContext : ConnectionContext
+    //{
+    //    protected readonly IBilibiliRawdataDispatcher _invoker;
+
+    //    protected readonly IBilibiliMessageDispatcher<IDisconnectedMessage>? _disconnectDispatcher;
+
+    //    public MessageDanmakuEventHandler(IBilibiliRawdataDispatcher invoker, IBilibiliMessageDispatcher<IDisconnectedMessage>? disconnectDispatcher = null)
+    //    {
+    //        _invoker = invoker;
+    //        _disconnectDispatcher = disconnectDispatcher;
+    //    }
+
+    //    public void HandleDisconnect(TContext context, Exception? exception)
+    //    {
+    //        _disconnectDispatcher?.HandleMessageAsync(?, new DisconnectedMessage(context.Options, exception));
+    //    }
+
+    //    public Task HandlePacketAsync(byte[] buffer, uint length)
+    //    {
+    //        return _invoker.HandleRawdataAsync(?, buffer);
+    //    }
+    //}
+    */
+
+    public abstract class DanmakuClient<TEvent, TTransport> : DanmakuAdapter<TEvent, TTransport>, IDanmakuClient where TEvent : IDanmakuEventContext where TTransport : DanmakuTransport
     {
-        protected static readonly ReadOnlyMemory<byte> HeartBeatPacket = new byte[16] { 0, 0, 0, 16, 0, 16, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1 };
+        public override bool Connected => _context?.Transport.Connected ?? false;
 
-        protected static byte[] CreatePayload(uint action)
+        public override uint RoomId => _context?.Options.RoomId ?? 0;
+
+        public virtual ulong UserId => _context?.ServerInfo.UserId ?? 0;
+
+        protected readonly DanmakuClientContextFactory<TTransport> _contextFactory;
+
+        protected DanmakuClientContext<TTransport>? _context;
+
+        /// <summary>
+        /// 1: Avalible 2: Connecting 4: Disconning
+        /// </summary>
+        protected volatile int _flags;
+
+        protected DanmakuClient(TEvent handler, DanmakuClientContextFactory<TTransport> contextFactory) : base(handler)
         {
-            byte[] buffer = new byte[16];
-            ref DanmakuProtocol protocol = ref DanmakuProtocolUtility.AsProtocol(buffer);
-            protocol.PacketLength = (uint)buffer.Length;
-            protocol.Action = action;
-            protocol.HeaderLength = 16;
-            protocol.Parameter = 1;
-            protocol.Version = 2;
-            protocol.ChangeEndian();
-            return buffer;
+            _contextFactory = contextFactory;
+            _flags = 1;
         }
 
-        protected static byte[] CreatePayload(uint action, string body)
+        public void Disconnect()
         {
-            var buffer = new byte[16 + Encoding.UTF8.GetByteCount(body)];
-            var span = buffer.AsSpan();
-            ref DanmakuProtocol protocol = ref DanmakuProtocolUtility.AsProtocol(span);
-            protocol.PacketLength = (uint)buffer.Length;
-            protocol.Action = action;
-            protocol.HeaderLength = 16;
-            protocol.Parameter = 1;
-            protocol.Version = 2;
-            protocol.ChangeEndian();
-#if NETSTANDARD2_0
-            Encoding.UTF8.GetBytes(body, 0, body.Length, buffer, 16);
-#else
-            Encoding.UTF8.GetBytes(body, span[16..]);
-#endif
-            return buffer;
+            Disconnect(null);
         }
 
-        protected static byte[] CreatePayload(uint action, byte[] body)
+        protected void Disconnect(Exception? exception)
         {
-            byte[] buffer = new byte[16 + body.Length];
-            var span = buffer.AsSpan();
-            ref DanmakuProtocol protocol = ref DanmakuProtocolUtility.AsProtocol(span);
-            protocol.PacketLength = (uint)buffer.Length;
-            protocol.Action = action;
-            protocol.HeaderLength = 16;
-            protocol.Parameter = 1;
-            protocol.Version = 2;
-            protocol.ChangeEndian();
-#if NET5_0_OR_GREATER
-            Unsafe.CopyBlock(ref Unsafe.Add(ref MemoryMarshal.GetReference(span), 16), ref MemoryMarshal.GetArrayDataReference(body), (uint)body.Length);
-#else
-            Unsafe.CopyBlock(ref Unsafe.Add(ref MemoryMarshal.GetReference(span), 16), ref MemoryMarshal.GetReference(body.AsSpan()), (uint)body.Length);
-#endif
-            return buffer;
-        }
-
-        protected static byte[] CreateJoinRoomPayload(byte version, uint roomId, ulong userId, string token)
-        {
-            byte[] json = JsonSerializer.SerializeToUtf8Bytes(new
+            int flags = _flags;
+            if ((flags & 0x5) != 1 || ((flags = Interlocked.CompareExchange(ref _flags, 3, 1)) & 0x5) != 1)
             {
-                uid = userId,
-                roomid = roomId,
-                protover = version,
-                buvid = "ACE72788-DC2B-41A4-B9D3-8C63AB0B193827573infoc",
-                platform = "web",
-                type = 2,
-                key = token
-            });
-            return CreatePayload(7, json);
-        }
-
-        public abstract bool Connected { get; }
-
-        public abstract uint RoomId { get; }
-
-        protected volatile uint _disposed;
-
-        protected IBilibiliRawdataDispatcher _invoker;
-
-        protected DanmakuClient(IBilibiliRawdataDispatcher invoker)
-        {
-            _invoker = invoker;
-        }
-
-        protected void CheckDisposed()
-        {
-            if (_disposed != 0)
-            {
-                throw new ObjectDisposedException(this.GetType().Name);
-            }
-        }
-
-        public abstract Task ConnectAsync(DanmakuClientOptions options, CancellationToken token = default);
-
-        public abstract void Disconnect();
-
-        protected abstract ValueTask SendAsync(ReadOnlyMemory<byte> memory, CancellationToken token);
-    }
-
-    public abstract class DanmakuClient<TContext> : DanmakuClient where TContext : ConnectionContext
-    {
-        public override bool Connected => _context?.Connected ?? false;
-
-        public override uint RoomId => _context?.RoomId ?? 0;
-
-        protected readonly IBilibiliMessageDispatcher<IDisconnectedMessage>? _disconnectDispatcher;
-
-        protected TContext? _context;
-
-        protected DanmakuClient(IBilibiliRawdataDispatcher invoker,
-                                IBilibiliMessageDispatcher<IDisconnectedMessage>? disconnectDispatcher = null) : base(invoker)
-        {
-            _disconnectDispatcher = disconnectDispatcher;
-        }
-
-        protected abstract TContext CreateContext(DanmakuClientOptions options);
-
-        protected TContext GetContext()
-        {
-            var context = _context;
-            return context ?? throw new OperationCanceledException();
-        }
-
-        protected abstract ValueTask ReceiveAsync(TContext context, Memory<byte> memory, CancellationToken token);
-
-        public override async Task ConnectAsync(DanmakuClientOptions options, CancellationToken token = default)
-        {
-            CheckDisposed();
-            var previousCtx = Volatile.Read(ref _context);
-            if (previousCtx == null)
-            {
-                var createdCtx = CreateContext(options);
-                var connectionToken = createdCtx.ConnectionCts!.Token;
-                if (Interlocked.CompareExchange(ref _context, createdCtx, null) == null)
+                if ((flags & 1) == 0)
                 {
-                    var connectCts = CancellationTokenSource.CreateLinkedTokenSource(connectionToken, token);
-                    try
-                    {
-                        CheckDisposed();
-                        var connectToken = connectCts.Token;
-                        await ConnectAsync(createdCtx, connectToken);
-                        createdCtx.ClientConnected();
-                        return;
-                    }
-                    catch (Exception)
-                    {
-                        if (Interlocked.CompareExchange(ref _context, null, createdCtx) == createdCtx)
-                        {
-                            createdCtx.Dispose();
-                        }
-                        connectionToken.ThrowIfCancellationRequested();
-                        throw;
-                    }
-                    finally
-                    {
-                        connectCts.Dispose();
-                    }
+                    throw new ObjectDisposedException(nameof(DanmakuClient<TEvent, TTransport>));
                 }
-                createdCtx.Dispose();
+                return;
             }
-            throw new InvalidOperationException();
-        }
-
-        protected abstract Task ConnectAsync(TContext context, CancellationToken connectToken);
-
-        public override void Disconnect()
-        {
-            var context = Volatile.Read(ref _context);
+            var context = Interlocked.Exchange(ref _context, null);
             if (context != null)
             {
-                Disconnect(context, null);
-            }
-        }
-
-        protected virtual void Disconnect(TContext context, Exception? exception)
-        {
-            if (Interlocked.CompareExchange(ref _context, null, context) == context)
-            {
-                context.Dispose();
-                if (_disconnectDispatcher is IBilibiliMessageDispatcher<IDisconnectedMessage> disconnectDispatcher)
+                try
                 {
-                    _ = disconnectDispatcher.HandleMessageAsync(this, new DisconnectedMessage(new DanmakuClientOptions(context.RoomId, context.HeartbeatInterval), exception));
+                    if (exception != null)
+                    {
+                        _event.HandleDisconnect(exception);
+                    }
+                }
+                finally
+                {
+                    context.Dispose();
                 }
             }
         }
-        
-        protected virtual async Task SendHeartBeatAsyncLoop(TContext context, CancellationToken token)
+
+        public async Task ConnectAsync(DanmakuClientOptions options, CancellationToken token = default)
+        {
+            int flags = Interlocked.CompareExchange(ref _flags, 3, 1);
+            if (flags != 1)
+            {
+                if ((flags & 1) == 0)
+                {
+                    throw new ObjectDisposedException(nameof(DanmakuClient<TEvent, TTransport>));
+                }
+                throw new DuplicateOperationException();
+            }
+            // 0b011
+            var context = await _contextFactory.CreateAsync(options, token);
+            try
+            {
+                await SendJoinRoomAsync(context, token);
+                await ValidateJoinRoomResultAsync(context.Transport, token);
+                token = context.Transport.Token;
+                _ = SendHeartBeatAsyncLoop(context.Transport, options.HeartbeatInterval, token);
+                _ = ReceiveMessageAsyncLoop(context.Transport, options.HeartbeatInterval.Add(TimeSpan.FromSeconds(10)), token);
+                _context = context;
+                flags = Interlocked.CompareExchange(ref _flags, 1, 3);
+                if (flags != 3)
+                {
+
+                }
+                return;
+            }
+            catch
+            {
+                context.Dispose();
+                throw;
+            }
+        }
+
+        protected ValueTask SendJoinRoomAsync(DanmakuClientContext<TTransport> context, CancellationToken connectToken = default)
+        {
+            var options = context.Options;
+            var serverInfo = context.ServerInfo;
+            return context.Transport.SendAsync(DanmakuProtocolUtility.CreateJoinRoomPayload(2, options.RoomId, serverInfo.UserId, serverInfo.Buvid, options.Platform, serverInfo.Token), connectToken);
+        }
+
+        protected async Task SendHeartBeatAsyncLoop(TTransport transport, TimeSpan interval, CancellationToken token)
         {
             double tickFrequency = 10000 * 1000 / (double)Stopwatch.Frequency;
             long ticks;
             while (true)
             {
-                try
+                token.ThrowIfCancellationRequested();
+                ticks = Stopwatch.GetTimestamp();
+                await transport.SendAsync(DanmakuProtocolUtility.HeartBeatPacket, token).ConfigureAwait(false);
+                var toSleep = interval - TimeSpan.FromTicks((long)((Stopwatch.GetTimestamp() - ticks) * tickFrequency));
+                if (toSleep <= default(TimeSpan))
                 {
-                    token.ThrowIfCancellationRequested();
-                    ticks = Stopwatch.GetTimestamp();
-                    await SendAsync(HeartBeatPacket, token).ConfigureAwait(false);
-                    var toSleep = context.HeartbeatInterval - TimeSpan.FromTicks((long)((Stopwatch.GetTimestamp() - ticks) * tickFrequency));
-                    if (toSleep <= default(TimeSpan))
-                    {
-                        throw new TimeoutException("Heartbeat timed out.");
-                    }
-                    await Task.Delay(toSleep, token);
+                    throw new TimeoutException("Heartbeat timed out.");
                 }
-                catch (OperationCanceledException) when (token.IsCancellationRequested)
-                {
-                    break;
-                }
-                catch (Exception e)
-                {
-                    Disconnect(context, e);
-                    return;
-                }
+                await Task.Delay(toSleep, token);
             }
         }
 
-        protected virtual async Task ReceiveMessageAsyncLoop(TContext context, CancellationToken token)
-        {
-            var recvBuffer = new byte[4096];
-            var client = (IDanmakuClient)new DanmakuClientContext(this, context.RoomId); // 预先提升到堆
-            while (true)
-            {
-                try
-                {
-                    await ReceiveAsync(context, recvBuffer.AsMemory(0, 16), token).ConfigureAwait(false);
-                    uint packetLength = HandleEndianessAndGetPacketLength(recvBuffer);
-                    uint payloadLength = packetLength - DanmakuProtocol.Size;
-                    if (payloadLength != 0)
-                    {
-                        if (packetLength > 65535)
-                        {
-                            throw new InvalidDataException($"包长度过大:{packetLength}");
-                        }
-                        if (packetLength > recvBuffer.Length)
-                        {
-                            recvBuffer = new byte[packetLength];
-                        }
-                        await ReceiveAsync(context, new Memory<byte>(recvBuffer, (int)DanmakuProtocol.Size, (int)payloadLength), token);
-                    }
-                    try
-                    {
-                        await _invoker.HandleRawdataAsync(client, recvBuffer);
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-                }
-                catch (OperationCanceledException) when (token.IsCancellationRequested)
-                {
-                    break;
-                }
-                catch (Exception e)
-                {
-                    Disconnect(context, e);
-                    return;
-                }
-            }
-        }
-
-        protected virtual async Task ValidateJoinRoomResultAsync(TContext context, CancellationToken token)
+        protected async Task ValidateJoinRoomResultAsync(TTransport transport, CancellationToken token)
         {
             byte[] recvBuffer = new byte[26];
-            await ReceiveOnceAsync(context, recvBuffer, token);
+            await transport.ReceiveAsync(recvBuffer.AsMemory(0, 16), token).ConfigureAwait(false);
+            uint packetLength = DanmakuProtocolUtility.HandleEndianessAndGetPacketLength(recvBuffer);
             if (DanmakuProtocolUtility.AsProtocol(recvBuffer).Action == 8)
             {
-                uint payloadLength = DanmakuProtocolUtility.AsProtocol(recvBuffer).PacketLength - DanmakuProtocol.Size;
+                uint payloadLength = packetLength - DanmakuProtocol.Size;
+                if (payloadLength != 0)
+                {
+                    if (packetLength > 65535)
+                    {
+                        throw new InvalidDataException($"包长度过大:{packetLength}");
+                    }
+                    if (packetLength > recvBuffer.Length)
+                    {
+                        var buffer = new byte[packetLength];
+                        DanmakuProtocolUtility.AsProtocol(buffer) = DanmakuProtocolUtility.AsProtocol(recvBuffer);
+                        recvBuffer = buffer;
+                    }
+                    await transport.ReceiveAsync(new Memory<byte>(recvBuffer, (int)DanmakuProtocol.Size, (int)payloadLength), token);
+                }
                 using var j = JsonDocument.Parse(recvBuffer.AsMemory(16, (int)payloadLength));
                 var root = j.RootElement;
                 if (root.GetProperty("code").GetInt32() == 0)
@@ -302,97 +217,6 @@ namespace Executorlibs.Bilibili.Protocol.Clients
                 throw new UnknownResponseException(root);
             }
             throw new UnknownResponseException();
-        }
-
-        protected static uint HandleEndianessAndGetPacketLength(byte[] recvBuffer)
-        {
-            ref var protocol = ref DanmakuProtocolUtility.AsProtocol(recvBuffer);
-            protocol.ChangeEndian();
-            return protocol.PacketLength;
-        }
-
-        protected async Task ReceiveOnceAsync(TContext context, byte[] recvBuffer, CancellationToken token)
-        {
-            await ReceiveAsync(context, recvBuffer.AsMemory(0, 16), token).ConfigureAwait(false);
-            uint packetLength = HandleEndianessAndGetPacketLength(recvBuffer);
-            uint payloadLength = packetLength - DanmakuProtocol.Size;
-            if (payloadLength != 0)
-            {
-                if (packetLength > 65535)
-                {
-                    throw new InvalidDataException($"包长度过大:{packetLength}");
-                }
-                if (packetLength > recvBuffer.Length)
-                {
-                    recvBuffer = new byte[packetLength];
-                }
-                await ReceiveAsync(context, new Memory<byte>(recvBuffer, (int)DanmakuProtocol.Size, (int)payloadLength), token);
-            }
-        }
-    }
-
-    public abstract class DanmakuClient<TContext, TDecoder> : DanmakuClient<TContext> where TContext : ConnectionContext
-                                                                                      where TDecoder : PayloadDecoder, new()
-    {
-        protected DanmakuClient(IBilibiliRawdataDispatcher invoker,
-                                IBilibiliMessageDispatcher<IDisconnectedMessage>? disconnectDispatcher = null) : base(invoker, disconnectDispatcher)
-        {
-
-        }
-
-        protected override async Task ReceiveMessageAsyncLoop(TContext context, CancellationToken token)
-        {
-            var recvBuffer = new byte[4096];
-            var client = (IDanmakuClient)new DanmakuClientContext(this, context.RoomId); // 预先提升到堆
-            var decoder = new TDecoder();
-            while (true)
-            {
-                try
-                {
-                    await ReceiveAsync(context, recvBuffer.AsMemory(0, 16), token).ConfigureAwait(false);
-                    uint packetLength = HandleEndianessAndGetPacketLength(recvBuffer);
-                    uint payloadLength = packetLength - DanmakuProtocol.Size;
-                    if (payloadLength != 0)
-                    {
-                        if (packetLength > 65535)
-                        {
-                            throw new InvalidDataException($"包长度过大:{packetLength}");
-                        }
-                        if (packetLength > recvBuffer.Length)
-                        {
-                            recvBuffer = new byte[packetLength];
-                        }
-                        await ReceiveAsync(context, new Memory<byte>(recvBuffer, (int)DanmakuProtocol.Size, (int)payloadLength), token);
-                    }
-                    if (decoder.TryOpen(recvBuffer))
-                    {
-                        try
-                        {
-                            while (decoder.TryProcess(out var decodedRawdata))
-                            {
-                                await _invoker.HandleRawdataAsync(client, decodedRawdata!);
-                            }
-                        }
-                        finally
-                        {
-                            decoder.Close();
-                        }
-                    }
-                    else
-                    {
-                        await _invoker.HandleRawdataAsync(client, recvBuffer);
-                    }
-                }
-                catch (OperationCanceledException) when (token.IsCancellationRequested)
-                {
-                    break;
-                }
-                catch (Exception e)
-                {
-                    Disconnect(context, e);
-                    return;
-                }
-            }
         }
     }
 }

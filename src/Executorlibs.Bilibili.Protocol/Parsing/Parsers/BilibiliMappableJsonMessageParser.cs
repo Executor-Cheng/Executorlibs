@@ -30,7 +30,7 @@ namespace Executorlibs.Bilibili.Protocol.Parsing.Parsers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool CanParse(JsonElement root)
         {
-            return true;
+            return root.TryGetProperty("cmd", out var token) && token.ValueKind == JsonValueKind.String && token.GetString() == Key;
         }
     }
 }

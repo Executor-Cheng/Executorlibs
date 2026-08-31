@@ -18,10 +18,12 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
     /// <item><see cref="IGuardMessage"/></item>
     /// <item><see cref="ILordMessage"/></item>
     /// <item><see cref="IAdminMessage"/></item>
+    /// <item><see cref="IMedalMessage"/></item>
+    /// <item><see cref="ITitleMessage"/></item>
     /// </list>
     /// </remarks>
     [RegisterBilibiliParser(typeof(DanmakuParser))]
-    public interface IDanmakuMessage : IDanmakuBaseMessage, IGuardMessage, ILordMessage, IAdminMessage
+    public interface IDanmakuMessage : IDanmakuBaseMessage, IGuardMessage, ILordMessage, IAdminMessage, IMedalMessage, ITitleMessage
     {
         /// <summary>
         /// 弹幕类型
@@ -37,18 +39,6 @@ namespace Executorlibs.Bilibili.Protocol.Models.Danmaku
         /// 是否为抽奖弹幕
         /// </summary>
         bool IsLotteryDanmaku { get; } // 0.9 > 0
-
-        /// <summary>
-        /// 头衔信息
-        /// </summary>
-        [JsonConverter(typeof(ChangeTypeJsonConverter<Title, ITitle>))]
-        ITitle? Title { get; }
-
-        /// <summary>
-        /// 勋章信息
-        /// </summary>
-        [JsonConverter(typeof(ChangeTypeJsonConverter<Medal, IMedal>))]
-        IMedal? Medal { get; }
     }
 
     /// <summary>
